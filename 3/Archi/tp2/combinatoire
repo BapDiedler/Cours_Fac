@@ -1,0 +1,54 @@
+.text
+	li $a0, 3#n=8
+	li $a1, 2#k=2
+	jal coefBi
+	jal print
+	li $v0,10
+	syscall
+	j fin
+
+#fonction combinatoire
+coefBi:	#sauvegarde des données dans la pile
+	sw $ra, 0($sp)
+	sw $a0, -4($sp)
+	sw $a1, -8($sp)
+	addi $sp, $sp, -12
+	
+	li $t1, 1
+
+	bgt $a1, $a0, ret2#si k>n alors
+	beq $a1,$t1, ret1#si k=1 alors
+	
+	#modification des variables
+suite:	subi $a0, $a0, 1 #n--
+	subi $a1, $a1, 1 #k--
+	jal coefBi#appel récursif numero 1
+	move $t0, $v0
+	
+	lw $a0, 8($sp)
+	addi $a0, $a0, 1 #n++
+	jal coefBi#appel récursif numero 2
+	move $t2, $v0
+	
+	#restauration des registres
+	lw $a1, 4($sp)
+	lw $a0, 8($sp)
+	lw $ra, 12($sp)
+	addi $sp, $sp, 12
+
+	add $v0, $t0, $t2
+	j ret3
+
+ret1:	li $v0,1 #return 1
+	
+	jr $ra
+ret2:	li $v0,0 #return 0
+	jr $ra
+ret3:   jr $ra
+
+print:	add $a0,$v0,$zero
+	li $v0,1
+	syscall
+	jr $ra
+
+fin:

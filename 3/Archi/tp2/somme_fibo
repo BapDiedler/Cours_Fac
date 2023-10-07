@@ -1,0 +1,79 @@
+.data
+	start: .word 0:30
+	end: .word 0
+	size: .word 30
+.text
+	la $a0,start
+	la $a1,end
+
+	j main#on passe à la fonction main
+
+fibo :	sw $ra , -4($sp)#sauvegarde des données courantes
+	addi $sp, $sp, -4#mise à jour du pointeur de la pile
+	
+	li $s1, 30 #$s1 prend la taille du tableau
+        li   $s2, 1
+        move $s3, $s2
+        addi $s4, $s1, -2 #conteur
+        li $v0, 1 #iitialisation de $v0
+        
+loop_fibo :#boucle de la suite fibo
+	move $s5, $s3 #f(n-2) = $s3
+        move $s6, $s2 #f(n-1) = $s2
+        add  $s2, $s5, $s6 #f(n) = f(n-2) + f(n-1)
+        sw $s2, 8($a0)#on met à jour le tableau
+        addi $a0, $a0, 4#on met la jour lea nouvelle case du tableau
+        move $s3, $s6 #f(n-2) = f(n-1)
+      	addi $s4, $s4, -1    # decremente le conteur
+      	bgtz $s4, loop_fibo     # repète tamps que le conteur ne vaut pas 1
+      	
+      	sw $ra , 0($sp)
+	addi $sp, $sp, 4#mise à jour du pointeur de la pile
+	jr $ra #return de la fonction
+      
+ 
+	
+						
+#$s0 -> somme
+#$s1 -> valeur du tableau
+#$s2 -> i pour la boucle
+#fonction somme
+sum :
+	sw $ra , -4($sp)#sauvegarde des données courantes
+	addi $sp, $sp, -4#mise à jour du pointeur de la pile
+
+	jal fibo #appel de la fonction fibo
+	la $a0, start
+	move $t2, $a0 #i = start
+	li $t0, 0 #somme = 0
+loop :	lw $t1, 0($t2) #charge de la case courante
+	add $t0, $t0, $t1 #addition des elements du tableau
+	addi $t2, $t2, 4 #passage à la case suivante du tableau
+	bne  $a1,$t2, loop #condition de la boucle while
+	move $v0, $t0
+	
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4#mise à jour du pointeur de la pile
+	jr $ra
+#fonction moyenne
+moy :	#sauvegarde des données courantes
+	sw $ra , -4($sp)#on sauvegarde dans la pile
+	addi $sp, $sp, -4#mise à jour du pointeur de la pile
+	
+	jal sum #on lance la fonction somme
+	
+	sub $t0, $a1, $a0 
+	li $t1, 4
+	div $t0, $t1 #on recupère le nombre d'elelement
+	mflo $t0
+	div $v0, $t0 #on calcul la moyenne
+	mflo $v0
+	
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4#mise à jour du pointeur de la pile
+	jr $ra
+	
+main :	jal moy
+	la $a0, ($v0)
+	li $v0, 1
+	syscall

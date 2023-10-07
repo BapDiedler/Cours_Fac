@@ -1,0 +1,12 @@
+\documentclass{article}\begin{document}
+\gin{itemize}
+\item Un point dans une liste
+\item Un autre point
+\item Encore un autre point
+\end{itemize}
+\begin{enumerate}
+\item Liste numérotée, cette fois
+\item Deuxième point
+\item Troisième point
+\end{enumerate}
+\end{document}

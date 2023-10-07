@@ -1,0 +1,313 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={1cm, 0.5cm}, vmargin={3cm, 3cm}]{geometry}
+\usepackage{proof}
+
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning}
+
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\sc TD Révision
+\end{center}
+
+\section{Analyse syntaxique}
+\begin{enumerate}
+  \item \begin{itemize}
+    \item Some 1 + 2\\
+      \begin{tikzpicture}
+        \node(Some) at (0, 0) {Some};
+        \node(1) at (1, 0) {1};
+        \node(P) at (1.5, 0) {+};
+        \node(2) at (2, 0) {2};
+
+        \node(expr1) at (1, 0.6) {expr};
+        \node(expr2) at (2, 0.6) {expr};
+        \node(expr3) at (1.5, 1.5) {expr};
+        \node(expr4) at (0.75, 2.5) {expr};
+
+        \draw (1) -- (expr1) -- (1, 1) -- (2, 1) -- (expr2) -- (2);
+        \draw (P) -- (expr3);
+        \draw (Some) -- (0, 2) -- (1.5, 2) -- (expr3);
+        \draw (0.75, 2) -- (expr4);
+
+        \node(Some) at (10, 0) {Some};
+        \node(1) at (11, 0) {1};
+        \node(P) at (11.5, 0) {+};
+        \node(2) at (12, 0) {2};
+
+        \node(expr1) at (12, 0.6) {expr};
+        \node(expr2) at (11, 0.6) {expr};
+        \node(expr3) at (10.5, 1.5) {expr};
+        \node(expr4) at (11.25, 2.5) {expr};
+
+        \draw (Some) -- (10, 1) -- (11, 1) -- (expr2) -- (1);
+        \draw (10.5, 1) -- (expr3);
+        \draw (expr3) -- (10.5, 2) -- (12, 2) -- (expr1) -- (2);
+        \draw (11.25, 2) -- (expr4);
+      \end{tikzpicture}
+
+    \item ? 1: 2 + 3\\
+      \begin{tikzpicture}
+        \node (QM) at (0, 0) {?};
+        \node (1) at (0.5, 0) {1};
+        \node (COL) at (1, 0) {:};
+        \node (2) at (1.5, 0) {2};
+        \node (P) at (2, 0) {+};
+        \node (3) at (2.5, 0) {3};
+
+        \node (expr1) at (0.5, 0.6) {expr};
+        \node (expr2) at (1.5, 0.6) {expr};
+        \node (expr3) at (2.5, 0.6) {expr};
+        \node (expr4) at (2, 1.5) {expr};
+        \node (expr5) at (1, 2.5) {expr};
+
+        \draw (2) -- (expr2) -- (1.5, 1) -- (2.5, 1) -- (expr3) -- (3);
+        \draw (P) -- (expr4);
+        \draw (QM) -- (0, 2) -- (2, 2) -- (expr4);
+        \draw (COL) -- (expr5);
+        \draw (1) -- (expr1) -- (0.5, 2);
+
+        \node (QM) at (10, 0) {?};
+        \node (1) at (10.5, 0) {1};
+        \node (COL) at (11, 0) {:};
+        \node (2) at (11.5, 0) {2};
+        \node (P) at (12, 0) {+};
+        \node (3) at (12.5, 0) {3};
+
+        \node (expr1) at (10.5, 0.6) {expr};
+        \node (expr2) at (11.5, 0.6) {expr};
+        \node (expr3) at (12.5, 0.6) {expr};
+        \node (expr4) at (10.75, 1.5) {expr};
+        \node (expr5) at (11.75, 2.5) {expr};
+
+        \draw (QM) -- (10, 1) -- (11.5, 1) -- (expr2) -- (2);
+        \draw (1) -- (expr1) -- (10.5, 1) -- (11, 1) -- (COL);
+        \draw (10.75, 1) -- (expr4);
+        \draw (expr4) -- (10.75, 2) -- (12.5, 2) -- (expr3) -- (3);
+        \draw (P) -- (12, 2);
+        \draw (11.75, 2) -- (expr5);
+      \end{tikzpicture}
+
+    \item 1 + 2 + 3
+
+      \begin{tikzpicture}
+        \node (1) at (0, 0) {1};
+        \node (P1) at (0.5, 0) {+};
+        \node (2) at (1, 0) {2};
+        \node (P2) at (1.5, 0) {+};
+        \node (3) at (2, 0) {3};
+
+        \node (expr1) at (0, 0.6) {expr};
+        \node (expr2) at (1, 0.6) {expr};
+        \node (expr3) at (2, 0.6) {expr};
+        \node (expr4) at (0.5, 1.5) {expr};
+        \node (expr5) at (1.25, 2.5) {expr};
+
+        \draw (1) -- (expr1) -- (0, 1) -- (1, 1) -- (expr2) -- (2);
+        \draw (P1) -- (expr4);
+        \draw (expr4) -- (0.5, 2) -- (2, 2) -- (expr3) -- (3);
+        \draw (P2) -- (1.5, 2);
+        \draw (1.25, 2) -- (expr5);
+
+        \node (1) at (10, 0) {1};
+        \node (P1) at (10.5, 0) {+};
+        \node (2) at (11, 0) {2};
+        \node (P2) at (11.5, 0) {+};
+        \node (3) at (12, 0) {3};
+
+        \node (expr1) at (10, 0.6) {expr};
+        \node (expr2) at (11, 0.6) {expr};
+        \node (expr3) at (12, 0.6) {expr};
+        \node (expr4) at (11.5, 1.5) {expr};
+        \node (expr5) at (10.75, 2.5) {expr};
+
+        \draw (2) -- (expr2) -- (11, 1) -- (12, 1) -- (expr3) -- (3);
+        \draw (P2) -- (expr4);
+        \draw (1) -- (expr1) -- (10, 2) -- (11.5, 2) -- (expr4);
+        \draw (P1) -- (10.5, 2);
+        \draw (10.75, 2) -- (expr5);
+      \end{tikzpicture}
+  \end{itemize}
+
+  \item Le plus prioritaire est l'option puis l'adition
+
+    $ \texttt{\%nonassoc SOME}\\
+        \texttt{\%left PLUS}\\ 
+        \texttt{\%nonassoc COLON}$
+    
+\end{enumerate}
+
+\section{Types}
+\begin{enumerate}
+  \item expression $? e_1 : e_2$ 
+    \[
+    \infer{\Gamma \vdash ?e_1 : e_2 : \tau}
+    {\Gamma \vdash e_1 : \tau\text{ option} & \Gamma \vdash e_2 : \tau}
+  \]
+
+\item $\Gamma(x) = \text{int}, \Gamma(y) = \text{int option}$ 
+  \begin{enumerate}
+    \item Pas bien typée (int + int option) pas possible
+
+    \item Bien typée (int)
+    \[
+      \infer{\Gamma \vdash x + ?y:42 : \text{int}}
+      {
+        \infer{\Gamma \vdash x : int}{\Gamma(x) = \text{int}}
+      &
+        \infer{\Gamma \vdash ?y:42 : \text{int}}
+        {
+          \infer{\Gamma \vdash y : \text{int option}}{\Gamma (y) = \text{int option}}
+          &
+          \infer{42 : int}{}
+        }
+      }
+    \]
+
+    \item Bien typée (int option)
+    \[
+      \infer{\Gamma \vdash ?\text{None}: (?\text{Some } y: \text{Some } x) : \text{int option}}
+      {
+        \infer{\Gamma \vdash \text{None} : \text{(int option) option}}{}
+        &
+        \infer{\Gamma \vdash ?\text{Some } y: \text{Some } x : \text{int option}}
+        {
+          \infer{\Gamma \vdash ?\text{Some } y: \text{(int option) option}}
+            {\infer{y : \text{int option}}{\Gamma(y) = \text{int option}}}
+          &
+          \infer{\Gamma \vdash \text{Some } x : \text{int option}}
+            {\infer{\Gamma \vdash x : int}{\Gamma(x) = int}}
+        }
+      }
+    \]
+  \end{enumerate}
+
+\item Montrons ($\texttt{?Some e: Some d} \text{ bien typée} \Leftrightarrow 
+  \texttt{Some (?a:d)} \text{ bien typée}$)
+
+  \begin{description}
+    \item[$\Rightarrow$]: Supossons $\Gamma \vdash \texttt{?Some e : Some d} : \tau$  
+      est dérivable.
+
+      Inversion: nécessairement, $\Gamma \vdash \texttt{Somme e} : \tau \text{ option}$
+
+      et $\Gamma \vdash \texttt{Some d} : \tau$
+
+      et $\Gamma \vdash \texttt{e} : \tau \text{ option}$
+
+      et $\Gamma \vdash \texttt{d} : \alpha \text{ option} $ ($\tau$ = $\alpha$ option)
+
+      \[
+        \infer{\Gamma \vdash \texttt{Some(?e:d)} : \tau (= \alpha \text{ option})}
+          {\infer{\Gamma \texttt{?e:d} : \alpha}{
+            \infer{\Gamma \vdash \texttt{e} : \alpha \text{ option} = \tau}{\vdots}
+            &
+            \infer{\Gamma \vdash \texttt{d} : \alpha}{\vdots}
+          }}
+      \]
+
+    \item[$\Leftarrow$]: Similaire
+  \end{description}
+\end{enumerate}
+
+\section{Compilation}
+\begin{exo} Compilation vers de valeurs optionnelles:
+\begin{enumerate}
+  \item Description:\\
+    \begin{table}[htb]
+    \centering
+      \hfill
+       \begin{tabular}{c | c}
+        registre & valeurs \\
+        \hline
+        $\$a0$ & $8$\\
+        $\$v0$ & $\texttt{0x10040008}$\\
+        $\$t0$ & $1$
+      \end{tabular}
+      \hfill
+      \begin{tabular}{l|c|}
+        \cline{2-2}
+        $\texttt{0x10040000}$ & 1\\
+        & 2\\
+        \cline{2-2}
+        $\texttt{0x10040008}$ & 1\\
+        & $\texttt{0x10040000}$\\
+        \cline{2-2}
+      \end{tabular}
+      \hfill
+    \end{table}
+
+  \item $\$a0 = \texttt{0x10040000}$\\
+    Tas:\\
+    \begin{tabular}{l| c |}
+      \cline{2-2}
+      $\texttt{0x10040000}$ & 1 \\
+      & $\texttt{0x10040008}$ \\ 
+      \cline{2-2}
+      $\texttt{0x10040008}$ & 1 \\
+      & $\texttt{0x10040010}$ \\
+      \cline{2-2}
+      $\texttt{0x10040010}$ & 1\\
+      & $3$\\
+      \cline{2-2}
+    \end{tabular}
+
+  \item récupère la valeur $n$ de $\texttt{Somme (Somme n)}$  dans le registre $\$v0$
+    \begin{lstlisting}[texcl=false, mathescape=false]
+    lw $v0, 4($a0)
+    lw $v0, 4($v0)
+  \end{lstlisting}
+
+  \item code de la fonction f:
+    \begin{lstlisting}[texcl=false, mathescape=false]
+      f:
+        beqz  $a0, N
+        lw    $v0, 4($a0)
+        addi  $v0, $v0, 1
+        jr    $ra
+        N:
+          li $v0, -1
+          jr $ra
+    \end{lstlisting}
+
+  \newpage
+  \item Code:
+    \begin{lstlisting}[texcl=fasle, mathescape=false]
+      bnez    $a0, some
+      
+      bnez    $a1, incompatible
+      li      $v0, 1
+      b       fin
+    some:
+      beqz    $a1, incompatible
+
+      lw      $a0, 4($a0)
+      lw      $a1, 4($a0)
+      seq     $v0, $a0, $a1
+      b fin
+    incompatible:
+      li      $v0, 0
+    fin:
+    \end{lstlisting}
+\end{enumerate}
+\end{exo}
+\end{document}
+
+

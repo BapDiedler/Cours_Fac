@@ -1,0 +1,23 @@
+#!/bin/bash
+
+cd boggle
+
+for path in `find ./*` ; do
+    if [ -f $path ] ; then
+	nom=$(basename -s ".java" $path)
+	echo -n $nom
+	echo -n " : "
+	for new_path in `find ./*` ; do
+	    if [ $new_path != $path ] ; then
+		if [ -f $new_path ] ; then
+		    grep -Fq $nom $new_path
+		    if [ $? -eq 0 ] ; then
+			echo -n $(basename -s ".java" $new_path)
+			echo -n " "
+		    fi
+		fi
+	    fi
+	done
+	echo
+    fi	
+done

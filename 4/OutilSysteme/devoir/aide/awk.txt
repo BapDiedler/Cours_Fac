@@ -1,0 +1,41 @@
+awk '(action)' nomFichier
+awk '/pattern/' nomFichier
+awk '/pattern/ (action)' nomFichier
+
+#afficher la colonne numéro i
+awk '{print $i}' nomFichier
+
+#afficher le contenu d'un fichier
+awk '{print $0}' nomFichier
+
+#afficher ligne qui contient le mot sss
+awk '/sss/' nomFichier
+
+#afficher les lignes qui contiennent des nombre à 3 chiffres
+awk '/[0-9][0-9][0-9]/' nomFichier
+
+#afficher les lignes dont la colonne 1 contient le mot chat
+awk '$1 ~ /chat/' nomFichier
+
+#afficher les lignes dont la colonne 1 ne contient pas le mot chat
+awk '$1 !~ /chat/' nomFichier
+
+#afficher les lignes dont le nombre est inférieur à 40
+awk '$4 < 40' nomFichier
+
+#afficher la colonne i des lignes qui ont bob
+awk '/bob/ {print $i}' nomFichier
+
+#changer le caractère séparateur " " par ":"
+awk -F: '{print $1}' nomFichier
+
+variables prédéfinit:
+	NR: donne le numéro de la ligne courante #affiche la ligne 5 du fichier awk 'NR==5' nomFichier
+						#afficher les ligne 5 à 7 awk 'NR==5,NR==7' nomFichier
+	NF: donne le nombre total de colonne par ligne #afficher le nombre de colonne à ligne 5 awk 'NR==5 {print NF,$0}' nomFichier
+	FS: caractère séparateurde colonne
+
+#affichage des personnes agées de plus de 50 ans
+awk 'BEGIN{print "liste demandée"} $3 > 50 {print $1}' nomFichier
+
+

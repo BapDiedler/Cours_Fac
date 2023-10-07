@@ -1,0 +1,591 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage[ a4paper, hmargin={1cm, 1cm}, vmargin={2cm, 2cm}]{geometry}
+
+\usepackage{proof}
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+\pagestyle{empty}
+\lstset{language=caml}
+
+
+\begin{document}
+\begin{center}
+    \large\sc Feuille d'exercice 6 - Systèes de déduction
+\end{center}
+
+\begin{exo} Séquents valides
+\begin{enumerate}
+    \item $(p \Rightarrow q \Rightarrow r), (p \Rightarrow q) \vdash \neg p, r$ \\
+        formule associée:
+        $(p \Rightarrow q \Rightarrow r) \wedge (p \Rightarrow q)
+            \Rightarrow \neg p \vee r$ Valide
+        \[
+        \infer[\Rightarrow g]{(p \Rightarrow q \Rightarrow r), (p \Rightarrow q) \vdash \neg p, r}
+              {
+                \infer[\neg d]{(p \Rightarrow q) \vdash \neg p, r, p}
+                              {
+                                \infer[hyp]{(p\Rightarrow q), p \vdash p, r}{}
+                              }
+                &\infer[\Rightarrow q]{(q \Rightarrow r), (p \Rightarrow q) \vdash \neg p, r}
+                       {
+                            \infer[\Rightarrow g]{(p \Rightarrow q) \vdash , \neg p, r, q}
+                                  {
+                                    \infer[\neg p]{\vdash \neg p, r, q, p}
+                                          {\infer[hyp]{p \vdash r, q, p}{}}
+                                   &\infer[hyp]{q \vdash, \neg p, r, q}{}
+                                  }
+                           &\infer[hyp]{r, (p \Rightarrow q) \vdash \neg p, r, q}{}
+                       }
+              }
+        \]
+        Valide
+
+    \item $\vdash (p\wedge q) \vee (\neg p \wedge \neg q)$ \\
+        formule associée:
+        $(p \wedge q) \vee (\neg p \wedge \neg q)$ Non Valide
+        \[
+        \infer[\wedge d]{\vdash (p \wedge q), (\neg p \wedge \neg q)}
+              {
+                \infer[\neg d]{\vdash (p \wedge q), \neg p}
+                      {
+                        \infer[\wedge d]{p \vdash (p\wedge q)}
+                              {
+                                \infer[hyp]{p \vdash p}{}
+                                & \textcolor{red}{p \vdash q}
+                              }
+                      }
+               &\infer[\neg d]{\vdash (p \wedge q), \neg q}
+                      { \vdots }
+              }
+        \]
+        Non valide
+
+    \item $p, \bot \vdash$\\
+        formule associée: $p \wedge \bot \Rightarrow \bot$ Valide
+
+        \[
+            \infer[\bot g]{p, \bot \vdash}{}
+        \]
+        Valide
+
+    \item $\top \vdash$\\
+        formule associée $\top \Rightarrow \bot$ Non valide
+
+        \[
+            \infer[\top g]{\top \vdash}{\textcolor{red}{\vdash}}
+        \]
+        Non Valide
+
+    \item $\top \vdash$\\
+        formule associée $\top \Rightarrow \bot$ Non valide
+
+        \[ \textcolor{red}{\vdash}\]
+        Non Valide
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Preuve dans le système G
+\begin{enumerate}
+    \item  $\vdash ((p \wedge q) \Rightarrow r) \Rightarrow
+                    (\neg p \vee q) \Rightarrow (p \Rightarrow r)$
+    \[
+        \infer[\Rightarrow d]{\vdash ((p \wedge q) \Rightarrow r) \Rightarrow
+                (\neg p \vee q) \Rightarrow (p \Rightarrow r)}
+        {
+            \infer[\Rightarrow d]{((p \land q) \Rightarrow r) \vdash (\neg p \vee q)
+                \Rightarrow (p \Rightarrow r)}
+                {
+                \infer[\Rightarrow d]
+                {((p \land q) \Rightarrow r), (\neg p \vee q) \vdash (p \Rightarrow r)}
+                {
+                {
+                \infer[\vee g]{((p \land q) \Rightarrow r), (\neg p \vee q), p
+                \vdash r}{
+                \infer[\neg g]{((p \land q) \Rightarrow r), \neg p, p \vdash r}
+                {\infer[hyp]{((p \land q) \Rightarrow r), p \vdash p, r}{}}
+                &
+                \infer[\Rightarrow g]{((p \land q) \Rightarrow r), q, p \vdash r}
+                {
+                \infer[hyp]{r, q, p \vdash r}{}
+                &
+                \infer[\land d]{q, p \vdash r, (p \land q)}
+                {
+                \infer[hyp]{q, p \vdash r, p}{}
+                &
+                \infer[hyp]{q, p \vdash r, q}{}
+                }
+                }}}}}
+        }
+    \]
+
+    \item $\vdash ((p \land q) \Rightarrow r) \land (\neg p \vee q)
+                    \Rightarrow p$
+
+    \[
+        \infer[\Rightarrow d]{\vdash ((p \land q) \Rightarrow r) \land (\neg p \vee q)
+        \Rightarrow p}
+        {\infer[\land g]{((p \land q) \Rightarrow r) \land (\neg p \vee q) \vdash p}
+        {\infer[\Rightarrow d]{((p \land q) \Rightarrow r), (\neg p \vee q) \vdash p}
+        {
+        \infer[]{(\neg p \vee q) \vdash p, (p \land q)}{}
+        &
+        \infer[\vee g]{r, (\neg p \vee q) \vdash p}
+        {
+        \infer[\neg g]{r, \neg p \vdash p}
+        {\textcolor{red}{r \vdash p}}
+        &
+        \textcolor{red}{ r, q \vdash p}
+        }}}}
+    \]
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Séquents et quantificateurs
+\begin{enumerate}
+    \item $\exists x, \forall y, \mathcal{R}(x, y)
+        \vdash \forall z, \exists t, \mathcal{R}(t, z)$ Valide
+    \[
+        \infer[\exists g]
+             {\exists x, \forall y, \mathcal{R}(x, y) \vdash
+             \forall z, \exists t, \mathcal{R}(t, z)}
+        {\infer[\forall d]
+               {\Gamma := \forall y, \mathcal{R}(x, y) \vdash \forall z, \exists t, \mathcal{R}(t, z)}
+        {\infer[\exists d]{\Gamma \vdash \Delta := (\exists t, \mathcal{R}(t, z))}
+        {\infer[\forall g]{\Gamma \vdash \Delta, \mathcal{R}(x, z)}
+        {\infer[hyp]{\Gamma, \mathcal{R}(x, z) \vdash \Delta, \mathcal{R}(x, z)}
+        {}}}}}
+    \]
+    \item $\forall y, \exists x, \mathcal{R}(x, y)
+        \vdash \exists t, \forall z, \mathcal{R}(t, z)$ Non Valide
+    \[
+        \infer[\exists d]{\forall y, \exists x, \mathcal{R}(x, y)
+                            \vdash \Delta := \exists t, \forall z, \mathcal{R}(t, z)}
+        {\infer[\forall d]{\forall y, \exists x, \mathcal{R}(x, y)
+            \vdash \forall z, \mathcal{R}(t, z), \Delta}
+        {\infer[\forall g]{\forall y, \forall x, \mathcal{R}(x, y)\vdash \mathcal{R}(t, z), \Delta}
+        {\infer[\exists d]{\exists x, \mathcal{R}(x, z) \vdash \mathcal{R}(t, z), \Delta}
+        {\textcolor{red}
+        {
+            (\exists x, \mathcal{R}(x, z)), \mathcal{R}(x', z) \vdash \mathcal{R}(t, z), \Delta
+        }}}}}
+    \]
+\end{enumerate}
+\end{exo}
+
+\begin{exo} $x, y, z$ des varaibles propositionnelles
+\begin{enumerate}
+    \item \begin{itemize}
+        \item $(x \Leftrightarrow y)$
+        \begin{align*}
+            (x \Leftrightarrow y)   & \equiv (x \Rightarrow y) \land (y \Rightarrow x) \\
+                                    & \equiv (\neg x \vee y) \land (\neg y \vee x) \\
+                                    & \equiv (\neg x \land (\neg y \vee x)) \vee 
+                                        (y \land (\neg y \vee x)) \\
+                                    & \equiv (\neg x \land \neg y) \vee (\neg x \land x)
+                                        \vee (y \land x) \vee (y \land \neg y) \\
+                                    & \equiv (\neg x \land \neg y) \vee (y \land x)
+        \end{align*}
+        \item $\neg(x \Leftrightarrow y)$
+        \begin{align*}
+            \neg(x \Leftrightarrow y)   & \equiv \neg((x \Rightarrow y) \land 
+                                            (y \Rightarrow x)) \\
+                                        & \equiv \neg(x \Rightarrow y) \vee 
+                                            \neg(y \Rightarrow x) \\
+                                        & \equiv (x \land \neg y) \vee
+                                            (y \land \neg x)
+        \end{align*}
+    \end{itemize}
+
+    \item $x \Leftrightarrow (y \Leftrightarrow z)$ \\
+        \begin{tabular}{c | c | c| c | c}
+            x & y & z & $y \Leftrightarrow z$ & 
+            $x \Leftrightarrow (y \Leftrightarrow z)$ \\
+            \hline
+            0 & 0 & 0 & 1 & 0 \\
+            0 & 0 & 1 & 0 & 1 \\
+            0 & 1 & 0 & 0 & 1 \\
+            0 & 1 & 1 & 1 & 0 \\
+            1 & 0 & 0 & 1 & 1 \\
+            1 & 0 & 1 & 0 & 0 \\
+            1 & 1 & 0 & 0 & 0 \\
+            1 & 1 & 1 & 1 & 1 \\
+        \end{tabular}
+
+    \item \begin{enumerate}
+        \item \begin{itemize}
+            \item $\infer[\Leftrightarrow d]{\Gamma \vdash \Delta, p \Leftrightarrow q}
+                    {\Gamma, p, \vdash \Delta, q & \Gamma, q, \vdash \Delta, p}$
+
+            \begin{tabular}{c | c | c | c | c | c | c}
+                $\Gamma$ & $\Delta$ & p & q & $\Gamma, p \vdash \Delta, q$
+                    & $\Gamma, q \vdash \Delta, p$ & $\Gamma \vdash \Delta, p \Leftrightarrow q$ \\
+                \hline
+                F & \_ & \_ & \_ & V & V & V \\
+                V & V  & \_ & \_ & V & V & V \\
+                V & F  & F  & F  & V & V & V \\
+                V & F  & F  & V  & V & F & F \\
+                V & F  & V  & F  & F & V & F \\
+                V & F  & V  & V  & V & V & V \\
+            \end{tabular}
+            \vspace*{1cm}
+            \item $\infer[\Leftrightarrow g]{\Gamma, p \Leftrightarrow q \vdash \Delta}
+            {\Gamma, p, q, \vdash \Delta & \Gamma, \vdash \Delta, p, q}$
+
+            \begin{tabular}{c | c | c | c | c | c | c}
+                $\Gamma$ & $\Delta$ & p & q & $\Gamma, p, q, \vdash \Delta$
+                    & $\Gamma, \vdash \Delta, p, q$ & $\Gamma, p \Leftrightarrow q \vdash \Delta$ \\
+                \hline
+                F & \_ & \_ & \_ & V & V & V \\
+                V & V  & \_ & \_ & V & V & V \\
+                V & F  & F  & F  & V & F & F \\
+                V & F  & F  & V  & V & V & V \\
+                V & F  & V  & F  & V & V & V \\
+                V & F  & V  & V  & F & V & F \\
+            \end{tabular}
+
+        \end{itemize}
+    \item Véritable avec la table de vérité au dessus
+    \item $\vdash x \Leftrightarrow (y \Leftrightarrow (x \Leftrightarrow y))$:
+
+    \footnotesize
+    \[
+    \infer[\Leftrightarrow d]{\vdash x \Leftrightarrow (y \Leftrightarrow (x \Leftrightarrow y))}
+    {
+     \infer[\Leftrightarrow d]{x \vdash y \Leftrightarrow (x \Leftrightarrow y)}
+     {\infer[\Leftrightarrow g]{x, (x \Leftrightarrow y) \vdash y}
+      {
+       \infer[hyp]{x, y \vdash y}{}
+       &
+       \infer[hyp]{x \vdash y, x}{}
+      }
+      &
+      \infer[\Leftrightarrow d]{x, y \vdash (x \Leftrightarrow y)}
+      {
+       \infer[hyp]{x, y \vdash x}{}
+       &
+       \infer[hyp]{x, y \vdash y}{}
+      }
+     }
+     &
+     \infer[\Leftrightarrow g]{y \Leftrightarrow (x \Leftrightarrow y) \vdash x}
+     {
+      \infer[\Leftrightarrow g]{y, (x \Leftrightarrow y) \vdash x}
+       {
+        \infer[hyp]{y, x \vdash x}{}
+        &
+        \infer[hyp]{y \vdash x, y}{}
+       }
+      &
+      \infer[\Leftrightarrow g]{\vdash x, y, (x \Leftrightarrow y) }
+      {
+        \infer[hyp]{y \vdash x, y}{}
+        &
+        \infer[hyp]{x \vdash x, y}{}
+      }
+     }
+    }
+    \] \normalsize
+
+    \item La formule est valide (démonstration au dessus).
+    \end{enumerate}
+\end{enumerate}
+\end{exo}
+
+\begin{exo}
+\begin{enumerate}
+    \item  Construction des clauses associés à $E_1$ et $E_2$
+    \begin{itemize}
+        \item $E_1 = \left\{
+                    (\neg p \vee q), (p \vee \neg q),
+                    (p \vee q), (\neg q \vee \neg p)
+                \right\} $
+        \item $E_2 = \left\{
+                    (\neg p \vee q), \neg q, q, p
+                \right\} $
+    \end{itemize}
+
+    \item Réfutation pour chacun de ces ensembles:
+    \begin{itemize}
+        \item $E_1$:
+        \[
+            \infer[p]{\bot}{
+            \infer[q]{p}{p \vee \neg q & p \vee q}
+            &
+            \infer[q]{\neg p}{\neg p \vee q & \neg p \vee \neg q}
+            }
+        \]
+
+        \item $E_2$:
+        \[
+            \infer[q]{\bot}
+            {\neg q & q}
+        \]
+    \end{itemize}
+\end{enumerate}
+\end{exo}
+
+\begin{exo}
+\begin{enumerate}
+    \item $\texttt{valide}(A)$:
+    \begin{itemize}
+        \item $\texttt{valide}(A) = \texttt{deductionG}(A)$
+        \item $\texttt{valide}(A) = \texttt{refutation}(
+          \texttt{clausale}(\neg A))$
+        \item $\texttt{valide}(A) = \texttt{non}(\texttt{sat}(
+          \texttt{clausale}(\neg A)))$
+    \end{itemize}
+
+    \item \begin{itemize}
+        \item $\texttt{satsifiable}(A)$:
+        \begin{itemize}
+            \item $\texttt{satsifiable}(A) = \texttt{non}(
+                \texttt{deductionG}(\neg A))$
+            \item $\texttt{satsifiable}(A) = \texttt{non}(
+                    \texttt{refutation}(\texttt{clausale}(A)))$
+
+            \item $\texttt{satsifiable}(A) = \texttt{sat}(
+                \texttt{clausale}(A))$
+        \end{itemize}
+
+        \item $\texttt{insatisfiable}(A)$:
+        \begin{itemize}
+            \item $\texttt{insatisfiable}(A) = \texttt{non}(\texttt{deductionG}(A))$
+            \item $\texttt{insatisfiable}(A) = \texttt{refutation}(\texttt{clausale}(A))$
+            \item $\texttt{insatisfiable}(A) = \texttt{non}(
+                \texttt{sat}(\texttt{clausale}(A)))$
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+\end{exo}
+
+\begin{exo}
+    \[
+        \infer{C \vee C'}{C \vee \neg p \vee \neg q & C' \vee p \vee q}
+    \]
+
+    La règle n'es pas correcte:
+
+    \[
+        \infer[]{\top}
+        {   \infer[q]{C \vee C' \vee \neg p \vee p}
+            {C \vee \neg p \vee \neg q & C' \vee p \vee q}
+        }
+    \]
+
+    Ou sinon
+
+    \begin{align*}
+        I &\models C \vee \neg p \vee q & q(V)\\
+        I &\models C' \vee p \vee \neg q & p(V)\\
+        I &\not\models C \vee C' & C(F), C'(F)\\
+    \end{align*}
+\end{exo}
+
+\newpage
+\begin{exo} Unification
+\begin{enumerate}
+    \item $f(x, x, y) \overset{?}{=} f(f(y, y, z), f(y, a, z), a)$
+
+    \begin{align*}
+        \left\{\right\}                 & \left\{ x \overset{?}{=} f(y, y, z);
+                                                x \overset{?}{=} f(y, a, z);
+                                                y \overset{?}{=} a\right\} & 7\\
+        \left\{ y \leftarrow a\right\}  & \left\{   x \overset{?}{=} f(a, a, z)\right\} & 4\\
+        \left\{ y \leftarrow a;
+                x \leftarrow f(a, a, z)\right\}   & \left\{\right\} & 4
+    \end{align*}
+
+    \item $f(x, x, y) \overset{?}{=} f(f(y, y, z), f(y, x, z), a)$
+
+    \begin{align*}
+        \left\{\right\}                 & \left\{ x \overset{?}{=} f(y, y, z);
+                                                x \overset{?}{=} f(y, x, z);
+                                                y \overset{?}{=} a\right\} & 7\\
+        \left\{ y \leftarrow a\right\}  & \left\{ x \overset{?}{=} f(a, a, z)
+                                                x \overset{?}{=} f(a, x, z)\right\} & 4\\
+        \left\{ y \leftarrow a;
+                x \leftarrow f(a, a, z)\right\} & \left\{f(a, a, z) \overset{?}{=}
+                                                        f(a, f(a, a, z), z)\right\}
+                & 4 \\
+        \left\{ y \leftarrow a;
+                x \leftarrow f(a, a, z)\right\} & \left\{a \overset{?}{=} a,
+                                                        a \overset{?}{=} f(a, a, z),
+                                                        z \overset{?}{=} z\right\}
+                & 7 \\
+        \left\{ y \leftarrow a;
+                x \leftarrow f(a, a, z)\right\} & \left\{a \overset{?}{=} f(a, a, z)\right\}
+                & 2\times2 \\
+        \left\{ y \leftarrow a;
+                x \leftarrow f(a, a, z)\right\} & \left\{a \overset{?}{=} f(a, a, z)\right\}
+                & \text{échec 6} \\
+    \end{align*}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Soit les formules:
+\begin{center}
+    \begin{tabular}{c c c}
+        $H_1 = (\forall x, P(x) \vee Q(x))$ &
+        $H_2 = (\exists x, P(x) \Rightarrow Q(x))$ &
+        $C = \exists x, Q(x) $\\
+    \end{tabular}
+\end{center}
+
+\begin{enumerate}
+    \item
+    \begin{itemize}
+        \item $H_1 \leadsto \left\{P(x) \vee Q(x)\right\}$
+        \item $H_2 \leadsto \left\{\neg P(a) \vee Q(a)\right\}$
+        \item $\neg C \leadsto \left\{\neg Q(x)\right\}$
+        \item $\left\{H_1, H_2, \neg C \right\} \leadsto
+                \left\{P(x) \vee Q(x), \neg P(a) \vee Q(a), \neg Q(x)\right\}$
+    \end{itemize}
+
+    \item $\left\{P(a) \vee Q(a), \neg P(a) \vee Q(a), \neg Q(a)\right\}$
+
+    \[
+        \infer[Q(a)]{\bot}{
+            \infer[P(a)]{Q(a)}
+            {P(a) \vee Q(a) & \neg P(a) \vee Q(a)}
+            &
+            \neg Q(a)
+        }
+    \]
+
+    \item \[
+        \infer[Q(a)]{\bot}{
+         \infer[P(a)]{Q(a)}
+          {\infer[\text{[x]a}]{P(a) \vee Q(a)}{P(x) \vee Q(x)}
+          & \neg P(a) \vee Q(a)
+          }
+         &
+         \infer[\text{[x]a}]{\neg Q(a)}{\neg Q(x)}
+        }
+    \]
+\end{enumerate}
+\end{exo}
+
+\begin{exo} \textit{Résolution (exame session1\-2020)}
+\begin{enumerate}
+    \item $A, B, C, \neg D \models \bot$
+      \begin{itemize}
+        \item $A \overset{def}{=} \forall x, 
+              (\forall y, P(x, y) \Rightarrow V(y)) \Rightarrow H(x)$
+
+        \begin{align*}
+            A &\equiv \forall x, (\neg (\forall y, P(x, y) \Rightarrow V(y))) \vee 
+                                                                              H(x) \\
+                & \equiv \forall x, (\exists y, P(x, y) \land \neg V(y)) \vee H(x) \\
+                & \leadsto \forall x, (P(x, f(x)) \land \neg V(f(x))) \vee H(x) \\
+                & \leadsto (P(x, f(x)) \land \neg V(f(x))) \vee H(x) \\
+                & \equiv (P(x, f(x)) \vee H(x)) \land (\neg V(f(x)) \vee H(x)) \\
+        \end{align*}
+        $\left\{(P(x, f(x)) \vee H(x)), (\neg V(f(x)) \vee H(x))\right\}$ \vspace{5mm}
+
+        \item $B \overset{def}{=} \forall x, B(x) \Rightarrow V(x)$
+
+        \begin{align*}
+            B &\equiv \forall x, \neg B(x) \vee V(x) \\
+                &\leadsto \neg B(x) \vee V(x)
+        \end{align*}
+        $\left\{\neg B(x) \vee V(x)\right\}$\vspace{5mm}
+
+        \item $C \overset{def}{=} \forall x, (\exists y, B(y) \land P(y, x)) \Rightarrow B(x)$
+
+        \begin{align*}
+            C &\equiv \forall x, (\neg (\exists y, B(y) \land P(y, x))) \vee B(x) \\
+                &\equiv \forall x, (\forall y, \neg B(y) \vee \neg P(y, x)) \vee B(x) \\
+                &\equiv \forall x, \forall y, \neg B(y) \vee \neg P(y, x) \vee B(x) \\
+                &\leadsto \neg B(y) \vee \neg P(y, x) \vee B(x)
+        \end{align*}
+        $\left\{\neg B(y) \vee \neg P(y, x) \vee B(x)\right\}$\vspace{5mm}
+
+        \item $D \overset{def}{=} \forall x, B(x) \Rightarrow H(x)$
+
+        \begin{align*}
+            \neg D &\equiv \neg (\forall x, \neg B(x) \vee H(x)) \\
+                &\equiv \exists x, B(x) \land \neg H(x) \\
+                &\leadsto B(a) \land \neg H(a)
+        \end{align*}
+        $\left\{B(a), \neg H(a)\right\}$ \vspace{5mm}
+    \end{itemize}
+
+    Pour montrer $A, B, C \models D$ on va utiliser la forme clausale de
+    l'ensemble de formules:\\ 
+    $\left\{A, B, C, \neg D\right\} =$
+
+    $\left\{(P(x, f(x)) \vee H(x)), (\neg V(f(x)) \vee H(x)), (\neg B(x) \vee V(x)),
+    (\neg B(y) \vee \neg P(y, x) \vee B(x)), B(a), \neg H(a)
+    \right\} $
+    \footnotesize
+    \[
+      \infer{\bot}{
+        \neg H(a) & 
+      \infer{H(a)}{
+      B(a) &
+      \infer{\neg B(a) \vee H(a)}{
+        \infer{P(a, f(a)) \vee H(a)}{P(x, f(x) \vee H(x))} &
+        \infer{\neg B(a) \vee \neg P(a, f(a))}{
+          \infer{\neg B(y) \vee \neg P(y, f(a))}{
+          \infer{\neg B(y) \vee \neg P(y, f(a)) \vee B(f(a))}{
+          \neg B(y) \vee \neg P(y, x) \vee B(x)}&
+      \infer{\neg B(f(a))}{
+        \infer{V(f(a)) \vee \neg B(f(a))}{V(x) \vee \neg B(x)}&
+        \infer{\neg V(f(a))}{
+          \neg H(a) &
+          \infer{\neg V(f(a)) \vee H(a)}{\neg V(f(x)) \vee H(x)}
+        }
+      }}}}}}
+    \]\normalsize
+
+  \item On a le dommaine $\mathcal{D} \left\{Puff, Draco, Saphira\right\}$
+      \begin{itemize}
+        \item $B_I = \left\{Puff, Draco\right\}$
+
+        \item $H_I = \left\{Puff, Saphira\right\}$
+
+        \item $V_I = \left\{Draco\right\}$
+    \end{itemize}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Relation Binaire
+\begin{itemize}
+  \item Totale: $\forall x, \exists y, R(x, y)$
+  \item Symétrique: $\forall x, y, R(x, y) \Rightarrow R(y, x)$
+  \item Transitive: $\forall x, y, z, R(x, y) \land R(y, z)
+    \Rightarrow R(x, z)$
+  \item Reflexive: $\forall x, R(x, x)$
+\end{itemize}
+
+  On ve montrer $Total, Symétrique, Transitive \models Reflexive$
+
+  Pour cela on ve montrer $Total, Symétrique, Transitive, \neg Reflexive \models \bot$
+
+  On a donc la clause: $\left\{R(x, f(x)), \neg R(y, x) \vee R(y, x),
+    \neg R(x, y) \vee \neg R(y, z) \vee R(x, z), R(a, a)\right\}$
+
+  \[
+    \infer{\bot}
+    { R(a, a) &
+      \infer{R(a, a)}{
+        \infer{R(x, z)}{}
+      }
+    }
+  \]
+\end{exo}
+
+\end{document}

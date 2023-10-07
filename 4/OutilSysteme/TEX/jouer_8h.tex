@@ -1,0 +1,70 @@
+\hypertarget{jouer_8h}{}\section{jouer.\+h File Reference}
+\label{jouer_8h}\index{jouer.\+h@{jouer.\+h}}
+
+
+jouer un pion sur un plateau.  
+
+
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{jouer_8h_a0c7a5f03bc249c53687e37bbb16e04e5}{creation\+\_\+jeu}} ()
+\begin{DoxyCompactList}\small\item\em crée un pion et le met au centre \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{jouer_8h_adb1869ea0b683b6b6ea11e2a3c5de3eb}{dpl}} (int sens)
+\begin{DoxyCompactList}\small\item\em déplace le pion le long de la sphère \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{jouer_8h_a236082e6b1b60950604b400ce8f4a8b2}{dpl\+\_\+micro}} (int sens, int $\ast$val, int max)
+\begin{DoxyCompactList}\small\item\em Fonction auxilière à \mbox{\hyperlink{jouer_8h_adb1869ea0b683b6b6ea11e2a3c5de3eb}{dpl()}}. Change val. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+jouer un pion sur un plateau. 
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{jouer_8h_a0c7a5f03bc249c53687e37bbb16e04e5}\label{jouer_8h_a0c7a5f03bc249c53687e37bbb16e04e5}} 
+\index{jouer.\+h@{jouer.\+h}!creation\+\_\+jeu@{creation\+\_\+jeu}}
+\index{creation\+\_\+jeu@{creation\+\_\+jeu}!jouer.\+h@{jouer.\+h}}
+\subsubsection{\texorpdfstring{creation\+\_\+jeu()}{creation\_jeu()}}
+{\footnotesize\ttfamily int creation\+\_\+jeu (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+crée un pion et le met au centre 
+
+\begin{DoxyReturn}{Returns}
+succés de la création 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jouer_8h_adb1869ea0b683b6b6ea11e2a3c5de3eb}\label{jouer_8h_adb1869ea0b683b6b6ea11e2a3c5de3eb}} 
+\index{jouer.\+h@{jouer.\+h}!dpl@{dpl}}
+\index{dpl@{dpl}!jouer.\+h@{jouer.\+h}}
+\subsubsection{\texorpdfstring{dpl()}{dpl()}}
+{\footnotesize\ttfamily int dpl (\begin{DoxyParamCaption}\item[{int}]{sens }\end{DoxyParamCaption})}
+
+
+
+déplace le pion le long de la sphère 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sens} & {\bfseries int} \+: 1 droite, 2 gauche, 3 haut, 4 bas \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+succés de la création 
+\end{DoxyReturn}
+\mbox{\Hypertarget{jouer_8h_a236082e6b1b60950604b400ce8f4a8b2}\label{jouer_8h_a236082e6b1b60950604b400ce8f4a8b2}} 
+\index{jouer.\+h@{jouer.\+h}!dpl\+\_\+micro@{dpl\+\_\+micro}}
+\index{dpl\+\_\+micro@{dpl\+\_\+micro}!jouer.\+h@{jouer.\+h}}
+\subsubsection{\texorpdfstring{dpl\+\_\+micro()}{dpl\_micro()}}
+{\footnotesize\ttfamily void dpl\+\_\+micro (\begin{DoxyParamCaption}\item[{int}]{sens,  }\item[{int $\ast$}]{val,  }\item[{int}]{max }\end{DoxyParamCaption})}
+
+
+
+Fonction auxilière à \mbox{\hyperlink{jouer_8h_adb1869ea0b683b6b6ea11e2a3c5de3eb}{dpl()}}. Change val. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sens} & {\bfseries int} \+: 1 droite, 2 gauche, 3 haut, 4 bas \\
+\hline
+\end{DoxyParams}

@@ -1,0 +1,43 @@
+.data
+	start: .word 17:20
+	end: .word 0
+.text
+	la $a0,start
+	la $a1,end
+
+	j main
+		
+#$s0 -> somme
+#$s1 -> valeur du tableau
+#$s2 -> i pour la boucle
+#fonction somme
+sum :	move $t2, $a0 #i = start
+	li $t0, 0 #somme = 0
+loop :	lw $t1, 0($t2) #charge de la case courante
+	add $t0, $t0, $t1 #addition des elements du tableau
+	addi $t2, $t2, 4 #passage à la case suivante du tableau
+	bne  $a1, $t2, loop #condition de la boucle while
+	move $v0, $t0
+	jr $ra
+#fonction moyenne
+moy :	#sauvegarde des données courantes
+	sw $ra , -4($sp)#on sauvegarde dans la pile
+	addi $sp, $sp, -4#mise à jour du pointeur de la pile
+	
+	jal sum #on lance la fonction somme
+	
+	sub $t0, $a1, $a0 
+	li $t1, 4
+	div $t0, $t1 #on recupère le nombre d'elelement
+	mflo $t0
+	div $v0, $t0 #on calcul la moyenne
+	mflo $v0
+	
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4#mise à jour du pointeur de la pile
+	jr $ra
+	
+main :	jal moy
+	la $a0, ($v0)
+	li $v0, 1
+	syscall

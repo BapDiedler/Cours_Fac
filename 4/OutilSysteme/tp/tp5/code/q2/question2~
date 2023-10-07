@@ -1,0 +1,21 @@
+#!/bin/bash
+
+afficherLigne() {
+    sed "/^$/d" listePDF.txt | wc -l | awk '{print("\n\n"$1 "nombre de pdf")}'
+    sed "/^$/d" visite.txt | wc -l | awk '{print($1 "nombre de liens à visiter\n\n\n")}'
+}
+
+if [ $# -eq 1 ] ; then
+    # awk '/^.*http./{print $4;}' liste.txt > url.txt
+    
+    awk -F ' : ' '{print $1; print $2;}' $1 | while read nom ; do
+	read url
+	mkdir -p "$nom" && cd "$nom"
+	bash ../scriptListe "$url"
+	afficherLigne
+	cd ../
+	rm -r "$nom"
+    done
+else
+    echo "le nombre d'arguments doit être de 1"
+fi

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+awk -F, 'BEGIN{printf("# BEGIN #\n");NR=1} \
+{cpt=($6-$4);print $0","cpt}  \
+END{printf("# END #\n")}' countries.csv

@@ -1,0 +1,10 @@
+  Bonjour <PRENOM> <NOM>,
+
+  vous avez obtenu la note de <NOTE> a l'UE d'outils systemes. Je vous
+rappelle que vous  avez la possibilite de consulter votre copie pour
+comprendre cette note.
+
+  En vous souhaitant bonne reception,
+
+	l'equipe d'outils systeme.
+	

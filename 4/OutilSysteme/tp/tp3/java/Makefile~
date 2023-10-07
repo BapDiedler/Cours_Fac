@@ -1,0 +1,9 @@
+flag = java/calculette/
+
+all: java/Main
+
+%.class:%.java
+	javac --class-path $(flag) $<
+
+%:
+	java $@

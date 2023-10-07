@@ -1,0 +1,9 @@
+*
+!*test.ml
+!*.c
+!*.mll
+!*.txt
+!*.md
+!*.pdf
+!*.tex
+!.gitignore

@@ -1,0 +1,92 @@
+#!/bin/bash
+
+usage() {
+	echo "svrd [<option>] <nomDossier>"
+	echo "Les arguments de la commandes sont les suivants:"
+	echo "option : cet argument est facultatif (il est entouré de crochets [] dans la présentation de la"
+	echo "syntaxe de la commande). L'option choisie ne pourra être que l'une des chaînes suivantes :"
+	echo "-b : sauvegarde brut, se contente de copier le dossier à sauvegarder dans le de sauvegarde ;"
+	echo "-h : sauvegarde cachée, le dossier de sauvegarde est caché."
+	echo "nomDossier : cet argument est obligatoire, il représente le nom du dossier à sauvegarder. Ce"
+	echo "dossier doit être dans le dossier courant."
+	exit 1
+}
+
+# parse the arguments
+while getopts ":bh" opt; do
+	case "$opt" in
+	b)
+		backup_option="-b"
+		;;
+	h)
+		backup_option="-h"
+		;;
+	# \? is an invalid option detected by getopts
+	\?)
+		# As $opt is ?, $OPTARG is the variable that really contain the wrong flag 
+		echo "Option invalide: -$OPTARG"
+		usage
+		exit 1
+		;;
+	esac
+done
+# Shift the args in order to only keep the folder name
+shift $((OPTIND-1))
+# Verify the number of args (should be equal to 1 since the only argument remaining is the folder name)
+if [ $# -ne 1 ]; then
+	echo "Nombre d'argument incorrect."
+	usage
+	exit 1
+fi
+
+# Declare variables
+source="$1"
+save="$source""_SAVE"
+if [ "$backup_option" == "-h" ]; then
+	save=".$save"
+fi
+
+# Verify the existence of the source folder
+if [ ! -d "$source" ]; then
+	echo "Le dossier $source à sauvegarder n'existe pas."
+	usage
+fi
+
+# Verify the existence of the save folder
+if [ ! -d "$save" ]; then
+	mkdir "$save"
+fi
+
+# Proceed to save the source folder
+nb_save=0
+nb_view=0
+if [ "$backup_option" == "-b" ]; then
+	rm -rf "$save"/*
+	cp -R "$source"/* "$save"
+else
+	for file in "$source"/*; do
+		# If it's not a file, we ignore it
+		if [ ! -f "$file" ]; then
+			continue
+		fi
+		# Verify that the file is newer than the file corresponding in the backup folder
+		if [ "$file" -nt "$save/$(basename "$file")" 2>/dev/null ]; then
+			# Verify if the file size is greater than 1Mo
+			if [ "$(stat -c %s "$file")" -gt "1000000" ]; then
+				# We use -p to specify that we want to print the following message before fetching for the user's input
+				read -p "Le fichier "$(basename "$file")" fait plus d'un 1Mo. Voulez-vous le sauvegarder ? [oui/non]" confirmation
+				if [ "$confirmation" == "oui" ]; then
+					cp "$file" "$save"
+					nb_save=$((nb_save+1))
+				fi
+			else
+				cp "$file" "$save"
+				nb_save=$((nb_save+1))
+			fi
+		fi
+		nb_view=$((nb_view+1))
+	done
+fi
+echo "Sauvegarde exécutée avec succès. $nb_save fichiers ont été sauvegardé et $nb_view fichiers ont été vu."
+exit 0
+

@@ -1,0 +1,18 @@
+option:
+	-F recherche de chaîne de caractère
+	-E recherche de regex
+	-r recherche dans les fichiers du répertoire donné
+	
+	-i pas de distinction entre majuscules et minuscules
+	-n affiche les lignes trouvé avec leur numéro
+	-v aligne les lignes qui ne valide pas la condition
+	-c affiche le nombre de lignes trouvées
+	-l affiche le nom des fichiers contenant au lieu des lignes
+	-L affiche le nom des fichiers ne contenant pas le motif
+	
+grep -i TR inventaire.csv 2> /dev/null
+
+return:
+	0 au moins un élément trouvé
+	1 aucun élément trouvé
+	2 erreur de syntaxe ou d'accès aux fichiers

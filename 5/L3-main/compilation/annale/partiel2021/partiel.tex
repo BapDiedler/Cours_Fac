@@ -1,0 +1,420 @@
+\documentclass{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={1cm, 1cm}, vmargin={2cm, 2cm}]{geometry}
+
+
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+\lstset{upquote=true,
+        columns=flexible,
+        keepspaces=true,
+        breaklines,
+        breakindent=0pt,
+        basicstyle=\ttfamily,
+        breaklines=true,
+        keywordstyle=\color{red},
+        commentstyle=\color{darkgreen},
+        tabsize=2,
+        escapeinside={;;},
+        escapebegin=;;\endgraf\color{gray},
+        }
+
+\title{Correction Partiel 2021}
+\author{Valeran MAYTIE}
+\date{}
+
+
+\begin{document}
+\maketitle
+
+\begin{exo} Récurrence
+\begin{enumerate}
+    \item $B_{x_1}(B_4(B_{x_2}(O_1, O_{x_3}), O_4), B_{x_4}(O_5, B_1(O_{x_5}, O_{x_6})))$\\ 
+    \begin{tikzpicture}
+        \draw (0, 0) -- (0, -0.5);
+            \draw [ultra thick](-2.1, -0.5) -- (2.1, -0.5);
+            \draw (-2, -0.5) -- (-2, -1);
+                \draw [ultra thick](-3.1, -1) -- (-0.9, -1);
+                \draw (-3, -1) -- (-3, -1.5);
+                    \draw [ultra thick](-3.6, -1.5) -- (-2.4, -1.5);
+                    \draw (-3.5, -1.5) -- (-3.5, -2);
+                    \filldraw[](-3.5, -2) circle (0.1);
+                    
+                    \draw (-2.5, -1.5) -- (-2.5, -2);
+                    \filldraw[](-2.5, -2) circle (0.1);
+                \draw (-1, -1) -- (-1, -1.5);
+                \filldraw[](-1, -1.5) circle (0.15);
+            \draw (2, -0.5) -- (2, -1);
+                \draw [ultra thick](0.9, -1) -- (3.1, -1);
+                \draw (1, -1) -- (1, -1.5);
+                \filldraw[](1, -1.5) circle (0.18);
+
+                \draw (3, -1) -- (3, -1.5);
+                \draw [ultra thick](2.4, -1.5) -- (3.6, -1.5);
+                    \draw (2.5, -1.5) -- (2.5, -2);
+                    \filldraw[](2.5, -2) circle (0.15);
+
+                    \draw (3.5, -1.5) -- (3.5, -2);
+                    \filldraw[](3.5, -2) circle (0.15);
+    \end{tikzpicture}
+
+    $x_1 \in \mathbb{R}$
+
+    $x_2 = 2$
+
+    $x_3 = 1$
+
+    $x_4 = 2$
+
+    $x_5 = 2$
+
+    $x_6 = 2$
+
+    \item \begin{description}
+        \item[Cas de base $m = O_p$]: On a bien $o(m) = 1$ et $b(m) = 0$ donc $b(m) + 1 = o(m)$
+        \item[Cas récursif $m = B_p(m_1, m_2)$]: On suppose la propriété vrai pour $m_1$ et $m_2$ (H.P)
+            \begin{align*}
+                o(B_p(m_1, m_2)) &= o(m_1) + o(m_2) & \text{Par construction de $o(m)$} \\
+                                &=  b(m_1) + 1 + b(m_2) + 1 & \text{Par H.P} \\
+                                &= b(m_1) + b(m_2) + 1 + 1 \\
+                                &= b(B_p(m_1, m_2)) + 1 & \text{Par construction de $b(m)$}
+            \end{align*}
+    \end{description}
+
+    \item \[ masse(m)=
+      \begin{cases}
+        masse(O_p) = p\\
+        masse(B_p(m_1, m_2)) = p + masse(m_1) + masse(m_2)
+      \end{cases}  
+    \]
+
+    \item On prend $y \in mathbb{N}$
+      \begin{description}
+        \item[Cas de base $m = O_p$]: On a bien $masse(alourdir(O_p, y)) = masse(O_{p + y}) = p + y = masse(O_p) + y$
+        \item[Cas récursif $m = B_p(m_1, m_2)$]: On suppose la propriété vrai pour $m_1$ et $m_2$ (H.P)
+            \begin{align*}
+                masse(allourdir(B_p(m_1, m_2)), y) 
+                        &= masse(B_{p + y/3}(alourdir(m_1, y/3), alourdir(m_2, y/3))) \\
+                        &= p + y/3 + masse(alourdir(m_1, y/3)) + masse(alourdir(m_2, y/3)) \\
+                        &= p + y / 3+ masse(m_1) + y / 3 + masse(m_2) + y/3 \\
+                        &= p + masse(m_1) + masse(m_2) + y \\
+                        &= masse(B_p(m_1, m_2)) + y
+            \end{align*}
+    \end{description}
+
+    \item Definition Ocaml de $masse(m)$ et $stable(m)$:
+
+        \begin{lstlisting}[frame = trBL]
+            let rec masse = function
+                | O (x) ->  x
+                | B (x, m1, m2) -> x + masse m1 + masse m2
+
+            let stable = function
+                | O (x) -> true
+                | B(x, m1, m2) -> masse m1 = masse m2 && stable m1 && stable m2
+        \end{lstlisting}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Automate
+\begin{enumerate}
+    \item \verb/(a|b|r)*babar(a|b|r)*/
+    \item Automate déterministe et complet reconaissant L:\\
+    \begin{tikzpicture}
+        \node (q0) [state,initial] at (0, 0)    {};
+        \node (q1) [state] at (1.5, 0)  {};
+        \node (q2) [state] at (3, 0)  {};
+        \node (q3) [state] at (4.5, 0)  {};
+        \node (q4) [state] at (6, 0)  {};
+        \node (q5) [state, accepting] at (7.5, 0)  {};
+
+
+        \path [-stealth, thick]
+        (q0) edge [loop above] node {a-r}   ()
+        (q1) edge [loop above] node {b}   ()
+        (q1) edge [bend left] node [below] {r}   (q0)
+        (q5) edge [loop above] node {a-b-r}   ()
+        (q2) edge [bend left = 50] node [below] {r-a}   (q0)
+        (q3) edge [bend right = 50] node [above] {b}   (q1)
+        (q3) edge [bend left = 60] node [below] {r}   (q0)
+        (q4) edge [bend right = 60] node [above] {b}   (q3)
+        (q4) edge [bend left = 70] node [below] {a}   (q0)
+        
+        (q0) edge node [above] {b}   (q1)
+        (q1) edge node [above] {a}   (q2)
+        (q2) edge node [above] {b}   (q3)
+        (q3) edge node [above] {a}   (q4)
+        (q4) edge node [above] {r}   (q5)
+        ;
+    \end{tikzpicture}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Langages reconnaissables
+\begin{enumerate}
+    \item $((0((\leq(0|1))|<1))|(1\leq1))$
+    \item fusions:\\
+    \begin{tikzpicture}
+        \node (q0) [state,initial] at (0, 0)    {0};
+        \node (q1) [state] at (1.5, 1)  {1};
+            \node (q3) [state] at (3, 2)  {3};
+            \node (q4) [state] at (3, 0)  {4};
+                \node (q5) [state, accepting] at (4.5, 0)  {5};
+        \node (q2) [state] at (1.5, -1)  {2};
+
+        \path [-stealth, thick]
+        (q0) edge node [above] {0} (q1)
+        (q0) edge node [below] {1} (q2)
+        (q1) edge node [above] {$\leq$} (q3)
+        (q2) edge node [below] {$\leq$} (q4)
+        (q1) edge node [below] {$<$} (q4)
+        (q0) edge node [below] {1} (q2)
+        (q4) edge node [below] {1} (q5)
+        (q3) edge [bend left] node [above] {0} (q5)
+        (q3) edge node [below] {1} (q5)
+        ;
+    \end{tikzpicture}
+
+    \item Automate pour le langage $L_2$:\\
+    \begin{tikzpicture}
+        \node (q0) [state,initial] at (0, 0)    {0};
+        \node (q1) [state] at (1.5, 1)  {1};
+            \node (q3) [state] at (3, 2)  {3};
+            \node (q4) [state] at (3, 0)  {4};
+                \node (q5) [state, accepting] at (4.5, 0)  {5};
+                \node (q6) [state, accepting] at (3, 3.5)  {6};
+        \node (q2) [state] at (1.5, -1)  {2};
+
+        \path [-stealth, thick]
+        (q0) edge node [above] {0} (q1)
+        (q0) edge node [below] {1} (q2)
+        (q1) edge node [above] {$\leq$} (q3)
+        (q2) edge node [below] {$\leq$} (q4)
+        (q1) edge node [below] {$<$} (q4)
+        (q0) edge node [below] {1} (q2)
+        (q4) edge node [below] {1} (q5)
+        (q3) edge node [right] {0} (q6)
+        (q3) edge node [below] {1} (q5)
+        (q5) edge [bend left=50] node [below] {$\leq$} (q4)
+        (q6) edge [bend right=50] node [above left] {$\varepsilon$} (q1)
+        ;
+    \end{tikzpicture}
+
+    \item On suppose que $L_3$ est reconnaissable. On a $N \in \mathbb{N}$ telle que:\\
+        $1^N \leq 1^N \in L_3$ on décompose ce mot en $m_0mm_1$
+        \begin{align*}
+            m_0 &= \varepsilon \\
+            m &= 1^N \\
+            m_4 &= \leq 1^N
+        \end{align*}
+
+        On décompose $m = 1^N = 1^{n_1} 1^{n_2} 1^{n_3} = m_1m_2m_3$ avec $n_2 \neq 0$ 
+        et $n_1 + n_2 + n_3 = N$. 
+        
+        Par le lemme de l'étoile on a $m_0m_1{m_2}^2m_3m_4 \in L_3$ 
+        donc $1^{n_1 + 2n_2 + n_3} \leq 1^N \in$ or $n_1 + 2n_2 + n_3 = N + n_2 > N$
+        
+        On a donc une contradiction donc $L_3$ n'est pas reconnaissable.
+\end{enumerate}
+\end{exo}
+\newpage
+\begin{exo} Grammaires
+\begin{enumerate}
+    \item $G_b$:\\
+    \begin{tikzpicture}
+        \node [align=center] (instr1) at (0, 0) {instr};
+        \node [align=center] (;1) at (0.5, -0.05) {$;$};
+        \node [align=center] (instr2) at (1, -0) {instr};
+        \node [align=center] (;2) at (1.5, -0.05) {$;$};
+        \node [align=center] (instr3) at (2, -0) {instr};
+        \node [align=center] (;3) at (2.5, -0.05) {$;$};
+        \node [align=center] (instr4) at (3, 0) {instr};
+        \node [align=center] (;4) at (3.5, -0.05) {$;$};
+
+        \node [align=center] (seq1) at (0, 1) {seq};
+        \draw (instr1) -- (seq1);
+
+        \node [align=center] (seq2) at (1, 1) {seq};
+        \draw (instr2) -- (seq2);
+
+        \node [align=center] (seq3) at (2, 1) {seq};
+        \draw (instr3) -- (seq3);
+
+        \node [align=center] (seq4) at (3, 1) {seq};
+        \draw (instr4) -- (seq4);
+
+        \node [align=center] (seq5) at (0.25, 2) {seq};
+        \draw (;1) -- (0.5, 1.5) -- (0, 1.5) -- (seq1.north);
+        \draw (0.25, 1.5) -- (seq5.south);
+
+        \node [align=center] (seq6) at (1.25, 2) {seq};
+        \draw (;2) -- (1.5, 1.5) -- (1, 1.5) -- (seq2.north);
+        \draw (1.25, 1.5) -- (seq6.south);
+
+        \node [align=center] (seq7) at (2.25, 2) {seq};
+        \draw (;3) -- (2.5, 1.5) -- (2, 1.5) -- (seq3.north);
+        \draw (2.25, 1.5) -- (seq7.south);
+
+        \node [align=center] (seq8) at (3.25, 2) {seq};
+        \draw (;4) -- (3.5, 1.5) -- (3, 1.5) -- (seq4.north);
+        \draw (3.25, 1.5) -- (seq8.south);
+
+        \node [align=center] (seq9) at (0.75, 3) {seq};
+        \draw (seq5) -- (0.25, 2.5) -- (1.25, 2.5) -- (seq6) ;
+        \draw (0.75, 2.5) -- (seq9.south);
+
+        \node [align=center] (seq10) at (2.75, 3) {seq};
+        \draw (seq7) -- (2.25, 2.5) -- (3.25, 2.5) -- (seq8) ;
+        \draw (2.75, 2.5) -- (seq10.south);
+
+        \node [align=center] (seq11) at (1.75, 4) {seq};
+        \draw (seq9) -- (0.75, 3.5) -- (2.75, 3.5) -- (seq10);
+        \draw (1.75, 3.5) -- (seq11);
+    \end{tikzpicture}
+
+    $G_c$:\\
+    \begin{tikzpicture}
+        \node [align=center] (instr1) at (0, 0) {instr};
+        \node [align=center] (;1) at (0.5, -0.05) {$;$};
+        \node [align=center] (instr2) at (1, -0) {instr};
+        \node [align=center] (;2) at (1.5, -0.05) {$;$};
+        \node [align=center] (instr3) at (2, -0) {instr};
+        \node [align=center] (;3) at (2.5, -0.05) {$;$};
+        \node [align=center] (instr4) at (3, 0) {instr};
+        \node [align=center] (;4) at (3.5, -0.05) {$;$};
+        \node [align=center] (epsi) at (4, 0) {$\varepsilon$};
+
+        \node [align=center] (seq1) at (4, 0.5) {seq};
+        \node [align=center] (seq2) at (3.5, 1.5) {seq};
+        \draw (epsi) -- (seq1);
+        \draw (instr4) -- (3, 1) -- (3.5, 1) -- (;4.north);
+        \draw (seq1) -- (4, 1) -- (3.5, 1) -- (seq2); 
+
+        \node [align=center] (seq3) at (2.5, 2.5) {seq};
+        \draw (instr3) -- (2, 2) -- (2.5, 2) -- (;3.north);
+        \draw (seq2) -- (3.5, 2) -- (2.5, 2) -- (seq3);
+
+        \node [align=center] (seq4) at (1.5, 3.5) {seq};
+        \draw (instr2) -- (1, 3) -- (1.5, 3) -- (;2.north);
+        \draw (seq3) -- (2.5, 3) -- (1.5, 3) -- (seq4);
+
+        \node [align=center] (seq5) at (0.5, 4.5) {seq};
+        \draw (instr1) -- (0, 4) -- (0.5, 4) -- (;1.north);
+        \draw (seq4) -- (1.5, 4) -- (0.5, 4) -- (seq5);
+    \end{tikzpicture}
+
+    $G_e$:\\
+    \begin{tikzpicture}
+        \node [align=center] (instr1) at (0, 0) {instr};
+        \node [align=center] (;1) at (0.5, -0.05) {$;$};
+        \node [align=center] (instr2) at (1, -0) {instr};
+        \node [align=center] (;2) at (1.5, -0.05) {$;$};
+        \node [align=center] (instr3) at (2, -0) {instr};
+        \node [align=center] (;3) at (2.5, -0.05) {$;$};
+        \node [align=center] (instr4) at (3, 0) {instr};
+        \node [align=center] (;4) at (3.5, -0.05) {$;$};
+
+        \node [align=center] (seq1) at (3.25, 1) {seq};
+        \draw (instr4) -- (3, 0.5) -- (3.5, 0.5) -- (;4);
+        \draw (3.25, 0.5) -- (seq1);
+
+        \node [align=center] (seq2) at (2.5, 2) {seq};
+        \draw (instr3) -- (2, 1.5) -- (2.5, 1.5) -- (;3);
+        \draw (seq2) -- (2.5, 1.5) -- (3.25, 1.5) -- (seq1);
+
+        \node [align=center] (seq3) at (1.5, 3) {seq};
+        \draw (instr2) -- (1, 2.5) -- (1.5, 2.5) -- (;2);
+        \draw (seq3) -- (1.5, 2.5) -- (2.5, 2.5) -- (seq2);
+
+        \node [align=center] (seq4) at (0.5, 4) {seq};
+        \draw (instr1) -- (0, 3.5) -- (0.5, 3.5) -- (;1);
+        \draw (seq4) -- (0.5, 3.5) -- (1.5, 3.5) -- (seq3);
+    \end{tikzpicture}
+
+    \item $G_a$ et $G_b$ sont ambigues.
+    \item $G_b$ et $G_e$ décrivent le même langage
+    \item \begin{itemize}
+        \item $G_a$: \verb/instr/
+        \item $G_c$: \verb/instr;/
+        \item $G_d$: \verb/;instr/
+    \end{itemize}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Interprétation
+\begin{enumerate}
+    \item \begin{itemize}
+        \item \verb/let x = 1 + 2 in e/: (e la suite):
+                $\rho = \left\{(``x'', Add(1, 2))\right\}$
+        \item \verb/let y = 1 + 4 in e/: (e la suite):
+        $\rho = \left\{(``x'', Add(1, 2)); (``y'', Add(1, 4))\right\}$
+        \item \verb/eval(Add(Var("x")), eval(Var("x")))/ 
+        $\rho = \left\{(``x'', Add(1, 2)); (``y'', Add(1, 4))\right\}$
+        \item \verb/eval(Var("x"))/
+        $\rho = \left\{(``x'', Cst(3)); (``y'', Add(1, 4))\right\}$
+        \item \verb/eval(Var("x"))/ $2^{\text{ème}}$ évaluation
+        $\rho = \left\{(``x'', Cst(3)); (``y'', Add(1, 4))\right\}$
+        \item $\rho = \left\{\right\}$
+    \end{itemize}
+    L'addition 1+2 est réalisée 1 fois\\
+    L'addition 1+4 n'est pas réalisée\\
+    C'est la comportement de la stratégie de  \textit{l'appel par nécessité}.
+
+    \item Le \textbf{replace} sert à remplacer l'encienne valeur de x 
+        par la nouvelle valeur évaluée ce qui permet de ne pas refaire de calcule
+        à la deuxième évalutation de la variable. Si on l'enlève la variable sera
+        juste réévaluée à chaque fois qu'on l'utilise. 
+    \newpage
+    \item Le \textbf{remove} sert à suprimer x de la table ce qui empêche d'y 
+        accéder quand la variable n'est plus à notre portée. 
+        Si on enlève cette expression les variables ne se supprimeront plus de la hastable. 
+        Mais comme la variable est évaluée quand elle est utilisée pour 
+        la première fois il n’y aura pas de problème.
+        La table sera juste remplie plus rien.
+        
+        Exemple:
+        \begin{lstlisting}[frame = trBL]
+            let x = 
+                let x = 3 in
+                x + 2
+            in 
+            x + x
+        \end{lstlisting}
+        donne bien 10
+
+    \item définition de \verb/eval: env -> expr -> epxr * env/
+    \begin{lstlisting}[frame = trBL]
+        let rec eval env = function
+            | Cst n -> (n, env)
+            | Add(e1, e2) ->
+                let v1, env1 = eval env e1 in
+                let v2, env2 = eval env1 e2 in
+                (v1 + v2, env2)
+            | Var x ->
+                let e = find env in
+                let v, env' = eval env e in
+                (v, env')
+            | Let(x, e1, e2) ->
+                let env' = add x e1 in
+                let v, env' = eval e2, env' in
+                (v, env)
+    \end{lstlisting}
+\end{enumerate}
+\end{exo}
+    
+\end{document}

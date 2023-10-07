@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#fonction qui crée et complète un dossier avec src et out                                                                             
+creationDossier() {
+    #si le dossier n'existe pas                                                                                                       
+    mkdir -p $1
+
+    #si src n'existe pas                                                                                                              
+    mkdir -p $1/src
+
+    #si out n'existe pas                                                                                                              
+    mkdir -p $1/out
+}

@@ -1,0 +1,56 @@
+﻿ArrayList in Java
+
+
+lien Oracle : ArrayList
+
+
+	Cela fait depuis la version 1.2 (année 1998) que la classe ArrayList a fait son apparition. Comme son nom l’indique une arrayList est une liste (List) implémenté à l’aide d’un tableau d’éléments (array). Elle se trouve dans le package : java.util
+
+
+
+
+Caractéristique :
+
+L’arrayList est une extension de la classe AbstractList<E>
+et elle implémente :
+Serializable, Cloneable, Iterable<E>, RandomAccess, Collection<E>, List<E>
+Lors de la création de l’arrayList, il faut spécifier le type d’élément que prend celle ci.
+//ArrayList<String> list ;
+Comme par exemple String.
+La structure ne peut pas prendre des types primitifs. Il faut donc utilisé des types de substitutions (type d’enrobage) Comme par exemple int→Integer.
+il y a trois constructeurs :
+un vide→//ArrayList()
+un constructeur de copie→//ArrayList(Collection< ? Extends E> c)
+un constructeur qui prend une capacité→//ArrayList(int capacite)
+On y retrouve y plusieurs fonction d’ajout
+//add(E e)
+//addAll(Collection< ? Extends E> c)
+et de suppression
+//remove(int index)
+//removeAll(Collection<?> c)
+ainsi que des algorithmes de trie
+//sort(Comparator<? super E> c)
+Si la capacité du tableau a été atteinte et que l’on ajout un élément, on peut contrairement à un tableau à taille fixe ajuster la taille de celui ci.
+
+Cas dans lesquels on utilise les arrayLists :
+L’arrayList est utilisé quand il faut manipulé un certain nombre de données. Ou quand le nombre d’éléments à manipulé est variable sans de trop grosse variation. 
+
+Avantages :
+L’un de ses plus gros avantage est la vitesse d’accessibilité à un de ses éléments. Car la liste étant un tableau, tous ses éléments se suivent consécutivement en mémoire se qui permet une recherche beaucoup plus simple et rapide. L’autre avantage est que la présence de fonction ainsi que le fait de ne pas s’occuper de la taille du tableau facilite l’utilisation à l’utilisateur.
+
+Désavantages :
+
+
+
+
+
+
+
+
+
+
+
+création d’objet mort (espace mémoire). Voir sur arteoz
+
+conclusion :
+On peut donc en conclure que les arrayLists sont des tableaux dynamiques.

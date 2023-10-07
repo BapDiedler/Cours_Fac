@@ -1,0 +1,9 @@
+Maya m1 = new Maya(7) ;
+Maya m2 = m1 ;
+Maya m3 = new Maya(m1) ;
+
+Tsuki t1 = new Tsuki(0) ;
+Ysuka y1 = new Ysuka('f', m3, new Tsuki(45)) ;
+t1.setY(y1) ;
+
+Tsuki t2 =new Tsuki(t1) ;

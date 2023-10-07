@@ -1,0 +1,63 @@
+%\documentclass[11pt,answers]{exam}
+\documentclass[11pt]{exam}
+\input{../laTEX/tdmacros}
+\usepackage{eurosym}
+
+\usepackage{xspace}% espace intelligent pour les macros
+\usepackage{../laTEX/macro}
+
+\begin{document}
+
+\noindent Université de Lorraine\hfill 
+L1 M-I-SPI\bigskip
+
+\begin{center}
+{\large \bf Outils système}
+\smallskip
+
+{\large \bf TP 3}
+\end{center}
+\doublerulefill
+
+Tout ce TP doit être fait avec vim.
+
+\exercice{Les bases}
+	\begin{enumerate}
+		\item Faites un make générique pour java. Il s'utilisera de trois façon :
+		\begin{itemize}
+			\item {\tt make nomClass} et compilera avec javac la classe correspondante.
+			\item {\tt make test nomClass}. Il compilera avec javac la classe correspondante et la testera (compilera et lancera le fichier {\tt test/TestnomClass.java}).
+			\item {\tt make}. Il compilera et lancera le fichier principal {\tt Main.java}.
+		\end{itemize}
+		Vous pouvez tester votre {\tt makefile} avec un de vos projets java ou avec celui fourni sur Arche.
+		
+		\item Prenez connaissance du projet C disponible sur Arche. Deux modules (affichage et jouer), un fichier main et un header seul. 
+		
+		Les modules sont à compiler avec l'option {\tt -c} de {\tt gcc} (permettant de compiler des fichiers sans {\tt main}).
+		
+		Le main est à compiler avec les fichiers objets des modules ({\tt gcc main.c affichage.o jouer.o -o main}).
+		
+		{\tt doxygen} est une commande permettant de créer une documentation. Il s'utilise sur le fichier executable final.
+		
+		Votre make doit :
+		\begin{itemize}
+			\item Pouvoir compiler les modules (et tous les modules tant qu'à faire)
+			\item Compiler le main
+			\item créer la documentation
+			\item Nettoyer le dossier en enlevant tous les fichiers objets (pas le fichier exécutable du main).
+			\item Exporter l'exécutable et la bibliographie sous format zippé.
+		\end{itemize}
+		\item Faire un make pour les fichiers tex. Vous en trouverez un sur internet. Il génère plusieurs fichiers auxiliaires. Ajouter une commande à l'application de la règle utilisée pour générer {\tt fichierTex.tex} qui supprime tous les fichiers {\tt fichierTex.*} sauf le {\tt .tex} et le {\tt .pdf}.
+	\end{enumerate}
+	
+\exercice{Make automatique}
+	 Créez une commande {\tt touchMake} qui attend deux arguments : {\tt nomFichier}, {\tt langage}. Elle crée un nouveau fichier {\tt nomFichier}. Si l'argument {\tt langage} est présent, elle ajoute une règle au {\tt makefile}, en ayant préalablement listé les fichiers objets dont elle a besoin en cas de {\tt c}, (les {\tt \#include "..."}). S'il n'y a pas de {\tt makefile} elle doit le créer.
+	 
+	 Vous pouvez aussi rajouter le texte de base du langage (la classe en java, le main et {\tt \#include <stdio.h>,\#include <stdlib.h>} en c etc...)
+	 
+	 Les langages acceptés seront : {\tt c}, {\tt java}, {\tt python}, {\tt tex}.
+	
+	
+\exercice{Make à la main}
+	Faites une commande {\tt makeFST} mimant le make : elle lira un fichier {\tt makefile} donnée en argument (ou nommé {\tt makefile} par défault), le lira en repérant les règles. Pour chaque règle, elle cherchera les fichiers demandés (cibles et  fichiersRequis). Si les fichiers requis sont plus jeunes que la cible, elle exécutera le commande demandé. Sinon elle appliquera les règles à ces fichiers requis si besoin.
+\end{document}

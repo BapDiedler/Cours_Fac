@@ -1,0 +1,249 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\sc Feuille d'exercice 3
+\end{center}
+
+% EX 1
+\begin{exo} Récurrence sur les formules
+\begin{enumerate}
+    \item \begin{align*}
+        simpl(x \wedge y \Rightarrow z) &= \neg simpl(x \wedge y) \vee z \\
+                            &= \neg(\neg(\neg x \vee \neg y)) \vee z
+        \end{align*}
+
+    \item \begin{align*}
+        ht(P) &= 0   & \text{si P atomique} \\
+        ht(\neg(P)) &= 1 + ht(P) \\
+        ht(P \circ Q) &= 1 + \max(ht(P), ht(Q)) & \circ \in \left\{\vee, \wedge, \Rightarrow\right\}  
+    \end{align*}
+
+    \item Montrons que pour toutes formules P, $simpl(P)$ ne contient pas le symbole $\Rightarrow$:\\
+        $\varphi(n)$: Pour toute formule $(P)$, Si $ht(P)$ = n alors $simpl(P)$ ne contine pas $\Rightarrow$
+
+    \begin{description}
+        \item[$\bullet$ cas de bases:] $\varphi(0)$: Si $ht(P) = 0$ $simpl(P)$ ne 
+        rajoute jamais le symbole '$\Rightarrow$'
+
+        \item[$\bullet$ cas de récursif:] Supossons $\varphi(n)$ vrai.
+
+            Prenons P de hauteur $n + 1$: 
+            
+            3 cas: $C = \left\{P \wedge Q, P \vee Q, P \Rightarrow Q \right\}$ 
+
+            Si $P' \in C$ d'après $\varphi(n)$ $simpl(P)$ et $simpl(Q)$ ne contient pas
+            de symbole '$\Rightarrow$' (car P et Q sont de hauteur n) or $simpl(P')$ ne rajout jamais le symbole '$\Rightarrow$'
+            donc $P'$ ne contient pas le symbole '$\Rightarrow$'
+    \end{description}
+
+    \item Montrond par récurrence structurelle que $simpl(P)$ ne contient 
+    pas de $\Rightarrow$:
+    
+    \begin{description}
+        \item[$simple(\top)$]: $a \vee \neg a$
+        \item[$simple(\bot)$]: $\neg (a \vee \neg a)$
+        \item[$simpl(p)$]: p
+    \end{description}
+
+    Supposons la propritété vrai pour $P_1$ et $P_2$
+    \begin{description}
+        \item[$simpl(\neg P_1)$]: $\neg (simpl(P_1))$ vrai car $simpl(P_1)$ ne 
+        contient pas de $\Rightarrow$.
+        \item[$simpl(P_1 \wedge P_2)$]: $\neg (\neg simpl(P_1) \vee 
+                \neg simpl(P_2))$ vrai par H.P
+        \item[$simpl(P_1 \vee P_2)$]: $simpl(P_1) \vee simpl(P_2)$ vrai par H.P
+        \item[$simpl(P_1 \Rightarrow P_2)$]: $\neg simpl(P_1) 
+            \vee simpl(P_2)$ vrai par H.P
+    \end{description}
+
+    \item Voir question 3.
+\end{enumerate}
+\end{exo}
+
+% EX 2
+\begin{exo} Structure arborescente des formules, définition récursive. \\
+    $a := \neg P \Rightarrow Q \vee \neg(P \vee R)$
+\begin{enumerate}
+    \item $(\neg P) \Rightarrow (Q \vee \neg(P \vee R))$
+    \item forme arborescente: \\
+    \begin{tikzpicture}[level distance=1cm]
+        \node {$\Rightarrow$}
+            child {
+                node {$\neg$} 
+                    child {node {$P$}}}
+            child {
+                node {$\vee$}
+                    child {node {$Q$}}
+                child {node {$\neg$} 
+                    child{ node{$\vee$}
+                        child{ node {$P$}}
+                        child{ node {$R$}}
+                        }
+                }
+        };
+    \end{tikzpicture}
+    
+    \item A est vrai quand: P est vrai ou quand Q est vrai ou P et R Faux.
+    \item $P \wedge \neg Q$
+    \item \begin{enumerate}
+        \item $neg(A)$ est vrai quand: P est faut et Q est faut et P ou R est vrai.
+        \item \begin{align*}
+            neg(\top) &= \bot \\
+            neg(\bot) &= \top \\
+            neg(p) &= \neg p & \text{p une variable propositionnelle} \\
+            neg(\neg P) &= P \\
+            neg(P \wedge Q) &= neg(P) \vee neg(Q)\\
+            neg(P \vee Q) &= neg(P) \wedge neg(Q)\\
+            neg(P \Rightarrow Q) &= P \wedge neg(Q)\\
+        \end{align*}
+        \item évident ($\neg (P \wedge Q) \Leftrightarrow \neg P \vee \neg Q$) pareil pour $\vee$ \\
+            $\neg(P \Rightarrow Q) \Leftrightarrow (P \wedge \neg Q)$
+    \end{enumerate}
+\end{enumerate}
+\end{exo}
+
+% EX 3
+\begin{exo}Sous formules
+\begin{enumerate}
+    \item $\neg(p \vee (q \wedge r)) \Rightarrow (p \wedge q) \\
+         \left\{p \wedge q, q \wedge r,
+            p \vee (q \wedge r),
+            \neg(p \vee(q \wedge r)),\neg(p \vee(q \wedge r)) \Rightarrow (p \wedge q)
+            , p, q, r\right\}$
+    \item \begin{align*}
+        sf(\top) &= \left\{\right\} \\
+        sf(\bot) &= \left\{\right\} \\
+        sf(p) &= \left\{p\right\} \\
+        sf(\neg P) &= sf(P) \cup \left\{\neg P\right\}  \\
+        sf(P \wedge Q) &= sf(P) \cup sf(Q) \cup \left\{P \wedge Q\right\}\\
+        sf(P \vee Q) &= sf(P) \cup sf(Q) \cup \left\{P \vee Q\right\}\\
+        sf(P \Rightarrow Q) &= sf(P) \cup sf(Q) \cup \left\{P \Rightarrow Q\right\}\\
+    \end{align*}
+
+    \item 
+\end{enumerate}
+\end{exo}
+
+% EX 4
+\begin{exo}
+
+\end{exo}
+
+% EX 5
+\begin{exo}
+
+\end{exo}
+
+% EX 6
+\begin{exo}Modèles de relation, examen session 2 2014/15
+
+\end{exo}
+
+% EX 7
+\begin{exo}
+\begin{enumerate}
+\item $\exists x_1, \ldots , x_n, \forall x,  
+        x = x_1 \vee \ldots \vee x = x_{n}$ 
+    au plus $n - 1$ éléments
+
+\item $B_n = \forall x_1, \ldots , x_n, \exists x,  
+x \neq  x_1 \wedge \ldots \wedge x \neq  x_{n}$ 
+au plus $n - 1$ éléments
+\end{enumerate}
+\end{exo}
+
+% EX 8
+\begin{exo} La théorie des entiers de Peano: \vspace*{0.2cm}
+
+$I \models \begin{cases}
+    \forall x \neg 0 = S(x) \\
+    \forall x, y, S(x) = S(y) \Rightarrow x = y
+\end{cases}$
+\begin{enumerate}
+\item $a_n = Val_I(S^n(0))$ \\
+        $\mathfrak{D} = \left\{a_n| n \in \mathbb{N}\right\}$ \\
+    $a_n = a_p,  n < p$ n plus petit possible.
+    \begin{itemize}
+        \item $n = 0$: $Val(0) = Val(S^p(0))$ \\ avec $p > 0$
+                    $x \mapsto Val(S^{p-1}(0))$ impossible
+        \item $n > 0$: \begin{align*}
+            Val(S^n(0)) &= Val(S^p(0)) \\
+            Val(S^{n-1}(0)) &= Val(S^{p-1}(0)) \\
+            Val(S(S^{n-1}(0))) &= Val(S(S^{p-1}(0))) \\
+            Val(S^{n-1}(0)) &= Val(S^{p-1}(0))\\
+            a_{n-1} &= a_{p-1}
+        \end{align*}
+    \end{itemize}
+\item $\mathfrak{D} = \left\{0\right\} S(x) = 0$
+\item $\mathfrak{D} = \left\{0, 1\right\} S(x) = 1$ 
+\item 
+\end{enumerate}
+\end{exo}
+
+% EX 9
+\begin{exo}
+
+\end{exo}
+
+% EX 10
+\begin{exo} Logique monadique, examen 2017/18
+
+\begin{enumerate}
+\item $\tau (1) = (F, F), \tau (2) = (V, F), \tau (3) = (F, V)
+    , \tau (4) = (V, F), \tau (5) = (F, F), \tau (6) = (V, V)$
+
+\item Il peut y avoir 4 valeurs différentes dans l'interprétation N \\
+    dans une interprétation quelquconque 
+    il y a maximum 4 et minimum 1 valeurs différentes
+
+\item $val(i, A) = val(i', A)$
+    Supposon vrai $A := val(i, A) = val(i', A)$
+    \begin{itemize}      
+    \item \begin{align*}
+        val(i, \neg A) &= neg(val(i, A)) \\
+                        &= neg(val(i', A)) \\
+                        &= val(i', A)
+        \end{align*}
+    \item \begin{align*}
+        val(i, A \wedge B) &= et(val(i, A), val(i, B)) \\
+                        &= et(val(i', A), val(i', B)) \\
+                        &= val(i', A \wedge B)
+        \end{align*} pareil pour $\vee$ mais avec la fonction $ou()$
+    \item \begin{align*}
+        val(i, P(X)) = & x \mapsto i(x) \vDash P(x) \\
+                       &  x \mapsto i'(x) \vDash P(x)
+        \end{align*}
+    
+    \item \begin{align*}
+        I, i \vDash \forall x, A &\Leftrightarrow \forall d \in \mathcal{D}, I, i + \left\{x \mapsto d \right\} \vDash A \\
+                                & \Leftrightarrow \forall d \in \mathcal{D}, I, i' + \left\{x \mapsto d \right\} \vDash A 
+                                    & \text{par H.P et } i + \left\{x \mapsto d \right\} \backsimeq i' + \left\{x \mapsto d \right\} \\
+                                &\Leftrightarrow I, i' \vDash \forall x, A
+        \end{align*}
+    \end{itemize}
+
+\item \begin{enumerate}
+    \item 
+\end{enumerate}
+\end{enumerate}
+\end{exo}
+
+\end{document}

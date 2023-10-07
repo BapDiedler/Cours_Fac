@@ -1,0 +1,237 @@
+\documentclass{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={1cm, 1cm}, vmargin={2cm, 2cm}]{geometry}
+
+
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\begin{document}
+\begin{center}
+    \large\sc Feuille d'exercice 3
+    \end{center}
+
+\begin{exo} 2 * (2 * 3 + 1) * 3:
+
+    \begin{tikzpicture}
+        \node [align=center] (1) at (0, 0) {2};
+        \node [align=center] (2) at (0.5, 0) {*};
+        \node [align=center] (3) at (1, 0) {(};
+        \node [align=center] (4) at (1.5, 0) {2};
+        \node [align=center] (5) at (2, 0) {*};
+        \node [align=center] (6) at (2.5, 0) {3};
+        \node [align=center] (7) at (3.5, 0) {+};
+        \node [align=center] (8) at (4, 0) {1};
+        \node [align=center] (9) at (5.5, 0) {)};
+        \node [align=center] (10) at (6, 0) {*};
+        \node [align=center] (11) at (6.5, 0) {3};
+
+        \node [align=center] (12) at (4, 1) {A};
+        \node [align=center] (13) at (4.5, 1) {M'};
+        \node [align=center] (14) at (4.5, 0.25) {$\varepsilon$};
+        \draw (13) -- (14);
+        \draw (8) --  (12);
+        \draw (12) -- (4, 1.5) -- (4.5, 1.5) -- (13);
+        \node [align=center] (15) at (4.25, 2) {M};
+        \draw (4.25, 1.5) -- (15);
+
+        \node [align=center] (16) at (5, 2) {E'};
+        \node [align=center] (17) at (5, 1) {$\varepsilon$};
+        \draw (16) -- (17);
+        \draw (7) -- (3.5, 2.5) -- (4.25, 2.5) -- (15);
+        \draw (4.25, 2.5) -- (5, 2.5) -- (16);
+        \node [align=center] (18) at (4.5, 3) {E'};
+        \draw (4.5, 2.5) -- (18);
+
+        \node [align=center] (12) at (2.5, 1) {A};
+        \node [align=center] (13) at (3, 0.25) {$\varepsilon$};
+        \node [align=center] (14) at (3, 1) {M'};
+
+        \draw (6) -- (12);
+        \draw (13) -- (14);
+        \draw (5) -- (2, 1.5) -- (2.5, 1.5) -- (12);
+        \draw (2.5, 1.5) -- (3, 1.5) -- (14);
+        \node [align=center] (15) at (2.5, 2) {M'};
+        \draw (2.5, 1.5) -- (15);
+        \node [align=center] (16) at (1.5, 1.5) {A};
+        \draw (4) -- (16);
+        \draw (16) -- (1.5, 2.5) -- (2.5, 2.5) -- (15);
+        \node [align=center] (17) at (2, 3) {M};
+        \draw (2, 2.5) -- (17);
+
+        \draw (17) -- (2, 3.5) -- (4.5, 3.5) -- (18);
+        \node [align=center] (18) at (3.25, 4) {E}; 
+        \draw (3.25, 3.5) -- (18);
+        \draw (3) -- (1, 4.5) -- (3.25, 4.5) -- (18);
+        \draw (3.25, 4.5) -- (5.5, 4.5) -- (9);
+        \node (0) at (3.25, 5) {A};
+        \draw (3.25, 4.5) -- (0);
+
+        \node [align=center] (12) at (7, 4) {M'};
+        \node [align=center] (13) at (7, 3) {$\varepsilon$};
+        \draw (12) -- (13);
+        \node (14) at (6.5, 4) {A};
+        \draw (11) -- (14) -- (6.5, 4.5) -- (7, 4.5) -- (12);
+        \draw (10) -- (6, 4.5) -- (6.5, 4.5);
+        \node [align=center] (14) at (6.5, 5) {M'};
+        \draw (6.5, 4.5) -- (14);
+
+        \draw (0) -- (3.25, 5.5) -- (6.5, 5.5) -- (14);
+
+        \draw (2) -- (0.5, 5.5) -- (3.25, 5.5);
+        \node (15) at (3.5, 6) {M'};
+        \draw (15) -- (3.5, 5.5);
+
+        \node (16) at (0, 6) {A};
+        \draw (1) -- (16) -- (0, 6.5) -- (3.5, 6.5) -- (15);
+        \node [align=center] (17) at (1.75, 7) {M};
+        \draw (1.75, 6.5) -- (17);
+        \node [align=center] (18) at (7.5, 7) {E'};
+        \node [align=center] (19) at (7.5, 6.25) {$\varepsilon$};
+        \draw (19) -- (18) -- (7.5, 7.5) -- (1.75, 7.5) -- (17);
+        \node (20) at (4.625, 8) {E};
+        \draw (20) -- (4.625, 7.5);
+    \end{tikzpicture}
+\end{exo}
+
+\begin{exo} Gramaires et associativité
+\begin{enumerate}
+    \item Les deux gramaires qui décrivent des langages différents sont $G_2$ et $G_3$
+        \begin{itemize}
+            \item $G_2$ force l'utilisation de parenthèse à enchaînement d'adition ou de multiplication.
+            \item $G_4$ interdit toutes les parenthèse supreflues.
+        \end{itemize}
+    \item  flemme
+    \item On peut ajouter $E \rightarrow E - M$ dans $G_0$ ou $G_1$
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Analyse ascendante
+\begin{enumerate}
+  \item $(1 + 2) + (3 + 4)$\\
+    \begin{tabular}{| l | r | l |}
+      \hline
+      Pile & Entée & Action \\
+      \hline
+      $\varepsilon$ & $(1 + 2) + (3 + 4)$ & S \\ 
+      $($ & $1 + 2) + (3 + 4)$ & S\\
+      $(1$ & $ + 2) + (3 + 4)$ & $R[E \to n]$\\
+      $(E$ & $ + 2) + (3 + 4)$ & S\\
+      $(E + $ & $ 2) + (3 + 4)$ & S\\
+      $(E + 2$ & $) + (3 + 4)$ & $R[E \to n]$\\
+      $(E + E$ & $) + (3 + 4)$ & $R[E \to E + E]$\\
+      $(E$ & $) + (3 + 4)$ & S\\
+      $(E)$ & $ + (3 + 4)$ & $R[E \to (E)$\\
+      $E$ & $+ (3 + 4)$ & S\\
+      $E + $ & $(3 + 4)$ & S\\
+      $E + ($ & $3 + 4)$ & S\\
+      $E + (3$ & $ + 4)$ & $R[E \to n]$\\
+      $E + (E$ & $ + 4)$ & S\\
+      $E + (E +$ & $ 4)$ & S\\
+      $E + (E + 4$ & $)$ & $R[E \to n$\\
+      $E + (E + E$ & $)$ & $R[E \to E + E]$\\
+      $E + (E$ & $)$ & S\\
+      $E + (E)$ & $\emptyset$ & $R[E \to (E)]$\\
+      $E + E$ & $\emptyset$ & $R[E \to E + E]$\\
+      $E$ & $\emptyset$ & succès\\
+      \hline
+    \end{tabular}
+\newpage
+  \item (1 + 2)(3)\\
+    \begin{tabular}{| l | r | l |}
+      \hline
+      Pile & Entée & Action \\
+      \hline
+      $\varepsilon$ & $(1 + 2) (3)$ & S \\ 
+      $($ & $1 + 2) (3)$ & S\\
+      $(1$ & $ + 2) (3)$ & $R[E \to n]$\\
+      $(E$ & $ + 2) (3)$ & S\\
+      $(E + $ & $ 2) (3)$ & S\\
+      $(E + 2$ & $) (3)$ & $R[E \to n]$\\
+      $(E + E$ & $) (3)$ & $R[E \to E + E]$\\
+      $(E$ & $) (3)$ & S\\
+      $(E)$ & $(3)$ & $R[E \to (E)]$\\
+      $E$ & $(3)$ & échec\\
+    \hline
+    \end{tabular}
+\end{enumerate}
+\end{exo}
+    
+
+\begin{exo} Analyse descendante
+\begin{enumerate}
+  \item
+    Annulables: 
+
+    \begin{tabular}{c | c | c | c |}
+      & S & E & L\\
+      \hline
+      0. & F & F & F \\
+      1. & F & F & V \\
+      2. & F & F & V \\
+\end{tabular}
+
+    \begin{align*}
+      Permier(S) &= Permier(E)\\
+      Premier(E) &= \left\{sym, (\right\}\\
+      Permier(L) &= Permier(E)
+    \end{align*}
+
+    \begin{tabular}{c|c|c|c|}
+      & S & E & L \\
+      \hline
+      0. & $\emptyset$ & $\emptyset$ & $\emptyset$ \\
+      1. & $\emptyset$ & sym, (& $\emptyset$ \\
+      2. & sym, ( & sym, ( & sym, ( \\
+      3. & sym, ( & sym, ( & sym, ( \\
+      \hline
+    \end{tabular}
+
+    \begin{align*}
+      Suivants(S) &= \emptyset \\
+      Suivants(E) &= \left\{\#\right\} \cup Premier(L) 
+                          \cup Suivants(L)\\
+      Suivants(E) &= \left\{)\right\} \cup Suivants(L)\\
+    \end{align*}
+
+  \begin{tabular}{c|c|c|c|}
+      & S & E & L \\
+      \hline
+      0. & $\emptyset$ & $\emptyset$ & $\emptyset$ \\
+      1. & $\emptyset$ & \#, sym, ( & ) \\
+      2. & $\emptyset$ & \#, sum, (, ) & ) \\
+      3. & $\emptyset$ & \#, sym, (, ) & ) \\
+      \hline
+    \end{tabular}
+
+  \item Table LL(1):
+
+    \begin{tabular}{c|c|c|c|c|}
+      & sym & ( & ) & \# \\
+      \hline
+      S & E \# & E \# & & \\
+      \hline
+      E & sym & ( L ) & & \\
+      \hline
+      L & E L & EL & $\varepsilon$ & \\
+      \hline
+    \end{tabular}
+
+\end{enumerate}
+\end{exo}
+\end{document}

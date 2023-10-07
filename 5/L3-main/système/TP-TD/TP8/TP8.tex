@@ -1,0 +1,119 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[ a4paper, hmargin={1cm, 1cm}, vmargin={2cm, 2cm}]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+\title{\textbf{Systèmes de fichiers et disques}}
+\date{}
+\author{Valeran MAYTIE}
+
+\begin{document}
+\maketitle
+
+\begin{exo} Exercice de cours
+\begin{itemize}
+  \item Un code code correcteur est une fonction qui peremt 
+    de détecter et de corriger des erreurs.
+
+    Il est souvent basé sur la redondance d'information
+
+  \item L'emplacement d'un bloc est défini par son: disque, piste, secteur
+
+  \item Avantage: Temps de traitement souvent très bon
+
+    Inconvénient: Pas forcément optimal, Risque de famine
+
+  \item Avantages: Temps de traitement souvent très bon, Pas de famine
+    
+    Inconvénient: Parcours inutiles vers les bords, Moin de cahnce d'avoir des
+    cylindres près du bord
+
+\end{itemize}
+\end{exo}
+
+\begin{exo}Tailles de fichiers
+\begin{enumerate}
+  \item Pour un bloc pointé par une adresse indirect on peut mettre 
+    ($1024 / 4 = 256$) pointeurs
+  \begin{itemize}
+    \item 12Ko pour le pointeur simple
+
+    \item 256Ko pour les pointeurs indirect simple
+
+    \item $256 \times 256$Ko pour les pointeurs indirect double
+
+    \item $256 \times 256 \times 256$Ko pour les pointeurs indirect triple
+  \end{itemize}
+
+    Donc en tout on peut stocker $12 + 256 + 256^2 + 256^3 = 16843020$Ko 
+    (à peut près 16Go)
+
+  \item En tout on à 101 blocs
+
+    $100,000/1027 \approx 98$
+
+    On 98 blocs de donnée en tout et il faut 1 bloc pour le FCB
+    et un pour le pointeur simple qui utiliser un autre bloc et 
+    qu'il y a plus de 12 blocs à stocker.
+\end{enumerate}
+\end{exo}
+
+\begin{exo}Ordonnancement d'accès aux blocs
+\begin{enumerate}
+  \item On peut au maximum avec $2^{32}$ blocs (adresse stocké sur 32 bits)
+    On a donc $2^9 \times 2^{32} = 2$To
+
+  \item On enlève la limite de taille sur les fichiers.
+
+  \item Il y a 1 bloc d'utiliser car stocké dans le FCB (plus petit que 32o).
+
+  \item $1Mo / 512o$ = 2048 blocs
+
+    7 blocs dans les pointeurs indirect (reste 2041)
+
+    $2041 / 127 = 16.07$ donc il faut 17 blocs d'index.
+
+    On aura donc $2041 + 17 + 7 + 1 = 2066$ blocs
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Ordonnancement d'accès au blocs
+\begin{enumerate}
+  \item Somme des différence en valeur absolue:\\
+    $30+41+9+166+57+147+74+143 +100+26+81+13+225+30+20
++106+136+133+67+10 = 1614$
+
+  \item $24, 22, 13, 54, 98, 167$ (total = 165)\\
+    $188, 200, 220$ (total = 218)\\
+    $230, 245, 250, 97, 94, 93, 67, 30, 25, 20, 12$ (total = 486)
+
+  \item $24, 54, 98, 167$ (total = 143)\\
+    $188, 200, 220, 245$ (total = 221)\\
+    $250, 255, \ldots, 230$ (total = 461)
+\end{enumerate}
+\end{exo}
+
+\begin{exo}Le sustème ext4fs
+\begin{enumerate}
+  \item 
+\end{enumerate}
+\end{exo}
+
+\end{document}

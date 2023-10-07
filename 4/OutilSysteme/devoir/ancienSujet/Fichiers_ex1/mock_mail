@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ $# != 3 ]; then
+   echo " il manque des arguments pour mock_mail"
+else
+   if [ $1 == "-s" ]; then
+      t=`cat`
+      echo "le courriel ayant pour sujet $2"
+      echo "et pour contenu :"
+      echo "$t"
+      echo " a ete envoye a $3"
+   else
+      echo "Usage: mock_mail -s sujet adresse"
+   fi
+fi
+

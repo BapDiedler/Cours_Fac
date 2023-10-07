@@ -1,0 +1,5 @@
+Maya m1 = new Maya(5) ;
+Ysuka y1 = new Ysuka('y', m1, new Tsuki(10)) ;
+Tsuki t ;
+Maya m2 = new Maya(1) ;
+Ysuka y2 = new Ysuka(m2) ;

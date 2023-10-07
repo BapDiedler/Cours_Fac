@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="java">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/cartes.zip!/" />
+      <root url="jar://$PROJECT_DIR$/glaces.zip!/" />
+      <root url="jar://$PROJECT_DIR$/calc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/reseau.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

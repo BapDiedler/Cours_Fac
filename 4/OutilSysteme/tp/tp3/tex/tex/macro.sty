@@ -1,0 +1,137 @@
+
+%%% customisation de algorithm2e : mots clefs pour les algos, prompts
+%%% shell et python
+
+\usepackage[french,lined,longend,linesnumbered]{algorithm2e}
+\SetKwIF{Si}{SinonSi}{Sinon}{Si}{Alors}{Sinon si}{Sinon}{Finsi}
+\SetKwFor{Pour}{Pour}{Faire}{Finpour}
+\SetKwFor{Tq}{Tant que}{Faire}{Fintantque}
+\SetKwFor{PourCh}{Pour chaque}{Faire}{Finpourchaque}
+\SetKwRepeat{Repeter}{Répéter}{Jusqu'à}
+%\SetKwInput{Variables}{Variables}
+\SetKwBlock{Var}{Variables}{} % pour la déclaration des variables
+\SetKwBlock{Nop}{}{} % pour une barre verticale sansmot clef devant
+                     % (continuation d'un algo)
+\SetKwBlock{Typ}{Types}{} % pour la déclaration des types
+\SetKwBlock{Corps}{Début}{Fin} %délimiteurs du corps de l'algo
+\SetKwComment{tcs}{\# }{} % comm à la python/algo d'AP1
+\SetKw{IS}{\vvert{C'est a vous \$}} %invite shell
+\SetKw{IP}{\bbrouge{\tt >>>}}%invite python
+\SetKwSwitch{Selon}{Cas}{Autre}{Selon}{faire}{Cas}{Autres}{Fincas}{Finselon}
+\SetKwProg{Fon}{Fonction}{ }{Finfonction}
+
+%%% pour définir une fonction toto avec un paramètre y de type entier
+%%% et un resultat de type réel avec le truc ci-dessus, on écrit : 
+%%% \SetKwFunction{Fnto}{toto}% pour définir le nom de fonction comme
+%%%                                               un mot clef
+%%% \Fon{\Fnto{y: entier}: réel\;}{ ici le corps de la fonction}
+%%% si la fonction a des variables locales, on les déclare dans le corps
+
+%%% les programmes en python ont besoin de leur customisation
+%%% particulière : pas de ligne verticale, et des mots clefs
+%%% particuliers.
+
+\newcommand{\python}{\SetAlgoNoLine\SetStartEndCondition{ }{}{}%
+\SetKwFunction{Range}{range}%%
+\SetKw{KwTo}{in}
+\SetKwFor{For}{for}{\string:}{}
+\SetKwIF{If}{ElseIf}{Else}{if}{:}{elif}{else:}{}
+\SetKwFor{While}{while}{:}{}%
+\SetKwFor{Class}{class}{:}{}%
+\SetKwProg{Fn}{def}{\string:}{}%
+%\renewcommand{\forcond}{$i$ \KwTo\Range{$n$}}
+}
+
+%%% couleur de fond, utilisée pour les algorithmes/programmes dans les
+%%% transparents
+
+\xdefinecolor{LemonChiffon}{rgb}{1,.98,.8}
+
+%%% suite de commandes pour mes environnements d'algorithmes. Certains
+%%% commentés car virés pour moins de bazar,mais gardés au cas
+%%% où. Algocustom le fait sur un fond de couleur et dans une boîte de
+%%% largeur réglable, et algoTD le fait sans fond de couleur (pour
+%%% imprimer les sujets de TD)
+%\newcommand{\algo}[1]{\colorbox{LemonChiffon}{\begin{minipage}{.98\textwidth}\begin{algorithm}[H] \DontPrintSemicolon  #1 \end{algorithm} \end{minipage}}}
+\newcommand{\algoTD}[1]{\begin{algorithm}[H] \DontPrintSemicolon  #1 \end{algorithm}}
+\newcommand{\pythonTD}[1]{\begin{algorithm}[H] \DontPrintSemicolon \python
+    #1 \end{algorithm}}
+\newcommand{\CTD}[1]{\begin{algorithm}[H] 
+\SetStartEndCondition{ (}{)}{)}
+\SetAlgoBlockMarkers{\{}{\}}% 
+\SetKwProg{Fn}{}{}{}%
+\SetKwFunction{Main}{int main}%
+\SetKwFor{For}{for}{}{}%
+\SetKwIF{If}{ElseIf}{Else}{if}{}{elif}{else}{}%
+\SetKwFor{While}{while}{}{}%
+\SetKwRepeat{Repeat}{repeat}{until}%
+\AlgoDisplayBlockMarkers\SetAlgoNoLine%
+    #1 \end{algorithm}}
+
+%\newcommand{\demialgo}[1]{\colorbox{LemonChiffon}{\begin{minipage}{.47\textwidth}\scriptsize      \begin{algorithm}[H] \DontPrintSemicolon  #1 \end{algorithm}\end{minipage}}}
+\newcommand{\algocustom}[2]{\colorbox{LemonChiffon}{\begin{minipage}{#1
+        \textwidth}\scriptsize
+      \begin{algorithm}[H] \DontPrintSemicolon  #2 \end{algorithm}\end{minipage}}}
+\newcommand{\algoTDcustom}[2]{\begin{minipage}{#1
+        \textwidth}
+      \begin{algorithm}[H] \DontPrintSemicolon  #2 \end{algorithm}\end{minipage}}
+
+%%% des fonds de couleur pour les transparents. Couleur algorithme,
+%%% vert, rose et bleu
+\newcommand{\boutalgo}[1]{\colorbox{LemonChiffon}{#1}}
+\newcommand{\boutvert}[1]{\colorbox{red!7!green!15!white}{#1}}
+\newcommand{\boutrouge}[1]{\colorbox{red!10!white}{#1}}
+\newcommand{\boutbleu}[1]{\colorbox{blue!10!white}{#1}}
+
+%%% raccourcis pour une flèche zigzag et pour l'affectation en algo
+\newcommand{\zig}{\ensuremath{\leadsto}}
+\newcommand{\rec}{\ensuremath{\leftarrow}\xspace}
+
+
+
+%%% définitions de couleurs puis de quoi écrire de ces couleurs
+
+\colorlet{orange}{red!70!yellow}
+\colorlet{vert}{blue!40!yellow}
+\colorlet{vertclair}{red!7!green!15!white}
+\colorlet{rougeclair}{red!10!white}
+\colorlet{mauve}{blue!70!red}
+\colorlet{brouge}{red!70!blue}
+\colorlet{frouge}{red!40!black}
+\newcommand{\vvert}[1]{\textcolor{vert}{#1}}
+\newcommand{\mmauve}[1]{\textcolor{mauve}{#1}}
+\newcommand{\bbrouge}[1]{\textcolor{brouge}{#1}}
+\newcommand{\ffrouge}[1]{\textcolor{frouge}{#1}}
+\newcommand{\oorange}[1]{\textcolor{orange}{#1}}
+\newcommand{\bleu}[1]{\textcolor{structure.fg}{#1}}
+
+\usepackage{amssymb}%necessaire pour geqslant
+
+%%% pour ne pas oublier de faire les <= et >= à la française, je
+%%% redéfinis la commande
+\renewcommand{\geq}{\geqslant}
+\renewcommand{\leq}{\leqslant}
+
+%%% pour les opérateurs booléens en gras 
+\def\et{{\bf et}\xspace}
+\def\ou{{\bf ou}\xspace}
+\def\non{{\bf non}\xspace}
+\def\aand{{\bf and}\xspace}
+\def\oor{{\bf or}\xspace}
+\def\nnot{{\bf not}\xspace}
+\def\vrai{{\bf Vrai}\xspace}
+\def\faux{{\bf Faux}\xspace}
+\def\true{{\bf True}\xspace}
+\def\false{{\bf False}\xspace}
+
+%%% pour les sujets de TD, la mise en forme des exercices (au lieu de sections)
+\newcounter{ctr_exercices}
+\newcommand{\doublerulefill}{
+\rule{\textwidth}{3pt}
+\rule[3mm]{\textwidth}{0.5pt}
+}
+
+\newcommand{\exercice}[1]{
+\refstepcounter{ctr_exercices} % "ref"stepcounter pour pouvoir faire
+                               % des \ref sur le numero d'exercice
+\section*{Exercice \arabic{ctr_exercices}~\hrulefill~{#1}}}

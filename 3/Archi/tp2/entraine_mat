@@ -1,0 +1,52 @@
+.data
+	matrice:	.word 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+	ligne:		.word 2
+	colonne:	.word 5
+	nbLignes:	.word 2
+	nbColonnes:	.word 10
+
+.text
+	la $t0, matrice
+	lw $a0, ligne
+	lw $a1, colonne
+	lw $a2, nbLignes
+	lw $a3, nbColonnes
+	
+	jal posit
+	lw $a2, 0($t0)
+	move $a3, $v0
+	jal valeur
+	jal print
+	jal exit
+	
+
+#donne la position de la valeur dans tableau 
+posit:	sw $ra, -4($sp)
+	sw $a0, -8($sp)
+	sw $a1, -12($sp)
+	sw $a3, -16($sp)
+	addi $sp, $sp, -16
+	
+	addi $a0, $a0, -1
+	mul $v0, $a0, $a3
+	add $v0, $v0, $a1
+	
+	lw $a3, 0($sp)
+	lw $a1, 4($sp)
+	lw $a0, 8($sp)
+	lw $ra, 12($sp)
+	addi $sp, $sp, 16
+	jr $ra
+	
+#donne la valeur dans le tableau
+valeur:	mulu $v0, $a3, 4
+	lw $v0, matrice($v0)
+	jr $ra
+
+print:	move $a0, $v0
+	li $v0, 1
+	syscall 
+	jr $ra
+
+exit:	li $v0, 10
+	syscall 		

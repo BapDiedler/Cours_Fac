@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rm pileDejaVisite.txt pileAVisiter.txt ad-hoc.txt document.txt

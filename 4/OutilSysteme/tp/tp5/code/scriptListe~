@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#bash scriptListe https://members.loria.fr/BWrobelDautcourt/publications/
+#https://members.loria.fr/MDuflot/files/publis.html
+
+#il doit y avoir un argument
+if [ $#==1 ] ; then
+    if [ $1=="https://members.loria.fr/BWrobelDautcourt/publications/ " ] ; then
+	mkdir BWrobel
+	wget -O BWrobel/document.txt $1
+	awk 'BEGIN{RS=" "; FS="\""} /^href=.*[.]pdf/{print $2;}' BWrobel/document.txt > BWrobel/listePDF.txt
+	awk 'BEGIN{FS="\"";RS=" "} /^href=.*[.]pdf/{lastPDF=NR;} /href=.*/ && lastPDF!=NR{print $2;}' BWrobel/document.txt > BWrobel/ad-hoc.txt
+	awk 'BEGIN{RS=" "; FS="\""} /^href=.*[.]loria[.]/{print $2;}' BWrobel/document.txt  > BWrobel/visite.txt
+    else
+	mkdir MDuflot
+	wget -O MDuflot/document.txt $1
+        awk 'BEGIN{RS=" "; FS="\""} /^href=.*[.]pdf/{print $2;}' MDuflot/document.txt > MDuflot/listePDF.txt
+        awk 'BEGIN{FS="\"";RS=" "} /^href=.*[.]pdf/{lastPDF=NR;} /href=.*/ && lastPDF!=NR{print $2;}' MDuflot/document.txt > MDuflot/ad-hoc.txt
+        awk 'BEGIN{RS=" "; FS="\""} /^href=.*[.]loria[.]/{print $2;}' MDuflot/document.txt  > MDuflot/visite.txt
+    fi
+#la ligne de commande n'est pas correct
+else
+    echo "le nomnre d'argument doit être de 1"
+fi

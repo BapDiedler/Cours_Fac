@@ -1,0 +1,266 @@
+\documentclass{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage[ a4paper, hmargin={1cm, 1cm}, vmargin={2cm, 2cm}]{geometry}
+
+
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+\lstset{language=caml, texcl=true, mathescape=true}
+
+\title{Correction Examen 2021}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{exo} Rétro-ingénierie
+\begin{enumerate}
+  \item \begin{description}
+      \item[Ocaml]$(e_1 = e_2) = e_3$
+
+      \item[Python]: $(e_1 == e_2 == e_3)$ vérifie qu'ils soient tous égaux
+  \end{description}
+
+  \item \begin{description}
+    \item[Ocaml]: le type de $e_1$ et  $e_2$ doivent être similair 
+      et $e_3$ doit être de type $bool$
+
+    \item[Python]: à l'aire d'accèpter n'importe 
+      quelle combinaison de types
+  \end{description}
+\end{enumerate}
+\end{exo}
+
+\begin{exo}
+\begin{enumerate}
+  \item Grammaire G
+    \begin{lstlisting}
+        S ::= E#
+        E ::= (L)
+           |  sym
+        L ::= $\varepsilon$
+           |  E L
+    \end{lstlisting}
+
+  \item Déterminisation:\vspace{3mm} \\
+    \begin{tikzpicture}
+      \node(q0) [state, initial, rectangle] at (0, 0)
+        {$S \to \bullet E \#$};
+      \node(0) [draw, circle, fill=white, font=\footnotesize] 
+              at (q0.north west) {0};
+      \node(qf) [state, accepting, rectangle] at (3, 0)
+        {$S \to E \bullet \#$};
+      \node(1) [draw, circle, fill=white, font=\footnotesize] 
+              at (qf.north west) {1};
+      \node(q1) [state, rectangle, text width = 2cm] at (0, -2)
+        {$E \to (\bullet L)$
+        $L \to \varepsilon \bullet$};
+      \node(2) [draw, circle, fill=white, font=\footnotesize] 
+              at (q1.south west) {2};
+      \node(q2) [state, rectangle, text width = 2cm] at (3, -4)
+        {$L \to E \bullet L$
+        $L \to \varepsilon \bullet$};
+      \node(3) [draw, circle, fill=white, font=\footnotesize] 
+              at (q2.north west) {3};
+      \node(q3) [state, rectangle] at (6, -4)
+        {$L \to E L \bullet$};
+      \node(4) [draw, circle, fill=white, font=\footnotesize] 
+              at (q3.north west) {4};
+      \node(q4) [state, rectangle] at (3, -2)
+        {$E \to sym \bullet$};
+      \node(5) [draw, circle, fill=white, font=\footnotesize] 
+              at (q4.north east) {5};
+      \node(q5) [state, rectangle] at (0, -4)
+        {$E \to (L\bullet)$};
+      \node(6) [draw, circle, fill=white, font=\footnotesize] 
+              at (q5.north west) {6};
+      \node(q6) [state, rectangle] at (0, -6)
+        {$E \to (L)\bullet$};
+    \node(7) [draw, circle, fill=white, font=\footnotesize] 
+              at (q6.north west) {7};
+
+      \draw[->] (q0) -- (qf) node[above, pos=.5]{$E$};
+      \draw[->] (q0) -- (q1) node[left, pos=.5]{$($};
+      \draw[->] (q1.140) to [distance=10mm] 
+        node[left, pos=.8]{$($} (q1.150);
+      \draw[->] (q2.south) to [out=300,in=230,distance=10mm]
+        node[left, pos=.8] {$E$} (q2.260);
+      \draw[->] (q1.south) -- (q2.west) node[above, pos=.5]{$E$};
+      \draw[->] (q2.north) -- (q1.east) node[below, pos=.5]{$($};
+      \draw[->] (q2) -- (q4) node[right, pos=.5]{$sym$};
+      \draw[->] (q2) -- (q3) node[below, pos=.5]{$L$};
+      \draw[->] (q1) -- (q4) node[above, pos=.5]{$sym$};
+      \draw[->] (q0) -- (q4) node[above, pos=.5]{$sym$};
+      \draw[->] (q1) -- (q5) node[left, pos=.5]{$L$};
+      \draw[->] (q5) -- (q6) node[left, pos=.5]{$)$};
+    \end{tikzpicture}
+
+  \item Il peut y avoir des conflits (reduction/transition) pour les blocs
+    avec la règle $L \to \varepsilon \bullet$
+
+    Si le prochain symbole est un symbole ou une parenthèse
+
+    Exemple: $(L)$
+
+  \item Table:\\
+    \begin{tabular}[c]{l|| c|c|c|c || c | c | c ||}
+      & \multicolumn{4}{ c ||}{Action} & \multicolumn{3}{c ||}{Sauts} \\
+      & \# & ( & ) & sym & S & E & L \\
+      \hline
+    0 &    & 2 &   & 5   &   & 1 &   \\
+      \hline
+    1 & OK &   &   &     &   &   &   \\
+      \hline
+    \multirow{2}{*}{2} & & 2 & & 5 & & 3 & 6 \\
+      & \multicolumn{4}{ c ||}{$L \prec \varepsilon$} & & & \\
+      \hline
+    \multirow{2}{*}{3} &   & 2 &   & 5    &   & 3 & 4 \\
+      & \multicolumn{4}{c ||}{$L \prec \varepsilon$} & & & \\
+      \hline
+    4 & \multicolumn{4}{c ||}{$L \prec EL$} & & & \\
+      \hline
+    5 & \multicolumn{4}{c ||}{$E \prec sym$} & & & \\
+      \hline
+    6 &   &   & 7 & & & & \\
+      \hline
+    7 & \multicolumn{4}{c ||}{$E \prec (L)$} & & & \\
+      \hline
+    \end{tabular}
+
+  \begin{table}
+    \begin{subtable}[c]{0.5\textwidth}
+      \centering
+        \begin{tabular}{l|c|c|c}
+            & S & E & L \\
+            \hline
+          0. & $\emptyset$ & $\emptyset$ & $\emptyset$ \\
+          1. & $\emptyset$ & (, sym & $\emptyset$ \\
+          2. & (, sym & (, sym & (, sym \\
+          3. & (, sym & (, sym & (, sym \\
+        \end{tabular}
+      \subcaption*{Permier}
+    \end{subtable}
+    \begin{subtable}[c]{0.5\textwidth}
+      \centering
+        \begin{tabular}{l|c|c|c}
+            & S & E & L \\
+            \hline
+          0. & $\emptyset$ & $\emptyset$ & $\emptyset$ \\
+          1. & $\emptyset$ & \# & ) \\
+          2. & $\emptyset$ & \#, (, sym, ) & ) \\
+          3. & $\emptyset$ & \#, (, sym, ) & ) \\
+        \end{tabular}
+      \subcaption*{Suivant}
+    \end{subtable}
+  \end{table}
+    
+\end{enumerate}
+\end{exo}
+
+\newpage
+\begin{exo} Compilation vers de valeurs optionnelles:
+\begin{enumerate}
+  \item Description:\\
+    \begin{table}[htb]
+    \centering
+      \hfill
+       \begin{tabular}{c | c}
+        registre & valeurs \\
+        \hline
+        $\$a0$ & $8$\\
+        $\$v0$ & $\texttt{0x10040008}$\\
+        $\$t0$ & $1$
+      \end{tabular}
+      \hfill
+      \begin{tabular}{l|c|}
+        \cline{2-2}
+        $\texttt{0x10040000}$ & 1\\
+        & 2\\
+        \cline{2-2}
+        $\texttt{0x10040008}$ & 1\\
+        & $\texttt{0x10040000}$\\
+        \cline{2-2}
+      \end{tabular}
+      \hfill
+    \end{table}
+
+  \item $\$a0 = \texttt{0x10040000}$\\
+    Tas:\\
+    \begin{tabular}{l| c |}
+      \cline{2-2}
+      $\texttt{0x10040000}$ & 1 \\
+      & $\texttt{0x10040008}$ \\ 
+      \cline{2-2}
+      $\texttt{0x10040008}$ & 1 \\
+      & $\texttt{0x10040010}$ \\
+      \cline{2-2}
+      $\texttt{0x10040010}$ & 1\\
+      & $3$\\
+      \cline{2-2}
+    \end{tabular}
+
+  \item récupère la valeur $n$ de $\texttt{Somme (Somme n)}$  dans le registre $\$v0$
+    \begin{lstlisting}[texcl=false, mathescape=false]
+    lw $v0, 4($a0)
+    lw $v0, 4($v0)
+  \end{lstlisting}
+
+  \item code de la fonction f:
+    \begin{lstlisting}[texcl=false, mathescape=false]
+      f:
+        beqz  $a0, N
+        lw    $v0, 4($a0)
+        addi  $v0, $v0, 1
+        jr    $ra
+        N:
+          li $v0, -1
+          jr $ra
+    \end{lstlisting}
+
+
+  \item Code:
+    \begin{lstlisting}[texcl=fasle, mathescape=false]
+      bnez    $a0, some
+      
+      bnez    $a1, incompatible
+      li      $v0, 1
+      b       fin
+    some:
+      beqz    $a1, incompatible
+
+      lw      $a0, 4($a0)
+      lw      $a1, 4($a0)
+      seq     $v0, $a0, $a1
+      b fin
+    incompatible:
+      li      $v0, 0
+    fin:
+    \end{lstlisting}
+\end{enumerate}
+\end{exo}
+
+\newpage
+\begin{exo}Typage et sémantique\\
+Partie sur le sémantique pas vue en cours.
+\end{exo}
+
+\end{document}

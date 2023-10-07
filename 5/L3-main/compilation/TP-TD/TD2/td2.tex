@@ -1,0 +1,168 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning}
+
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\sc Feuille d'exercice 2
+\end{center}
+
+\begin{exo} $\left\{a, b\right\}$ notre alphabet
+\begin{enumerate}
+    \item $a{(a|b)}^*$: mots commençant par a
+    \item $a^*|b^*$: mots n'ayant que des a ou que des b
+    \item ${(b|ab)}^*(a|\varepsilon)$ mots n'ayant pas 2 a consécutifs
+    \item ${(aa|b)}^*$: mots ayant des blocs de a de longueur paire
+    \item ${(ab^*a|b)}^*$: mots ayant un nombre pair de a
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Expression régulières
+\begin{enumerate} 
+    \item $(\varepsilon|a|b)(\varepsilon|a|b)$
+    \item $((a|b)(a|b))*$
+    \item $a^*abb^*$
+    \item $(a^*b^*)|(b^*a^*)$
+    \item $b^*ab{(ab|b)}^*$
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Automates
+\begin{enumerate}
+    \item $/* \ldots */$ \\
+    \begin{tikzpicture}
+        %\draw [help lines] (-5,0) grid (5,1);
+
+        \node (q0) [state, initial] at (-4.5, 0.5){};
+        \node (q1) [state] at (-2.5, 0.5){};
+        \node (q2) [state] at (-0.5, 0.5){};
+        \node (q3) [state] at (1.5, 0.5){};
+        \node (q4) [state, accepting] at (3.5, 0.5){};
+
+        \path [-stealth, thick]
+            (q0) edge node [above] {/}   (q1)
+            (q1) edge node [above] {*}   (q2)
+            (q2) edge node [above] {*}   (q3)
+            (q3) edge node [above] {/}   (q4)
+            (q2) edge [loop above] node {A$\backslash$*} ()
+            (q3) edge [bend left] node [below] {A $\backslash$ '/'} (q2)
+        ;
+    \end{tikzpicture}
+
+    \item nombres:\\
+    \begin{tikzpicture}
+        \node (q-) [state, initial] at (-4.5, 0){};
+        \node (q0) [state,] at (-2.5, 0){};
+            \node (q1) [state, accepting] at (-0.5, 2){};
+            \node (q2) [state] at (1.5, 2){};
+            \node (q3) [state, accepting] at (3.5, 2){};
+        \node (q4) [state, accepting] at (-0.5, 0){};
+            \node (q5) [state] at (-0.5, -2){};
+            \node (q6) [state] at (1.5, -2){};
+            \node (q7) [state] at (3.5, -2){};
+            \node (q8) [state] at (5.5, -2){};
+                \node (q9) [state] at (4.5, -4){};
+                \node (q10) [state, accepting] at (6.5, -4){};
+
+        \path [-stealth, thick]
+            (q-) edge node [above] {$-$}   (q0)
+            (q0) edge node [left] {1-9}   (q1)
+            (q1) edge [loop above] node {0-9}   ()
+            (q1) edge node [above] {.} (q2)
+            (q2) edge [loop above] node [above] {0-9}   ()
+            (q2) edge [] node [above] {1-9}   (q3)
+            (q0) edge [] node [above] {0}   (q4)
+            (q4) edge [] node [left] {.}   (q2)
+            (q0) edge [] node [left] {1-9}   (q5)
+            (q5) edge [] node [above] {.}   (q6)
+            (q6) edge [loop above] node [above] {0-9}   (q7)
+            (q6) edge [] node [above] {1-9}   (q7)
+            (q7) edge [] node [above] {e}   (q8)
+            (q8) edge [] node [left] {$-$}   (q9)
+            (q8) edge [] node [right] {1-9}   (q10)
+            (q9) edge [] node [above] {1-9}   (q10)
+            (q10) edge [loop right] node [right] {0-9}   ()
+        ;
+    \end{tikzpicture}
+
+    \item Toto
+    \begin{tikzpicture}
+        \node (q0) [state, accepting] at (-2.5, 0){$\cdot $};
+        \node (q1) [state, accepting] at (-0.5, 0){$\cdot $};
+
+        \path [-stealth, thick]
+            (q0) edge [bend right] node [above] {$+$}   (q1)
+        ;
+    \end{tikzpicture}
+\end{enumerate}    
+\end{exo}
+
+\begin{exo}Lemme de l'étoile:
+\begin{enumerate}
+    \item Par l'absurde on applique le lemme de l'étoile au 3 cas:
+        \begin{itemize}
+            \item $w_2=a^k$
+            \item $w_2=a^{k_1}b^{k_2}$
+            \item $w_3=b^k$
+        \end{itemize}
+        On arrive à une absurditée pour les 3.
+    
+    \item On va appliquer le lemme de l'étoile fort:\\
+        Suppposons que L soit reconnaissable. On prend $x=a^{N-1} b a^{N-1}$
+        On cherche tous les m de longueur $l \geq N$\\
+        On à 3 cas:
+        \begin{itemize}
+            \item $m=a^{N-1} b$
+            \item $m=ba^{N-1}$
+            \item $m=a^{n_1}ba^{n_2}$ avec $n_1 + n_2 \geq N - 1$
+        \end{itemize}
+        Dans tous les cas on arrive à une absurditée.
+
+    \item On va appliquer le lemme sur la fin de $baba^2\ldots ba^N$ similaire \ldots
+    \item On prend $n$ premier plus grand ou égale que $N$. 
+    On prend $a^n = a^{n_1} + a^{n_2} + a^{n_3}$ avec $n_2 \neq 0$ et $n_1 + n_2 + n_3 = n$
+    d'après le lemme de l'étoile on a $\forall k, a^{n_1}a^{kn_2}a^{n_3} \in L$.
+
+    Or $a^{n_1}a^{kn_2}a^{n_3}=a^{n_1}a^{n_3}a^{kn_2}=a^{n - n_2}a^{kn_2}$.
+    On prend $k = n + 1$ on obtient $a^{(n + 1)n_2} \in L$.
+
+    Or $(n + 1)(n_2)$ n'est pas premier.
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Réduction
+\begin{enumerate}
+\item On sait que le complémentaire d'un langage reconnaissable est aussi reconnaissable.
+
+    Donc $L_1 \cap L_2 = \overline{\overline{L_1} \cup \overline{l_2}}$. 
+    Or l'uniion de deux langage est reconnaissable $(e_1|e_2)$
+
+\item On prend $L'=a^*b^*$. On Suposse que L est reconnaissable donc on à $L \cap L'$ reconnaissable
+    Or $\left\{a^n b^n | n \geq 0\right\}$ n'est pas reconnaissable donc L ne l'ai pas.
+
+\item On a $(Q, T, I, F)$ un automate qui reconnai $L_B$ 
+
+    on peut donc construire 
+    $(Q, T', I, F)$ avec $T' = \left\{(p, a, q)| p \overset{f(a)}{\longrightarrow} q \right\} $
+\end{enumerate}
+\end{exo}
+
+\end{document}

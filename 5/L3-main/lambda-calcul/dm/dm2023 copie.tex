@@ -1,0 +1,847 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[francais]{babel}
+\usepackage{times}
+\usepackage{amssymb,amsmath,stmaryrd,latexsym,graphicx}
+\usepackage{prooftree}
+\usepackage{xcolor}
+\usepackage{framed}
+\def\solution{\leftbar\it}
+\def\endsolution{\endleftbar}
+
+\usepackage{enumitem}
+
+
+\title{DM, $\lambda$-calcul, 2023}
+%%% A remplir:
+\author{Valeran MAYTIE}
+
+%%%
+%%% Les macros que j'utilise dans ce sujet:
+%%%
+
+\newcommand\limp{\mathrel{\Rightarrow}}
+\newcommand\fv{\mathop{\mathrm{fv}}}
+\newcommand\bv{\mathop{\mathrm{bv}}}
+\newcommand\vdal[1]{\Longrightarrow_{#1}}
+\newcommand\eqdef{\mathrel{\buildrel \text{def}\over=}}
+\newcommand\nat{\mathbb{N}}
+\newcommand\true{\mathbf{V}}
+\newcommand\false{\mathbf{F}}
+\newcommand\pow{\mathbb{P}}
+\newcommand\fin{{\text{fin}}}
+\newcommand\Pfin{\pow_\fin}
+\newcommand\Eval[1]{\llbracket {#1} \rrbracket}
+\newcommand\code[1]{\ulcorner {#1} \urcorner}
+\newcommand\asr{\mathbf{asr}}
+\newcommand\asrhelper{\mathbf{asr\_helper}}
+\newcommand\couple{\mathbf{cpl}}
+\newcommand\decpl{\mathbf{decpl}}
+\newcommand\proj{\mathbf{p}}
+\newcommand\num{\mathbf{num}}
+\newcommand\kwote{\mathbf{kwote}}
+\newcommand\kwotehelper{\mathbf{kwote\_helper}}
+\newcommand\kwoteiter{\mathbf{kwote\_iterator}}
+\newcommand\diag{\mathbf{diag}}
+
+\newtheorem{fact}{Fait}
+\newtheorem{lemma}[fact]{Lemme}
+
+\newcommand\proof{\emph{Démonstration.}}
+\newcommand\qed{\hfill$\Box$}
+\newcommand\identity[1]{\mathrm{id}_{#1}}
+
+\newcommand\V{{\mathtt V}}
+\newcommand\callcc{\mathtt{callcc}}
+\newcommand\CC{\mathbf{C}}
+
+\newcommand\jgl[1]{\marginpar{\tiny #1}}
+
+%%% 
+
+\begin{document}
+
+\maketitle
+
+\section{Le $\lambda$-calcul en appel par valeur}
+\label{sec:le-lambda-calcul}
+
+Le $\lambda$-calcul en appel par valeur a été introduit par Gordon
+Plotkin en 1975.  Il est défini comme suit.
+  On définit les
+\emph{valeurs} $V$:
+\begin{align*}
+  V & ::= x & \text{variables} \\
+  & \mid \lambda x . v & \text{abstractions},
+\end{align*}
+où $v$ est un $\lambda$-terme arbitraire, pas nécessairement une
+valeur.  La règle de réduction en \emph{appel par valeur}, ou
+\emph{$\beta_\V$-réduction}, est :
+\begin{align*}
+  (\beta_\V) & \qquad (\lambda x . u) V \to u [x:=V],
+\end{align*}
+où $V$ est restreint à être une valeur.  Cette règle s'applique sous
+n'importe quel contexte, et modulo les règles usuelles
+d'$\alpha$-renommage.  On écrira $u \to_\V v$ pour dire que $u$ se
+réécrit (en une étape) en $v$ par cette règle, s'il y a besoin.
+
+Attention, une valeur $V$ n'est \emph{pas} une forme normale en
+général; on peut exhiber des réductions $V \to V'$, et dans ce cas
+$V'$ est aussi une valeur.
+
+\begin{enumerate}[series=q,label=\textbf{Question \arabic*}]
+\newpage
+\item Montrer que si $u \to_\V^* v$ et si $v$ est $\beta$-normal (i.e.,
+  normal pour la $\beta$-réduction), alors $v$ est l'unique forme
+  normale de $u$ en $\lambda$-calcul ordinaire.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    On définit les règles de réductions $(abs_\V)$, $(appD_\V)$ et 
+    $(appG_\V)$ de manière analogue aux règles de la $\beta$-réductions
+    pour les réductions sous n'importe quel contexte.
+  
+    \begin{lemma}
+      \label{lemma:bv>b}
+      Soit $u$ et $v$ des $\lambda$-terme, si $u \to_\V v$ alors 
+      $u \to v$.
+    \end{lemma}
+    \proof
+
+    Montrons que $u \to_\V v$ implique $u \to v$ par récurrence
+    sur $u \to_\V v$.
+
+    \begin{itemize}
+      \item Cas (de base) où $u \to_\V v$ vient de la règle $(\beta_\V)$.
+            Donc $u = (\lambda x.u')V$ et $v = u'[x:=V]$. Comme V est 
+            un lambda terme (variable ou lambda abstraction) on 
+            $u \to v$ par définition de la beta réduction.
+
+      \item Cas où $u \to_\V v$ vient de la règle $(abs_\V)$.
+            Donc $u = (\lambda x.A)$ et $v = (\lambda x.A')$ avec 
+            $A \to_\V A'$. Par hypotèse de récurrence on 
+            a $A \to A'$. Donc par $(abs)$ on a $u \to v$
+
+      \item Cas où $u \to_V v$ vient de la règle $(appG_\V)$. 
+            Donc $u = AB$ et $v = A'B$ avec $A \to_\V A'$.
+            Par hypothèse de récurrence on a $A \to A'$. 
+            Dinc par $(appG)$ on à $u \to v$
+
+      \item Case où $u \to_\V v$ vient de la règle $(appD_\V)$ 
+            est traité de manière siminlaire.
+    \end{itemize} \qed
+    \begin{lemma}
+      \label{lemma:bv>*b}
+      Soit $u$ et $v$ des lambda terme, si $u \to_\V^* v$ alors 
+      $u \to^* v$.    \end{lemma}
+    \proof
+
+    Montrons que $u \to_\V^* v$ implique $u \to^* v$ par récurrence sur la 
+    longueur $k$ de la réduction $u \to_\V^* v$.
+
+    \begin{itemize}
+      \item si $k=0$ alors $u=v$ donc on a bien la réduction $u \to v$.
+      \item sinon, il existe un $w$ tel que $u \to_\V^* w$ en moin de $k$
+            étapes et $w \to_\V v$. Par hypothèse de récurrence, 
+            $u \to^* w$ et par le  \underline{lemme~\ref{lemma:bv>b}} 
+            on a $w \to v$. Donc par transitivité de la beta réduciton $u \to v$.
+    \end{itemize} \qed
+
+    On peut enfin montrer que si $u \to_\V^* v$ et $v$ est $\beta$-normale 
+    alors v est l'unique forme normale de u.
+
+    \proof
+
+    Soit $u$ un lambda terme et $v_1$, $v_2$ des lambdas termes 
+    $\beta$-normaux tel que,
+    $u \to_\V^* v_1$ et $u \to_V^* v_2$. Par le \underline{lemme~\ref{lemma:bv>*b}}
+    on à $u \to v_1$ et $u \to v_2$, or la beta réduction est confluente donc 
+    $v_1 = v_2$. Donc la $\beta_\V$-réduction a bien la propriété de 
+    forme normale unique. \qed
+  \end{solution}
+  
+\newpage
+\item Exhiber un terme $u$ qui a une forme normale $u \downarrow$
+  (pour la $\beta$-réduction), mais tel que
+  $u \not\to_\V^* u\downarrow$; la $\beta_\V$-réduction est donc
+  incomplète.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    Soit $\Omega = ((\lambda x.xx)(\lambda x.xx))$
+
+    On prend $u = (\lambda x y.y) \Omega$.
+
+    $u\downarrow = (\lambda y.y)$
+
+    $u \not \to_\V^* u \downarrow$ car, il faut transformer $\Omega$
+    en valeur ce qui est impossible.
+  \end{solution}
+
+\item Exhiber un terme normalisable (pour la $\beta$-réduction) mais
+  qui n'a aucune forme normale pour la $\beta_\V$-réduction.  La
+  $\beta_\V$-réduction n'est donc pas standardisante.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    On peut prendre le même terme que la question précédente.
+    
+    $u$ n'a aucune forme normale car la seule réduction possible est 
+    $(\lambda x y.y) \Omega \to_\V (\lambda x y.y) \Omega = u$ et 
+    $u$ n'est pas une forme normale.
+  \end{solution}
+  
+\end{enumerate}
+
+\section{Confluence du $\lambda$-calcul en appel par valeur}
+\label{sec:confluence-du-lambda}
+
+On définit une relation de réduction parallèle $\limp_\V$, imitant
+celle vue en TD pour le $\lambda$-calcul ordinaire, par les règles:
+\[
+  \begin{array}{cc}
+    \begin{prooftree}
+      \strut
+      \justifies
+      u \limp_\V u
+      \using (0)
+    \end{prooftree}
+    &
+      \begin{prooftree}
+        u \limp_\V u' \quad v \limp_\V V
+        \justifies
+        (\lambda x . u) v \limp_\V u' [x:=V]
+        \using (1)
+      \end{prooftree}
+    \\
+    &\\
+    \begin{prooftree}
+      u \limp_\V u'
+      \justifies
+      \lambda x . u \limp_\V \lambda x . u'
+      \using (\lambda)
+    \end{prooftree}
+    &
+      \begin{prooftree}
+        u \limp_\V u' \quad v \limp_\V v'
+        \justifies
+        uv \limp_\V u'v'
+        \using (@)
+      \end{prooftree}
+  \end{array}
+\]
+Ici, $V$ désigne une valeur arbitraire, et $u$, $u'$, $v$, $v'$ des
+$\lambda$-termes arbitraires.  On dira simplement \og
+$u \limp_\V u'$\fg{} pour dire que le jugement $u \limp_\V u'$ est
+dérivable dans ce système de règles, autrement pour dire qu'il existe
+un arbre de preuve, formé à l'aide de ces règles, dont la conclusion
+est $u \limp_\V u'$.  Les règles ont des noms: $(0)$, $(1)$,
+$(\lambda)$, $(@)$, que vous devrez nommer dans vos preuves lors de
+toute utilisation.
+
+On admettra les trois résultats suivants.
+\begin{fact}
+  \label{fact:fv}
+  Si $w \limp_\V w'$ alors toutes les variables libres dans $w'$ sont
+  déjà libres dans $w$.
+\end{fact}
+
+\begin{fact}
+  \label{fact:subst}
+  Pour tous $\lambda$-termes $s'$, $w'$ et $v$, si $x$ est une
+  variable qui n'est pas libre dans $w'$ et si $x \neq z$, alors
+  $s' [x:=v] [z:=w'] = s' [z:=w'] [x:=v [z:=w']]$.
+\end{fact}
+L'égalité est bien sûr à comprendre à $\alpha$-renommage près.
+
+\begin{fact}
+  \label{fact:A}
+  Pour tous $\lambda$-termes, $u$, $w$ et $w'$, pour toute variable
+  $z$, si $w \limp_\V w'$ alors $u [z:=w] \limp_\V u [z:=w']$.
+\end{fact}
+C'est une récurrence facile sur la taille de $u$.
+
+Nous démontrons ensuite le lemme suivant.  Je laisse des trous, que
+vous devrez combler.
+\begin{lemma}
+  \label{lemma:=>:subst}
+  Pour tous $\lambda$-termes $u$, $u'$, $w$, pour toute valeur $W$,
+  pour toute variable $z$, si $u \limp_\V u'$ et $w \limp_\V W$, alors
+  $u [z:=w] \limp_\V u' [z:=W]$.
+\end{lemma}
+\proof
+\begin{enumerate}[resume*]
+\item Ceci se fait par récurrence, mais sur quoi?
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    On fait une récurrence sur $u \limp_\V u'$
+  \end{solution}
+  
+\end{enumerate}
+On distingue quatre cas, en fonction de la dernière règle utilisée
+dans la dérivation donnée de $u \limp_\V u'$.
+\begin{itemize}
+\item $(0)$: dans ce cas, $u=u'$, et on a
+  $u [z:=w] \limp_\V u [z:=W] = u' [z:=W]$ par le
+  \underline{fait~\ref{fact:A}}.
+\item $(1)$: dans ce cas, $u$ est de la forme $(\lambda x . s) t$, on
+  a $s \limp_\V s'$, $t \limp_\V V$, $u' = s' [x:=V]$.  Par
+  $\alpha$-renommage, on peut supposer que $x \neq z$ et que $x$ n'est
+  pas libre dans $W$.
+\end{itemize}
+
+\begin{enumerate}[resume*]
+\item Terminer ce cas.  Autrement dit, démontrer que
+  $(\lambda x . s [z:=w]) (t [z:=w]) \limp_\V s' [x:=V] [z:=W]$.  Où
+  l'hypothèse que $W$ est une valeur est-elle utilisée?
+\end{enumerate}
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    Par hypothèse de récurrence, $s[z:=w] \limp_\V s'[z:=W]$ et 
+    $t[z:=w] \limp_\V V[z:=W]$.
+    On a donc $(\lambda x. s[z:=w]) t[z:=w] \limp_\V s'[z:=W][x:=V[z:=W]]$
+    \underline{par la règle $(1)$}. Comme $x$ n'est pas libre dans $W$ et que 
+    $x \neq z$ on a $s'[z:=W][x:=V[z:=W]] = s'[x:=V][z:=W]$ par le 
+    \underline{fait \ref{fact:subst}}.
+
+    On a donc bien $u[z:=w] \limp_\V u'[z:=W]$
+  \end{solution}
+
+\begin{itemize}
+\item $(\lambda)$: dans ce cas, $u$ est de la forme $\lambda x . s$,
+  $u'$ est de la forme $\lambda x . s'$, et $s \limp_\V s'$.  Par
+  hypothèse de récurrence, $s [z:=w] \limp_\V s' [z:=W]$, et l'on
+  obtient $u [z:=w] \limp_\V u' [z:=W]$ \underline{par la règle
+    $(\lambda)$}.
+\item $(@)$: similairement, on utilise l'hypothèse de récurrence
+  et \underline{la règle $(@)$}.  \qed
+\end{itemize}
+
+Le fait suivant est une analyse de cas facile sur la dernière règle
+utilisée dans la dérivation donnée de $V \limp_\V t$.
+\begin{fact}
+  \label{fact:V=>t}
+  Pour toute valeur $V$ et pour tout $\lambda$-terme $t$, si $V
+  \limp_\V t$ alors $t$ est une valeur.
+\end{fact}
+
+Nous démontrons le lemme suivant.  Je laisse des trous dans la preuve,
+que vous devrez combler, comme plus haut.
+\begin{lemma}
+  \label{lemma:=>:conf}
+  La relation $\limp_\V$ est fortement confluente.
+\end{lemma}
+\proof
+On doit démontrer que pour tous $\lambda$-termes $s$, $t_1$, $t_2$,
+si $s \limp_\V t_1$ et $s \limp_\V t_2$, alors il existe un
+$\lambda$-terme $t_3$ tel que $t_1 \limp_\V t_3$ et
+$t_2 \limp_\V t_3$.  Nous le démontrons par récurrence.
+
+\begin{enumerate}[resume*]
+\item Sur quoi porte cette récurrence?
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    On fait une récurrence sur les réductions $s \limp_\V t_1$
+    et $s \limp_\V t_2$.
+  \end{solution}
+  
+\end{enumerate}
+
+A symétrie près, il y a 10 cas, selon la dernière règle utilisée.
+\begin{itemize}
+\item $(0)$/n'importe quoi [4 cas d'un coup!]: on a $s=t_1$, dont on
+  peut prendre \underline{$t_3 \eqdef t_2$}; on a
+  $s=t_1 \limp_\V t_3=t_2$, et $t_2 \limp_\V t_3=t_2$ \underline{par
+    $(0)$}.
+\item $(1)$/$(1)$.  C'est l'un des deux cas compliqués.  On est dans
+  une situation de la forme:
+  \[
+    \begin{array}{cc}
+      \begin{prooftree}
+        u \limp_\V u_1 \quad v \limp_\V V_1
+        \justifies
+        (\lambda x . u) v \limp_\V \underbrace{u_1 [x:=V_1]}_{t_1}
+        \using (1)
+      \end{prooftree}
+      &
+        \begin{prooftree}
+          u \limp_\V u_2 \quad v \limp_\V V_2
+          \justifies
+          (\lambda x . u) v \limp_\V \underbrace{u_2 [x:=V_2]}_{t_2}
+          \using (1)
+        \end{prooftree}
+    \end{array}
+  \]
+  et $s = (\lambda x . u) v$.  Par hypothèse de récurrence, il existe
+  un $\lambda$-terme $u_3$ tel que $u_1 \limp_\V u_3$ et
+  $u_2 \limp_\V u_3$, et il existe un $\lambda$-terme $v_3$ tel que
+  $V_1 \limp_\V v_3$ et $V_2 \limp_\V v_3$.  Par le
+  \underline{fait~\ref{fact:V=>t}}, {$v_3$ est une valeur}.  Par le
+  \underline{lemme~\ref{lemma:=>:subst}}, on a alors
+  $u_1 [x:=V_1] \limp_\V u_3 [x:=v_3]$ et
+  $u_2 [x:=V_2] \limp_\V u_3 [x:=v_3]$.  On peut donc prendre
+  \underline{$t_3 \eqdef u_3 [x:=v_3]$}.
+\item $(1)$/$(\lambda)$: impossible.
+\newpage
+\item $(1)$/$(@)$.  C'est l'autre cas compliqué.  On est dans une
+  situation de la forme:
+  \[
+    \begin{array}{cc}
+      \begin{prooftree}
+        u \limp_\V u_1 \quad v \limp_\V V_1
+        \justifies
+        \underbrace{(\lambda x . u) v}_s \limp_\V \underbrace{u_1 [x:=V_1]}_{t_1}
+        \using (1)
+      \end{prooftree}
+      &
+        \begin{prooftree}
+          \lambda x . u \limp_\V u_2 \quad v \limp_\V v_2
+          \justifies
+          \underbrace{(\lambda x . u) v}_s \limp_\V \underbrace{u_2 v_2}_{t_2}
+          \using (@)
+        \end{prooftree}
+    \end{array}
+  \]
+  \begin{enumerate}[resume*]
+  \item Terminer la démonstration du cas $(1)$/$(@)$.  On donnera
+    $t_3$ explicitement.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    $u_2 = \lambda x.u_3$ avec $u \limp_\V u_3$ car les seules règles de réductions 
+    possibles pour réduire $\lambda x.u$ sont $(\lambda)$ ou $(0)$ 
+    dans ce cas $u = u_3$. Par hypothèse de 
+    récurrence il existe des $\lambda$-termes $u_4$ et $V_2$ tel que $u_1 \limp_\V u_4$, 
+    $u_3 \limp_\V u_4$, $V_1 \limp_\V V_2$ et $v_2 \limp_\V V_2$.
+    $V_1$ est une valeur danc $V$ est aussi une valeur,
+    par le \underline{fait \ref{fact:V=>t}}.
+    \begin{align*}
+      u_2v_2 &= (\lambda x . u_3) v_2 \\
+             &\limp_\V u_4[x:=V_2] & \text{règle } (1)
+    \end{align*}
+    \begin{align*}
+      u_1[x:=V_1] &\limp_\V u_4[x:=V_2] & \text{lemme } \ref{lemma:=>:subst}\\
+    \end{align*}
+    On prend donc \underline{$t_3 \eqdef u_4[x:=V_2]$}.
+  \end{solution}
+  
+\end{enumerate}
+  
+\item $(\lambda)$/$(\lambda)$: alors $s = \lambda x . u$, on a dérivé
+  $u \limp_\V u_1$ et $u \limp_V u_2$ par des dérivations plus
+  courtes, $t_1 = \lambda x . u_1$ et $t_2 = \lambda x . u_2$.  Par
+  hypothèse de récurrence, on a un $\lambda$-terme $u_3$ tel que
+  $u_1 \limp_\V u_3$ et $u_2 \limp_\V u_3$.  On applique \underline{la
+    règle $(\lambda)$}, et on obtient
+  $t_1 = \lambda x . u_1 \limp_\V t_3$ et
+  $t_2 = \lambda x . u_2 \limp_\V t_3$, où
+  \underline{$t_3 \eqdef \lambda x . u_3$}.
+\item $(\lambda)$/$(@)$: impossible.
+\item $(@)$/$(@)$.  On a:
+  \[
+    \begin{array}{cc}
+      \begin{prooftree}
+        u \limp_\V u_1 \quad v \limp_\V v_1
+        \justifies
+        \underbrace{uv}_s \limp_\V \underbrace{u_1 v_1}_{t_1}
+        \using (@)
+      \end{prooftree}
+      &
+        \begin{prooftree}
+          u \limp_\V u_2 \quad v \limp_\V v_2
+          \justifies
+          \underbrace{uv}_s \limp_\V \underbrace{u_2 v_2}_{t_2}
+          \using (@)
+        \end{prooftree}
+    \end{array}
+  \]
+  Par hypothèse de récurrence, on peut trouver un terme $u_3$ tel
+  que $u_1 \limp_\V u_3$ et $u_2 \limp_\V u_3$, ainsi qu'un terme
+  $v_3$ tel que $v_1 \limp_\V v_3$ et $v_2 \limp_\V v_3$.
+  On a alors $u_1 v_1 \limp_\V u_3 v_3$ et $u_2 v_2 \limp_\V u_3
+  v_3$ par \underline{la règle $(@)$}, et l'on pose donc
+  \underline{$t_3 \eqdef u_3 v_3$}.  \qed
+\end{itemize}
+
+
+\newpage
+On admettra le résultat suivant, qui est facile à démontrer.
+\begin{fact}
+  \label{fact:to:=>}
+  Pour tous $\lambda$-termes $s$ et $t$, si $s \to_\V t$ alors
+  $s \limp_\V t$, et si $s \limp_\V t$ alors $s \to_\V^* t$.
+\end{fact}
+\begin{enumerate}[resume*]
+
+\item En déduire que $\to_\V$ est confluente.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    \begin{lemma}
+      \label{lemma:inin}
+      Si $R$ et $S$ sont deux relations binaires, et: 
+      \begin{enumerate}
+        \item $R \subseteq S \subseteq R^*$
+        \item $S$ est confluente
+      \end{enumerate}
+      alors $R$ est confluent
+    \end{lemma}
+
+    \proof 
+
+    Démontré en cours.\qed
+
+    D'après le \underline{fait \ref{fact:to:=>}} on a 
+    $\to_\V \subseteq \limp_\V \to_\V^*$. De plus $\limp_\V$ est 
+    fortement confluente (\underline{lemme \ref{lemma:=>:conf}}).
+
+    Donc $\to_\V$ est bien confluente 
+    d'apèrs le \underline{lemme \ref{lemma:inin}}. \qed
+  \end{solution}
+  
+\end{enumerate}
+
+\section{Enumérations calculables des $\lambda$-termes}
+\label{sec:enum-calc-des}
+
+On pose:
+\begin{align*}
+  \code n & \eqdef \lambda f . \lambda x . f^n (x)
+            & \text{pour tout }n \in \nat \\
+  \true & \eqdef \lambda x . \lambda y . x \\
+  \false & \eqdef \lambda x . \lambda y . y \\
+  \code {S} & \eqdef \lambda n . \lambda f . \lambda x . f (nfx) \\
+  \code {+} & \eqdef \lambda m . \lambda n . \lambda f . \lambda x
+              . mf(nfx) \\
+  \langle u, v \rangle & \eqdef \lambda p . p u v \\
+  \code {p_1} & \eqdef \lambda c . c \true \\
+  \code {p_2} & \eqdef \lambda c . c \false \\
+  \asrhelper & \eqdef \lambda c . \code {p_1} c
+         \langle \false, \code {S} (\code {p_2} c) \rangle
+         \langle \true, \code {p_2} c \rangle \\
+  \asr & \eqdef \lambda n . \code {p_2} (n \; \asrhelper\;
+         \langle \false, \code 0 \rangle)
+\end{align*}
+
+\newpage
+\begin{enumerate}[resume*]
+\item Montrer que pour tout $n \in \nat$, $\asr\; \code n \to^* \code
+  {asr (n)}$, où $asr$ est une fonction de $\nat$ dans $\nat$ que vous expliciterez.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    On pose $asr(n) = n / 2$. Si n est pair sinon $asr(n) = (n-1)/2$.
+
+    Pour ça il faut montrer que le deuxième élément du couple renvoyé 
+    par $\code n\; \asrhelper\ \langle \false, \code 0 \rangle$ est égale à 
+    $\code {asr(n)}$
+
+    Montrons que 
+    $\code n\; \asrhelper\ \langle \false, \code 0 \rangle 
+      \to^* \langle \false, \code {asr(n)} \rangle$  si $n$ pair 
+    sinon $\code n\; \asrhelper\ \langle \false, \code 0 \rangle 
+      \to^* \langle \true, \code {asr(n)} \rangle$
+      par récurrence sur $n$.
+
+
+    \begin{itemize}
+      \item Cas (de base) où $n = 0$. 
+        $\code 0\; \asrhelper\; \langle \false, \code 0 \rangle \to^* 
+        \langle \false, \code 0 \rangle$. On réduit $\asr \; \code n \to^* \code 0$.
+        On a bien $\asr \; \code 0 \to^* \code {0/2=0}$
+      \item Comme $n$ une application de $n$ foit la fonction $f$ qui 
+        dans notre cas est $\asrhelper$. Il suffit d'appliquer encore une 
+        foit $\asrhelper$ au résultat de 
+        $\code n\; \asrhelper\; \langle \false, \code 0 \rangle$ pour 
+        avoir le résultat de 
+        $\code{n+1} \; \asrhelper\; \langle \false, \code 0 \rangle$.
+
+        On a deux cas:
+        \begin{itemize}
+          \item n est pair, alors 
+            $\code n\; \asrhelper \langle \false, \code 0 \rangle \to^* 
+              \langle \false, \code {n/2} \rangle$ par hypothèse de récurrence. 
+              On calcule 
+            $\asrhelper \langle \false, \code {n/2} \rangle \to^*
+              \langle \true, \code{n/2} \rangle$. On a bien 
+            $\code{n+1}\; \asrhelper \langle \false, \code 0 \rangle \to^* 
+              \langle \true, \code{asr(n+1)} \rangle$, car 
+            $n+1$ est impaire donc $asr(n+1) = (n+1-1)/2 = n/2$
+          \item n est impaire, alors
+            $\code n\; \asrhelper \langle \false, \code 0 \rangle \to^* 
+              \langle \true, \code {(n-1)/2} \rangle$ par hypothèse de récurrence. 
+              On calcule 
+            $\asrhelper\; \langle \true, \code {(n-1)/2} \rangle \to^*
+              \langle \false, \code {S} \code{(n-1)/2}$. $\code {S} \code{n}$
+            est la représentation de $n+1$. $\code {S} \code{(n-1)/2}$ représente 
+            donc $(n-1)/2 + 1 = (n+1)/2 = asr(n+1)$. 
+            On a bien 
+            $\code{n+1}\; \asrhelper \langle \false, \code 0 \rangle \to^* 
+              \langle \false, \code{asr(n+1)} \rangle$
+        \end{itemize}
+    \end{itemize}
+    $\asr \code n$ se réduit bien en $\code {asr(n)}$ \qed
+  \end{solution}
+  
+\end{enumerate}
+
+\newpage
+
+On rappelle qu'il existe une bijection de $\nat \times \nat$ vers
+$\nat$, donnée par la formule:
+\[
+  [m, n] \eqdef \frac {(m+n) (m+n+1)} 2 + m.
+\]
+(Nous utiliserons la notation $[m, n]$ plutôt que la notation $\langle
+m, n \rangle$ utilisée en cours, pour éviter un conflit de notation
+avec la construction $\langle u, v \rangle$ rappelée plus haut.)
+
+\begin{enumerate}[resume*]
+\item Exhiber un $\lambda$-terme $\couple$ tel que
+  $\couple\; \code m \; \code n \to^* \code {[m, n]}$ pour tous
+  $m, n \in \nat$.  Ne cherchez surtout pas à l'obtenir en forme
+  normale; préférez la clarté.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    On pose: 
+
+    $\code \times \eqdef \lambda x .\lambda y.\lambda f.x\;(y\;f)$
+
+    On a donc\\ $\couple \eqdef \lambda m. \lambda n.
+      \code S\; (\asr\; (\code \times\; (\code S\;m\;n)\;
+                                    (\code S\; (\code S\; \code 1\; m)\; n)))\; 
+              m$
+  \end{solution}
+  
+\end{enumerate}
+
+On suppose une énumération $n \mapsto x_n$ des variables du
+$\lambda$-calcul; autrement dit, une bijection.  On notera $\#_x$ le
+numéro de chaque variable $x$, autrement dit $x \mapsto \#_x$ est la
+fonction inverse.  Pour tout $\lambda$-terme $t$, on définit un entier
+$\num (t)$ comme suit:
+\begin{align*}
+  \num (x) & \eqdef [0, \#_x] \\
+  \num (uv) & \eqdef [1, [\num (u), \num (v)]] \\
+  \num (\lambda x . u) & \eqdef [\#_x+2, \num (u)]
+\end{align*}
+On fera attention au fait que $\num (t)$ n'est pas invariant par
+$\alpha$-équivalence; par exemple,
+$\num (\lambda x . x) \neq \num (\lambda y . y)$.
+
+\begin{enumerate}[resume*]
+\item Décrire un $\lambda$-terme $\kwote$ tel que, pour tout entier
+  $n \in \nat$, $\kwote \; \code n \to^* \code {\num\; (\code n)}$.
+  (Prenez du temps à analyser le côté droit; notamment, $\code n$ est
+  vu comme un $\lambda$-terme, dont on prend le numéro
+  $\num\; (\code n)$, écrit ensuite sous forme d'entier de Church.)
+  On supposera pour cela que, dans la définition de $\code n$ utilisée
+  dans le côté droit de la réduction, $\#_f = 0$ et $\#_x = 1$.  Vous
+  êtes encouragés à produire des $\lambda$-termes auxiliaires, et à
+  utiliser ceux produits plus haut; ne développez surtout pas leurs
+  définitions pour former les $\lambda$-termes désirés: privilégiez la
+  clarté.
+
+  \newpage
+  \begin{solution}
+    On pose:
+
+    $\kwotehelper \eqdef \lambda x. \couple \; \code 1\;
+      (\couple\; (\couple\; \code 0\; \code 0)\; x)$
+ 
+    $\kwoteiter \eqdef \lambda c.c\; \kwotehelper\; (\couple\; \code 0\; \code 1)$
+
+    
+    $\kwotehelper$ est le lambda terme qui va remplasser tout les $f$ dans $\code n$.
+    On aura donc $[1, [0, 0], \kwotehelper (f \ldots (f\; x))]$ grâce à $\kwoteiter$.
+
+
+    On définit $\kwote \eqdef \lambda n. \couple\; \code 2\; 
+      (\couple\; \code 3\; (\kwoteiter\; n))$
+  \end{solution}
+  
+\end{enumerate}
+
+La fonction $\num$ est une bijection entre $\nat$ et l'ensemble des
+$\lambda$-termes.  Pour tout $n \in \nat$, notons $t_n$ l'unique
+$\lambda$-terme tel que $\num (t_n) = n$.
+
+\begin{enumerate}[resume*]
+\item Exhiber un $\lambda$-terme $\diag$ tel que pour tout
+  $n \in \nat$, $\diag\;\code n \to^* \code {\num (t_n \code n)}$.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    Comme $\num(t_n) = n$ on a:
+
+    $\num(t_n\; u) = [1, [n, \num(u)]]$
+
+    $\diag \eqdef \lambda n. \couple\; \code 1\; (\couple\; n, (\kwote\; n)))$
+  \end{solution}
+
+\item\label{q:Bu} En déduire que, pour chaque $\lambda$-terme $u$, il
+  existe un $\lambda$-terme $B_u$ tel que, pour tout $n \in \nat$,
+  $B_u \code n =_\beta u \; \code {\num (t_n \code n)}$.  On décrira
+  $B_u$ explicitement; comme d'habitude, on est encouragé à utiliser
+  les termes précédemment définis, et à ne surtout pas les remplacer
+  par leurs définitions.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    $B_u \eqdef \lambda n. u\; (\diag\; n)$
+
+    Par définition de $\diag$ on a 
+    $B_u \to^* \lambda n. u\: \code{\num(t_n\; n)}$. Donc\\
+    $B_u\; \code{n} =_\beta u\; \code{\num(t_n\; \code n)}$.
+  \end{solution}
+
+\item\label{q:pf} En déduire, pour chaque $\lambda$-terme $u$, un
+  $\lambda$-terme $A_u$ tel que $A_u =_\beta u \; \code {\num (A_u)}$.
+  (Indication: poser $n \eqdef \num\;(B_u)$.  On donnera $A_u$
+  explicitement, toujours en utilisant les termes précédemment
+  construits, sans les remplacer par leurs définitions.)  L'existence
+  de ce terme pour chaque $u$ est le \emph{deuxième théorème de point
+    fixe} du $\lambda$-calcul.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    $A_u = B_u \code n$ avec $n = \num (B_u)$
+
+    On calcule $A_u \to^* u\; (\diag\; \code {\num (B_u)})$. Par définition de 
+    $\diag$, on a 
+    $\diag\; \code{\num(B_u)} \to^* \code {\num(t_n\; \code{\num(B_u)})}$.
+    Or $t_n$ est défini comme l'unique lambda terme tel que $\num(t_n) = n$, 
+    or $n = \num(B_u)$ donc $t_n = B_u$. 
+    Enfin $\diag\; \code{\num(B_u)} \to^* \code{\num(B_u\; \code n)}$.\\
+    On obtient bien $A_u =_\beta u\; \code {\num(A_u)}$.
+  \end{solution}
+
+\end{enumerate}
+
+On dit qu'un ensemble $L$ de $\lambda$-termes est \emph{récursif} si
+et seulement si la fonction caractéristique de
+$\{\num (t) \mid t \in L\}$ est récursive; autrement dit, si la
+fonction qui à tout $n \in \nat$ associe $1$ si $t_n \in L$ et $0$
+sinon est récursive au sens usuel.
+
+On dit qu'un ensemble $X$ de $\lambda$-termes est
+\emph{$\beta$-saturé} si et seulement pour tout $u \in X$, pour tout
+$v =_\beta u$, $v$ est dans $X$.
+
+On dit que deux ensembles $X$ et $Y$ de $\lambda$-termes sont
+\emph{séparés} par un ensemble $L$ si et seulement si $X$ est inclus
+dans $L$ et $Y$ est inclus dans le complémentaire de $L$; en formules,
+si $X \subseteq L$ et $Y \cap L = \emptyset$.  $X$ et $Y$ sont
+\emph{récursivement séparables} si et seulement si $X$ et $Y$ sont
+séparés par un ensemble récursif de $\lambda$-termes.
+
+\begin{enumerate}[resume*]
+\item\label{q:D} Soient $X$ et $Y$ deux ensembles de $\lambda$-termes
+  séparés par un ensemble récursif $L$.  Montrer qu'il existe un
+  $\lambda$-terme $D$ tel que, pour tout $n \in \nat$:
+  \begin{itemize}
+  \item $D \code n =_\beta \true$ si et seulement si $t_n \in L$, et
+  \item $D \code n =_\beta \false$ si et seulement si $t_n \not\in L$.
+  \end{itemize}
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    Comme la fonction qui détermine si $n$ est dans $L$ 
+    est récursif, on peut la coder en lambda calcul. 
+    On nome ce lambda term $D_l$. Comme défini plus haut 
+    $D_l$ renvoi $\code 1$ si $t_n$ est dans $L$ sinon $\code 0$.
+
+    On défini donc $D \eqdef \lambda n. (D_l\; n)\; (\lambda y.\true)\; \false$.
+
+    $D$ renvoi $\false$ si $n = 0$ sinon il renvoi $\true$\qed
+  \end{solution}
+  
+\item\label{q:j} En utilisant le deuxième théorème de point fixe, pour
+  tous $\lambda$-termes $t$, $u$, $v$, construire un $\lambda$-terme
+  $j$ tel que:
+  \begin{itemize}
+  \item si $t \code {\num (j)} =_\beta \true$, alors $j =_\beta v$;
+  \item et si $t \code {\num (j)} =_\beta \false$, alors $j = _\beta u$.
+  \end{itemize}
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    On pose $j \eqdef A_s$ avec $s \eqdef \lambda n.t\;n\;u\;v$
+
+    On réduit $A_s \to^* s\; \code{\num(A_s)}$ (définition de $A_s$). 
+    On pose $n \eqdef \num(A_s)$ pour 
+    plus de lisibilité. On obtient donc $s\; \code n \to^* t\; \code n\; u\; v$.
+
+    Donc si:
+    \begin{itemize}
+      \item si $t\;\code n =_\beta \true$ alors 
+        $s\; \code n =_\beta \true\; u\; v \to^* u$, donc $j =_\beta u$.
+
+      \item si $t\;\code n =_\beta \false$ alors
+        $s\; \code n =_\beta \false\; u\; v \to^* v$, donc $j =_\beta v$.
+    \end{itemize}
+  \end{solution}
+  
+\newpage
+\item Déduire des questions précédentes que deux ensembles
+  $\beta$-saturés non vides $X$ et $Y$ de $\lambda$-termes ne sont
+  \emph{jamais} récursivement séparables.
+
+  \begin{solution}
+    \underline{Réponse:}
+
+    Supposons que $X$ et $Y$ sont séparés récursivement 
+    par L (un ensemble récursif). On a donc un lambda terme 
+    $D\; \code n$ qui détermine si $t_n$ est dans $L$ ou non grâce à
+    la \ref{q:D}. Soit $x \in X$ et $y \in Y$.
+
+    On applique le résultat de la \ref{q:j} avec $t=D$, $u=x$ et $v=y$.
+
+    Par définition de $D$, $D\; \code n$ renvoie toujours $\true$ ou $\false$.
+
+    On a deux cas:
+    \begin{itemize}
+      \item si $D\; \code{num(j)} =_\beta \true$, on a donc $j \in L$ et 
+        $j =_\beta y$. Or $Y$ est $\beta$-saturé donc $j \in Y$.
+      \item si $D\; \code{num(j)} =_\beta \false$, on a donc $j \notin L$
+        et $j =_\beta x$. Or $X$ est $\beta$-saturé donc $j \in X$.
+    \end{itemize}
+
+    Par définition de la sépration si $j \in L$ alors $j \notin Y$, 
+    ou si $j \notin L$ alors $j \notin X$.
+
+    Or dans les deux cas ci-dessus $j$ ne respecte par la définition.
+    Cela remet donc en cause l'existence de $j$ ce qui n'est pas possible 
+    par le deuxième thèorème de point fixe \ref{q:pf}.
+
+    Deux ensembles $\beta$-saturés non vides ne sont donc jamais récursivement 
+    séparables. \qed
+  \end{solution}
+
+\end{enumerate}
+Comme cas particulier de ce résultat (en prenant pour $Y$ le
+complémentaire de $X$), on obtient: les seuls ensembles
+$\beta$-saturés $X$ de $\lambda$-termes qui sont récursifs sont (1)
+l'ensemble vide et (2) l'ensemble de tous les $\lambda$-termes.  On
+reconnaît ici une version $\lambda$-calculatoire du théorème de Rice.
+
+\end{document}

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if ! [ $# -eq 2 ] ; then
+    echo "le nombre d'arguments doit être de 2 ( nomFichier, langage )"
+    exit 1
+fi
+
+touch $1
+
+if [ $2 = "c" ] ; then
+    cd C
+    make
+elif [ $2 = "java" ] ; then
+    cd java
+    make
+else
+    echo "le langage n'est pas reconnu"
+fi
+

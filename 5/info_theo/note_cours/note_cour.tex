@@ -1,0 +1,747 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{subcaption}
+\usepackage[standard]{ntheorem}
+\usepackage[ a4paper, vmargin={4cm, 4cm}]{geometry}
+
+\usetikzlibrary{automata, positioning, arrows}
+\usepackage{listings}
+
+\usetikzlibrary{positioning}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+\theoremstyle{nonumberplain}
+\newtheorem{thm}{Théorème} 
+\newtheorem{defi}{Définition}
+\newtheorem{prf}{Preuve}
+
+\pagestyle{empty}
+
+\tikzset{
+->, % makes the edges directed
+initial text=$ $
+}
+
+\title{Note cours Machine de Turing}
+\author{Valeran Maytié}
+\date{}
+
+\begin{document}
+\maketitle{}
+\tableofcontents
+
+\newpage
+
+\section{Intro}
+
+  Une machine de Turing est composée d'une bande et
+  d'un automate avec deux principes en plus par transition : 
+\begin{itemize}
+  \item déplacement dans la bande (gauche, droite ou immobile)
+  \item écriture sur la bande
+\end{itemize}
+
+  Pendant l'exécution on a une configuration composée :
+  \begin{itemize}
+    \item de l'état actuel
+    \item du pointeur dans la bande 
+    \item du contenu de la bande
+  \end{itemize}
+
+  Pour exécuter la machine de Turing on applique les transitions 
+  en partant de la configuration initiale (état de départ, début du mot, mot entré).
+  L'exécution s'arrête quand un état acceptant est atteint. Pour appliquer les transitions, 
+  on reconnait la lettre pour trouver la/les bonnes transitions à 
+  appliquer (déterministe/non déterministe). Ensuite, on écrit sur la bande, 
+  puis on déplace le curseur. Enfin, on va à l'état désigné par la transition.
+
+  On va aussi définir un alphabet d'entrée (caractère utilisé dans 
+  la configuration initiale)
+  et un alphabet de travail (caractère utilisé pour l'écriture).
+
+  Il existe beaucoup de variante des machines de Turing. Par exemple on peut avoir 
+  plusieurs bandes, plusieurs pointeurs, $\ldots$.
+
+  Les machines de Turing peuvent être utilisé pour :
+
+  \begin{itemize}
+    \item[$\bullet$] décider : Reconnait ou non.
+    \item[$\bullet$] calculer : transformer la bande
+    \item[$\bullet$] énumérer : faire de l'affichage
+  \end{itemize} \vspace{1cm}
+
+  Définition plus formelle des machines de Turing :
+
+  $(Q, A, B, Q_0, Q_f, T)$
+
+  avec : $Q_0 \subseteq Q, Q_f \subseteq Q, T = Q \times (B \times \left\{\leftarrow, I, \rightarrow\right\} \times B)^k \times Q$
+
+  \begin{itemize}
+    \item $Q$ :\'Etats
+    \item $A$ :Alphabet d'entré
+    \item $B$ :Alphabet de travail
+    \item $Q_0$ :\'Etats initia
+    \item $Q_f$ :\'Etats finals
+    \item $T$ : Transition (k nombre de bandes)
+  \end{itemize}
+
+\newpage
+\section{Première Machine de Turing}
+  
+  \begin{figure}[!htb]
+  \begin{tikzpicture}
+    \node[initial, state] (q0) at (0, 0) {};
+    \node[state] (q1) at (2, 0) {};
+    \node[state] (q2) at (4, 0) {};
+    \node[state] (q3) at (6, 0) {};
+    \node[state] (q4) at (8, 0) {};
+    \node[state] (q5) at (10, 0) {};
+    \node[state] (q6) at (10, -2) {};
+    \node[state] (q7) at (10, -4) {};
+    \node[state, accepting] (q8) at (6, -2) {}; 
+    \node[state, color=lightgray] (q9) at (4, -2) {};
+    \node[state, color=lightgray, accepting] (q10) at (2, -2) {};
+
+    \draw (q0) edge[above] node{$aD$} (q1)
+          (q1) edge[above] node{$bD$} (q2)
+          (q2) edge[above] node{$cD$} (q3)
+          (q3) edge[above] node{$\bot G$} (q4)
+          (q4) edge[above] node{$cG\#_c$} (q5)
+          (q5) edge[right] node{$cG\#_b$} (q6)
+          (q6) edge[right] node{$cG\#_b$} (q7)
+          (q1) edge[loop above, above] node{$aD$} (q1)
+          (q2) edge[loop above, above] node{$bD$} (q2)
+          (q3) edge[loop above, above] node{$cD$} (q3)
+          (q4) edge[loop above, above] node{$\#_cG$} (q4)
+          (q5) edge[loop above, above] node{$\#_bG$} (q5)
+          (q6) edge[loop right, right] node{$\#_aG$} (q6)
+          (q7) edge[loop right, right, align=left] 
+                node {$bD$\\$cD$\\$\#_{a, b, c} D$} (q7)
+          (q7) edge[bend left, left] node{$\bot G$} (q4)
+          (q4) edge[below right] node {$\triangleright D$} (q8)
+
+          (q8) edge[loop below, below, align=left, color=lightgray] 
+                node{$\#_aDa$\\$\#_bDb$\\$\#_cDc$} (q8)
+          (q8) edge[below, color=lightgray] node{$\bot G$} (q9)
+          (q9) edge[loop below, below, color=lightgray, align=left] 
+                node{$aG$\\$bG$\\$cG$} (q9)
+          (q9) edge[below, color=lightgray] node {$\triangleright D$} (q10)
+          ;
+  \end{tikzpicture}
+  \caption{Machine de Turing reconnaissant $\left\{a^nb^nc^n| n \geq 1\right\}$}
+  \end{figure}
+
+
+  On va exécuter la machine de Turing sur l'entrée 
+
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c}
+    \hline
+    $\triangleright$ & a & a & a & b & b & b & c & c & c & \ldots\\ 
+    \hline
+  \end{tabular}
+
+  On donne les lignes lorsqu'il y a une écriture\\
+  \begin{tabular}{llllllllll}
+    $\triangleright$  & $a$ & $a$ & $a$ & $b$ & $b$ & $b$ & $c$ & $c$ & $c$ \\
+    $\triangleright$  & $a$ & $a$ & $a$ & $b$ & $b$ & $b$ & $c$ & $c$ & $\#_c$ \\  
+    $\triangleright$  & $a$ & $a$ & $a$ & $b$ & $b$ & $\#_b$ & $c$ & $c$ & $\#_c$ \\
+    $\triangleright$  & $a$ & $a$ & $\#_a$ & $b$ & $b$ & $\#_b$ & $c$ & $c$ & $\#_c$ \\
+    $\triangleright$  & $a$ & $a$ & $\#_a$ & $b$ & $b$ & $\#_b$ 
+                      & $c$ & $\#_c$ & $\#_c$ \\  
+    $\triangleright$  & $a$ & $a$ & $\#_a$ & $b$ & $\#_b$ 
+                      & $\#_b$ & $c$ & $\#_c$ & $\#_c$ \\
+    $\triangleright$  & $a$ & $\#_a$ & $\#_a$ & $b$ 
+                      & $\#_b$ & $\#_b$ & $c$ & $\#_c$ & $\#_c$ \\
+    $\triangleright$  & $a$ & $\#_a$ & $\#_a$ & $b$ & $\#_b$ & $\#_b$ 
+                      & $\#_c$ & $\#_c$ & $\#_c$ \\  
+    $\triangleright$  & $a$ & $\#_a$ & $\#_a$ & $\#_b$ & $\#_b$ 
+                      & $\#_b$ & $\#_c$ & $\#_c$ & $\#_c$ \\
+    $\triangleright$  & $\#_a$ & $\#_a$ & $\#_a$ & $\#_b$ 
+                      & $\#_b$ & $\#_b$ & $\#_c$ & $\#_c$ & $\#_c$ \\
+  \end{tabular}
+
+  La partie en gris n'est pas obligatoire (elle remet la mémoire dans 
+  son état d'origine si c'est accepté)
+
+
+\newpage
+\section{Problème de l'arrêt}
+
+  \begin{figure}[!htb]
+  \begin{tikzpicture}
+    \node[state, initial] (q0) at (0, 0) {};
+    \node[state] (q1) at (0, -2) {};
+    \node[state] (q2) at (0, 2) {};
+    \node[state] (q3) at (2, 2) {};
+    \node[state] (q4) at (2, 0) {};
+    \node[state] (q5) at (4, 0) {};
+    \node[state, accepting] (q6) at (6, 0) {};
+
+    \draw (q0) edge[left] node{$\bot$} (q1)
+          (q0) edge[left] node{$aD$} (q2)
+          (q2) edge[loop above, above, align=left] node{$aD$\\$bD$} (q2)
+          (q2) edge[above] node{$\bot D$} (q3)
+          (q3) edge[loop above, above] node{$\bot D$} (q3)
+          (q0) edge[above] node{$bDx$} (q4)
+          (q4) edge[loop below, below, align=left] node{$bDx$\\$aDy$} (q4)
+          (q4) edge[above] node{$\bot G$} (q5)
+          (q5) edge[loop below, below, align=left] node{$xG$\\$yG$} (q5)
+          (q5) edge[above] node{$\triangleright D$} (q6)
+    ;
+  \end{tikzpicture}
+    \caption{Machine de Turing reconnaissant $b(a|b)^*$}
+  \end{figure}
+
+  On a 3 cas :
+
+  \begin{description}
+    \item[$\varepsilon$] : arrêt non final $\rightarrow$ refusé
+    \item[$b(a|b)^*$] : arrêt final (après avoir remplacé 
+      les b par des x et les a par de y)
+    \item[$a(a|b)^*$] : exécution infinie (math : refusé) (info : comment le détecter ?)
+  \end{description}
+
+  \begin{defi}[Problème de l'arrêt]
+    Le problème de l'arrêt consiste à écrire une 
+    machine de Turing qui prend en entré une machine de Turing 
+    et son entée et détermine si elle s'arrête ou non.
+  \end{defi}
+
+  \begin{thm}[Indécidabilité du problème de l'arrêt]
+    Il n'existe pas de machine de Turing résolvant le problème de l'arrêt.
+  \end{thm}
+
+  \begin{prf}
+    Supposons qu'il existe une machine de Turing $Halt$ qui prend 
+    en entré une machine de Turing et son entrée et dit décide le problème de l'arrêt.
+
+    \begin{itemize}
+      \item Si M(b) s'arrête alors Halt accepte M(b)
+      \item Si M(b) ne s'arrête pas alors Halt n'accepte pas M(b)
+    \end{itemize}
+
+    On construit la machine paradoxe :
+    \begin{lstlisting}[language=Pascal]
+      paradoxe(M)
+        if Halt accepte M(M)
+          boucler
+        else 
+          accepter
+    \end{lstlisting}
+
+    Si on applique paradoxe à lui-même on a 2 cas :
+    \begin{itemize}
+      \item Si $paradoxe(paradoxe())$ se termine en un temps fini, alors Halt 
+        accepte 
+
+        $paradoxe(paradoxe)$ donc il déclenche une boucle infinie. On a donc 
+        contradiction.
+
+      \item Si $paradoxe(paradoxe())$ ne se termine pas en un temps fini, alors Halt
+        n'accepte pas $paradoxe(paradoxe)$ et par définition de paradoxe, 
+        il est censé s'arrêter. 
+
+        On a donc une contradiction.
+    \end{itemize}
+  \end{prf}
+
+\newpage
+\section{Non déterministe}
+
+  \begin{figure}[!htb] 
+  \center
+  \begin{tikzpicture}
+    \node[state, initial] (q0) at (0, 0) {};
+    \node[state] (q1) at (2, 0) {};
+    \node[state] (q2) at (4, 0) {};
+    \node[state, accepting] (q3) at (6, 0) {};
+    \node[state] (q4) at (4, -2) {};
+    \node[state] (q5) at (6, -2) {};
+
+    \draw (q0) edge[loop above, above] node{$aD$} (q0)
+          (q0) edge[above] node{$aD$} (q1)
+          (q1) edge[above] node{$bD$} (q2)
+          (q2) edge[above] node{$\bot G$} (q3)
+          (q1) edge[left] node{$bD$} (q4)
+          (q4) edge[above] node{$\bot D$} (q5)
+          (q5) edge[loop above, above] node{$\bot D$} (q5)
+    ;
+  \end{tikzpicture}
+    \caption{Machine de Turing non déterministe reconnaissant $a^*b$}
+  \end{figure}
+
+  \begin{figure}[!htb]
+  \begin{subfigure}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \draw    (0, 0) -- (1, 0) ;
+    \end{tikzpicture}
+    \caption{Pas de boucle $ab$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \draw    (0, 0)    -- (0.30, 0.5) 
+          -- (0.60, 0) -- (0.90, 0.5) 
+          -- (1.2, 0)  -- (1.8, 0);
+      \draw (1.8, 0) -- (2.2, 0);
+    \end{tikzpicture}
+    \caption{Sortie de boucle avec fin $a^nb$}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{\linewidth}
+    \centering
+    \begin{tikzpicture}
+      \draw    (0, 0)    -- (0.30, 0.5) 
+          -- (0.60, 0) -- (0.90, 0.5) 
+          -- (1.2, 0)  -- (1.8, 0);
+    \end{tikzpicture}
+    \caption{Sortie de boucle sans fin $a^n$}
+  \end{subfigure}%
+
+  \begin{subfigure}{.4\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \draw    (0, 0)    -- (0.30, 0.5) 
+          -- (0.60, 0) -- (0.90, 0.5) 
+          -- (1.2, 0)  -- (1.5, 0.5) 
+          -- (1.8, 0)  -- (2.1, 0.5) 
+          -- (2.4, 0);
+    \end{tikzpicture}
+    \caption{Première boucle (termine sur $\bot$) $a^n$}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}{.4\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \draw    (0, 0)    -- (0.30, 0.5) 
+          -- (0.60, 0) -- (0.90, 0.5) 
+          -- (1.2, 0)  -- (1.5, 0.5) 
+          -- (1.8, 0)  -- (2.1, 0.5) 
+          -- (2.4, 0) -- (2.7, 0) 
+          -- (3.0, -0.5) -- (3.30, 0) 
+          -- (3.60, -0.5) -- (3.90, 0) 
+          -- (4.2, -0.5)  -- (4.5, 0) 
+          -- (4.8, -0.5)  -- (5.1, 0) 
+          -- (5.4, -0.5);
+    \end{tikzpicture}
+    \caption{boucle infinie sur la fin $a^nb$}
+  \end{subfigure}
+  \caption{Comportement possible}
+  \end{figure}
+
+  On définit alors :
+  $\mathcal{L}(\mathcal{M}) = \left\{u | \text{ il existe une exécution acceptante }\right\}$
+
+  Donc la machine de Turing ($\mathcal{M}$) au-dessus reconnait le langage $a^*b$, car 
+  il y a toujours un chemin dans $\mathcal{M}$ si le mot ne contient que des $a$ et 
+  fini par un $b$.
+
+\section{Complexité}
+
+On définit la complexité d'une machine de Turing de deux manières différente
+selon si elle est déterministe ou non.
+
+\subsection{Déterministe}
+
+$C_{temps}: n \mapsto \underset{|u| \leq n}{\max} \{
+  \text{tems d'exécution de $\mathcal{M}$ sur u}\}$
+
+\subsection{Non Déterministe}
+
+$C_{temps}: n \mapsto \underset{|u| \leq n, u \in \mathcal{L(\mathcal{M})}}{\max}
+                    (\min \{|e| | \text{ e exécution 
+                                      acceptante de $\mathcal{M} sur u$}\})$
+
+\subsection{P et NP}
+
+P : X est P ssi il existe $\mathcal{M}$ une machine de Turing déterministe de 
+    complexité polynomiale tq $\mathcal{M}(\mathcal{M}) = X$
+
+NP : X est NP ssi il existe $\mathcal{M}$ une machine de Turing non déterministe de 
+    complexité polynomiale tq $\mathcal{M}(\mathcal{M}) = X$
+
+\newpage
+\section{Plusieurs bandes}
+
+\begin{figure}[!htb]
+  \center
+  \begin{tikzpicture}
+    \node[state, initial] (q0) at (0, 0) {};
+    \node[state] (q1) at (0, 2) {};
+    \node[state] (q2) at (0, -2) {};
+    \node[state, accepting] (q3) at (3, 0) {};
+
+    \draw (q0) edge[left, bend left] node{$\binom{aI}{\bot Da}$} (q1)
+          (q1) edge[right, bend left] node{$\binom{aD}{\bot Da}$} (q0)
+          (q0) edge[left, bend right] node{$\binom{bI}{\bot Db}$} (q2)
+          (q2) edge[right, bend right] node{$\binom{bD}{\bot Db}$} (q0)
+          (q0) edge[above] node{$\binom{\bot}{\bot}$} (q3)
+          ;
+  \end{tikzpicture}
+  \caption{Machine de Turing sur 2 bandes réalisant la fonction $begaye$}
+\end{figure}
+
+\begin{enumerate}
+  \item\begin{tabular}{|c|c|c|c|c|c|c}
+    \hline
+    $\triangleright$ & $a$ & $b$ & $b$ & $a$ & $a$ & $\ldots$ \\
+    \hline
+  \end{tabular}
+  \item\begin{tabular}{|c|c|c|c|c|c|c}
+    \hline
+    $\triangleright$ & $a$ & $b$ & $b$ & $a$ & $a$ & $\ldots$ \\
+    \hline
+  \end{tabular}
+\end{enumerate}
+
+
+Après avoir exécuté la machine on a :
+
+\begin{enumerate}
+  \item\begin{tabular}{|c|c|c|c|c|c|c}
+    \hline
+    $\triangleright$ & $a$ & $b$ & $b$ & $a$ & $a$ & $\ldots$ \\
+    \hline
+  \end{tabular}
+  \item\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c}
+    \hline
+    $\triangleright$ & $a$ & $a$ & $b$ & $b$ & $b$ & $b$ & $a$ & $a$ & $a$ & $a$ & $\ldots$ \\
+    \hline
+  \end{tabular}
+\end{enumerate}
+
+$C_{temps} = \mathcal{O}(n)$ avec $n$ la taille de l'entrée
+
+On remarque qu'il est aussi possible de faire la fonction bégaie 
+sur une seule bande :
+
+\begin{figure}[!htb]
+  \begin{tikzpicture}
+    \node[state, initial] (q0) at (0, 0) {};
+    \node[state] (q1) at (2, 2) {};
+    \node[state] (q2) at (2, -2) {};
+    \node[state, accepting] (q3) at (4, 0) {};
+    \node[state] (q4) at (4, -3) {};
+
+    \draw (q0) edge[above left] node{$aD\#_a$} (q1)
+          (q0) edge[below left] node{$bD\#_b$} (q2)
+          (q1) edge[loop above, above] node{$aDa$} (q1)
+          (q2) edge[loop below, below] node{$bDb$} (q2)
+          (q1) edge[bend right, left] node{$bDa$} (q2)
+          (q2) edge[bend right, right] node{$aDb$} (q1)
+          (q1) edge[above right] node{$\bot G$} (q3)
+          (q2) edge[below right] node{$\bot G$} (q3)
+          (q3) edge[right, text width=2cm] node{$\#_aDa$\\$\#_bDb$} (q4)
+          (q4) edge[bend left=90, below left] node{$aD$\\$bD$} (q0)
+    ;
+  \end{tikzpicture}
+  \caption{Machine de Turing sur 1 bande réalisant la fonction $begaye$}
+\end{figure}
+
+\newpage
+\begin{Proposition}
+  Un calcul est faisable sur 1 bande $\Leftrightarrow$ faisable sur k bandes.
+\end{Proposition}
+
+\begin{prf} Preuve de la proposition
+  \begin{description}
+    \item[$\Rightarrow$] : triviale (si le calcule 
+      est sur une bande on utilise juste $(k-1)$ bande vide)
+
+    \item[$\Leftarrow$] : Il y a plusieurs solutions pour simuler k bandes 
+      en une bande. (détaillé dans les sections en dessous).
+  \end{description}
+\end{prf}
+
+\subsection{Bout à Bout}
+
+  On peut mettre les bandes bout à bout séparer par un $\$$.
+
+  La lettre pointées est surligné pour la reconnaitre.
+
+  Par exemple:
+
+  \begin{tikzpicture}
+    
+  \node (T1) at (0, 0) [align=left, anchor=east] {
+    \begin{tabular}{*{7}{c}}
+      \hline
+      \multicolumn{1}{|c}{$\triangleright$} & 
+      \multicolumn{1}{|c}{$a$} & 
+      \multicolumn{1}{|c}{$b$} & 
+      \multicolumn{1}{|c}{$c$} & 
+      \multicolumn{1}{|c}{$d$} &
+      \multicolumn{1}{|c}{$e$} &
+      \multicolumn{1}{|c}{$\ldots$} \\
+      \hline & & & $\uparrow$ & & & \\
+    \end{tabular}};
+
+  \node (T2) at (-1.75, -1) [align=left, anchor=east] {
+    \begin{tabular}{*{4}{c}}
+      \hline
+      \multicolumn{1}{|c}{$\triangleright$} & 
+      \multicolumn{1}{|c}{$u$} & 
+      \multicolumn{1}{|c}{$v$} & 
+      \multicolumn{1}{|c}{$\ldots$} \\
+      \hline
+      & & $\uparrow$ & \\
+    \end{tabular}};
+
+  \node (T) at (4, -0.5){ 
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c}
+    \hline
+    $\triangleright$ & $a$ & $b$ & $\bar{c}$ & $d$ & $e$ 
+    & $\$$ & $u$ & $\bar{v}$ & $\ldots$ \\
+    \hline
+  \end{tabular}};
+
+  \draw[->,ultra thick](0, -0.5)--(0.5, -0.5);
+  \end{tikzpicture}
+
+  Algo: 
+
+  \begin{itemize}
+    
+    \item On parcoourt le mot et on retient les lettres lues. 
+
+    \item On en déduit la transition à simuler.
+
+    \item On revient à gauche et on exécute la transition. 
+
+    \item Chaque fois que le mot déborde, il faut décaler 
+          la partie droite d'une case vers la droite. (Cela peut arriver k fois)
+  \end{itemize}
+
+  Coût: \begin{itemize}
+    \item Pour 1 pas : $\mathcal{O}(k \times C_{espace, \Sigma})$
+
+    \item Total : \begin{align*}
+        & \mathcal{O}(k C_{esapce, \Sigma} \times C_{temps}) + \mathcal{O}(n) \\
+        & \leq \mathcal{O}(k^2 \times (C_{temps})^2) + \mathcal{O}(n)     
+        & C_{espace, \Sigma} \leq k C_{temps}
+    \end{align*}
+  \end{itemize}
+
+\subsection{Interclassement}
+
+  On peut allterner les lettres de chaques bandes.
+
+  La lettre pointées est surligné pour la reconnaitre.
+
+  Par exemple:
+
+  \begin{tikzpicture}
+    
+  \node (T1) at (0, 0) [align=left, anchor=east] {
+    \begin{tabular}{*{7}{c}}
+      \hline
+      \multicolumn{1}{|c}{$\triangleright$} & 
+      \multicolumn{1}{|c}{$a$} & 
+      \multicolumn{1}{|c}{$b$} & 
+      \multicolumn{1}{|c}{$c$} & 
+      \multicolumn{1}{|c}{$d$} &
+      \multicolumn{1}{|c}{$e$} &
+      \multicolumn{1}{|c}{$\ldots$} \\
+      \hline & & & $\uparrow$ & & & \\
+    \end{tabular}};
+
+  \node (T2) at (-1.75, -1) [align=left, anchor=east] {
+    \begin{tabular}{*{4}{c}}
+      \hline
+      \multicolumn{1}{|c}{$\triangleright$} & 
+      \multicolumn{1}{|c}{$u$} & 
+      \multicolumn{1}{|c}{$v$} & 
+      \multicolumn{1}{|c}{$\ldots$} \\
+      \hline
+      & & $\uparrow$ & \\
+    \end{tabular}};
+
+  \node (T) at (4, -0.5){ 
+  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c}
+    \hline
+    $\triangleright$ & $a$ & $u$ & $b$ & $\bar{v}$ & $\bar{c}$ 
+        & & $d$ & & $e$ & $\ldots$ \\
+    \hline
+  \end{tabular}};
+
+  \draw[->,ultra thick](0, -0.5)--(0.5, -0.5);
+  \end{tikzpicture}
+
+   Algo: 
+
+  \begin{itemize}
+    
+    \item On parcoourt le mot et on retient les lettres lues. 
+
+    \item On en déduit la transition à simuler.
+
+    \item On revient à gauche et on exécute la transition. 
+  \end{itemize}
+
+  Coût: \begin{itemize}
+    \item Pour 1 pas : $\mathcal{O}(k \times C_{espace, \Sigma})$
+
+    \item Total : \begin{align*}
+        & \mathcal{O}(k C_{esapce, Max} \times C_{temps}) + \mathcal{O}(n^2) \\
+        & \leq \mathcal{O}(k^2 \times (C_{temps})^2) + \mathcal{O}(n^2)     
+        & C_{espace, Max} \leq k C_{temps}
+    \end{align*}
+  \end{itemize}
+
+\subsection{Superposition}
+
+  On supperpose toutes les lettres pour quelles rentrent dans une case.
+
+  La lettre pointées est surligné pour la reconnaitre.
+
+  Par exemple:
+
+  \begin{tikzpicture}
+    
+  \node (T1) at (0, 0) [align=left, anchor=east] {
+    \begin{tabular}{*{7}{c}}
+      \hline
+      \multicolumn{1}{|c}{$\triangleright$} & 
+      \multicolumn{1}{|c}{$a$} & 
+      \multicolumn{1}{|c}{$b$} & 
+      \multicolumn{1}{|c}{$c$} & 
+      \multicolumn{1}{|c}{$d$} &
+      \multicolumn{1}{|c}{$e$} &
+      \multicolumn{1}{|c}{$\ldots$} \\
+      \hline & & & $\uparrow$ & & & \\
+    \end{tabular}};
+
+  \node (T2) at (-1.75, -1) [align=left, anchor=east] {
+    \begin{tabular}{*{4}{c}}
+      \hline
+      \multicolumn{1}{|c}{$\triangleright$} & 
+      \multicolumn{1}{|c}{$u$} & 
+      \multicolumn{1}{|c}{$v$} & 
+      \multicolumn{1}{|c}{$\ldots$} \\
+      \hline
+      & & $\uparrow$ & \\
+    \end{tabular}};
+
+  \node (T) at (4, -0.5){ 
+    \begin{tabular}{|c|c c|c c|c c|c c|c c|c}
+    \hline
+    $\triangleright$ & $a$ & $u$ & $b$ & $\bar{v}$ & $\bar{c}$ 
+        & & $d$ & & $e$ & & $\ldots$ \\
+    \hline
+  \end{tabular}};
+
+  \draw[->,ultra thick](0, -0.5)--(0.5, -0.5);
+  \end{tikzpicture}
+
+  Algo: 
+
+  \begin{itemize}
+    
+    \item On parcoourt le mot et on retient les lettres lues. 
+
+    \item On en déduit la transition à simuler.
+
+    \item On revient à gauche et on exécute la transition. 
+  \end{itemize}
+
+  Coût: \begin{itemize}
+    \item Pour 1 pas : $\mathcal{O}(k \times C_{espace, Max})$
+
+    \item Total : \begin{align*}
+        & \mathcal{O}(C_{esapce, Max} \times C_{temps}) \\
+        & \leq \mathcal{O}((C_{temps})^2)    
+        & C_{espace, Max} \leq k C_{temps}
+    \end{align*}
+  \end{itemize}
+
+\subsection{Superposition bi-infinie}
+
+  On supperpose toutes les lettres pour quelles rentrent dans une case.
+
+  La lettre pointées est surligné pour la reconnaitre.
+
+  Par exemple:
+
+  \begin{tikzpicture}
+    
+  \node (T1) at (0, 0) [align=left, anchor=east] {
+    \begin{tabular}{*{7}{c}}
+      \hline & 
+      \multicolumn{1}{|c}{$a$} & 
+      \multicolumn{1}{|c}{$b$} & 
+      \multicolumn{1}{|c}{$c$} & 
+      \multicolumn{1}{|c}{$d$} &
+      \multicolumn{1}{|c}{$e$} &
+      \multicolumn{1}{|c}{$\ldots$} \\
+      \hline & & & $\uparrow$ & & & \\
+    \end{tabular}};
+
+  \node (T2) at (-1.75, -1) [align=left, anchor=east] {
+    \begin{tabular}{*{4}{c}}
+      \hline & 
+      \multicolumn{1}{|c}{$u$} & 
+      \multicolumn{1}{|c}{$v$} & 
+      \multicolumn{1}{|c}{$\ldots$} \\
+      \hline
+      & & $\uparrow$ & \\
+    \end{tabular}};
+
+  \node (T) at (4, -0.5){ 
+    \begin{tabular}{c|c c|c c|c c|c c|c c|c}
+    \hline
+        & $a$ & & $b$ & $u$ & $\bar{c}$ & $\bar{v}$ 
+        & $d$ & & $e$ & & \\
+    \hline
+  \end{tabular}};
+
+  \draw[->,ultra thick](0, -0.5)--(0.5, -0.5);
+  \end{tikzpicture}
+
+  Algo: 
+
+  \begin{itemize}
+    
+    \item On connaît immédiatement la transition à simuler
+
+    \item On effectue les modifications de lettres
+
+    \item Pour chaques bandes on effectue le déplacement (droit ou gauche). 
+  \end{itemize}
+
+  Coût: \begin{itemize}
+    \item Pour 1 pas : $\mathcal{O}(C_{espace, Max})$
+
+    \item Total : \begin{align*}
+        & \mathcal{O}(C_{esapce, Max} \times C_{temps}) \\
+        & \leq \mathcal{O}((C_{temps})^2)    
+        & C_{espace, Max} \leq k C_{temps}
+    \end{align*}
+  \end{itemize}
+
+\newpage
+\subsection{Palindrome}
+
+
+\end{document}

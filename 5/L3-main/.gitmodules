@@ -1,0 +1,3 @@
+[submodule "compilation/projet/miniml"]
+	path = compilation/projet/miniml
+	url = https://gitlab.com/valoranM/miniml

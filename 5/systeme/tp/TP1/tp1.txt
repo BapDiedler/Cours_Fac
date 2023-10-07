@@ -1,0 +1,26 @@
+exo 1:
+    1. Quel est le rôle  d'un système d'exploitation ?
+       Le rôle du SE est d'être l'intermédiaire entre les applications et le matériel.
+    2. Qu'est-ce que la multiprogrammation dans un système d'exploitation ?
+       La multiprogrammation est le fait de pouvoir utiliser plusieurs composants de l'ordinateur. (UC, registre ...)
+    3. Quelle est la différence entre une exception et une interruption dans un système ?
+       la différence est que l'exception est déclancher par un logiciel et l'interruption est déclanché par un périphérique.
+
+
+exo 2:
+    RIEN
+
+
+exo 3:
+    1. awk '{print $2}' nom_fichier ou alors cut -d " " -f2
+    2. cat nom_fichier | tr -s '[[:space:]]' '\n' | uniq
+    3. cat nom_fichier | tr -s '[[:space:]]' '\n' | sort | uniq -c | sort -rn | head -n 50
+    4. grep '[[:upper:]]' nom_fichier
+
+
+exo 4:
+    1. grep ':Restauration$' entreprise.txt > restauration.txt
+    2. grep ':Restauration$' entreprise.txt | grep '^94,'
+    3. grep '^91' entreprise.txt | wc -l
+    4. grep ':.*$' entreprise.txt | uniq | wc -l
+    5. grep ':Edition$' entreprise.txt | cut -d"," -f2 | cut -d":" -f1 | sort

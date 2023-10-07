@@ -1,0 +1,6 @@
+Maya ma = new Maya(6) ;
+
+for (int i = 0 ; i < 4 ; i++) {
+   Maya m = new Maya(i) ;
+   int k = m.getVal() ;
+}
