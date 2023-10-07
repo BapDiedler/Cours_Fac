@@ -1,0 +1,68 @@
+.data
+	tab:	.word 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33
+	V:	.word 2
+	S:	.word 10
+
+.text
+	lw $a0, V
+	lw $a1, S
+	jal ped
+	jal print
+	j exit
+	
+#fonction qui donne la valeur dans la matrice
+valCase:lw $t0, S
+	addi $t0, $t0, 1
+	mul $v0, $t0, $a0
+	move $t0, $a1
+	add $v0, $v0, $t0
+	mul $v0, $v0, 4
+	lw $v0, tab($v0)
+	jr $ra
+
+#fonction du sujet
+ped:	sw $ra, 0($sp)
+	sw $a0, -4($sp)
+	sw $a1, -8($sp)
+	addi $sp, $sp, -12
+	
+	li $v0, 0#res = 0
+	jal valCase
+	move $t0, $v0#t = tab[V][S]
+	
+	#si(V != 0 && S != 0)
+	beqz $a0, fin
+	beqz $a1, fin
+	#si(t == 0)
+	bnez $t0, else
+	
+	addi $a1, $a1, -1
+	jal ped
+	j fin
+	
+	
+else:	sw $t0, 0($sp)
+	addi $sp, $sp, -4
+	sub $a0, $a0, $t0
+	jal ped
+	lw $t0, 4($sp)
+	addi $sp, $sp, 4
+	add $v0, $v0, $t0
+	j fin
+
+fin:	lw $a1, 4($sp)
+	lw $a0, 8($sp)
+	lw $ra, 12($sp)
+	addi $sp, $sp, 12
+	jr $ra
+
+
+#fonction qui affiche
+print:	move $a0, $v0
+	li $v0, 1
+	syscall 
+	jr $ra
+
+#fonction qui fini le programme
+exit:	li $v0, 10
+	syscall	

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#fonction qui crée et complète un dossier externe
+creationDossier() {
+    #creation de sujet
+    mkdir -p sujet
+    
+    #creation de ressource
+    mkdir -p ressource
+
+    #creation de data
+    mkdir -p data
+}
+
+#fonction qui remplit le dossier data
+remplirData() {
+    mv DATA* data
+    mv *.jpg data
+}
+
+#fonction qui remplit le dossier sujet
+remplirSujet() {
+    mv *.pdf sujet
+}
+
+#fonction qui remplit le ressource
+remplirRessource() {
+    mv *.zip ressource
+    mv *.png ressource
+}
+
+#programme principal
+creationDossier
+remplirData
+remplirSujet
+remplirRessource

@@ -1,0 +1,58 @@
+.data
+	start: .word 17:20
+	end: .word 0
+.text
+	la $a0, start
+	la $a1, end
+	jal moy
+	jal print
+	j exit
+
+#fonction somme des éléments d'un tableau	
+sum:	sw $ra, -4($sp)
+	sw $a0, -8($sp)
+	sw $a1, -12($sp)
+	addi $sp, $sp, -12
+	
+	li $v0, 0
+loop:	beq $a0, $a1, retSum
+	lw $t0, 0($a0)
+	add $v0, $v0, $t0
+	addi $a0, $a0, 4
+	j loop
+	
+retSum:	lw $a1, 0($sp)
+	lw $a0, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12
+	jr $ra
+	
+moy:	sw $ra, -4($sp)
+	sw $a0, -8($sp)
+	sw $a1, -12($sp)
+	addi $sp, $sp, -12
+	
+	jal sum
+	
+	sub $t0, $a1, $a0
+	li $t1, 4
+	div $t0, $t1
+	mflo $t1
+	
+	div $v0, $t1
+	mflo $v0
+	
+	lw $a1, 0($sp)
+	lw $a0, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12
+	
+	jr $ra
+
+print:	move $a0, $v0
+	li $v0, 1
+	Syscall
+	jr $ra
+
+exit:	li $v0, 10
+	Syscall

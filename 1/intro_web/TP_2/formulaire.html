@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>formulaire</title>
+</head>
+<body>
+	<form action="information" method="post">
+	<fieldset>
+	<legend> informations personnelles</legend>
+	<label for="nom">Nom :</label>
+	<input type="text" id="nom" name="nom" size="25" maxlength="100" placeholder="Ex. Callot">
+	<br>
+	<label for="prenom">Prénom :</label>
+	<input type="text" id="prenom" name="prenom" size="25" maxlength="100" placeholder="Ex. Jacques">
+	<br>
+	<label for="civil">Civilité :</label>
+	<input type="text" id="civil" name="civil" size="5" maxlength="50" placeholder="M." list="civile">
+	<datalist id="civile">
+		<option value="M">
+		<option value="F">
+	</datalist>
+	<br>
+	<label for="adresse">Adresse mail:</label>
+	<input type="email" id="adresse" name="adresse" size="25" maxlength="100" placeholder="Ex. Jacques.Callot@loria.fr">
+	<br>
+	<label for="mdp">mot de passe :</label>
+	<input type="password" id="mdp" name="mdp" size="25" maxlength="100">
+	</fieldset>
+	<fieldset>
+	<legend>niveau et compétence</legend>
+	<br>
+	<label for="nevel">Votre niveau en HTML:</label>
+	<br>
+	<input type="radio" name="nevel" value="nul" checked>Nul
+	<br>
+	<input type="radio" name="nevel" value="moyen" checked>Moyen
+	<br>
+	<input type="radio" name="nevel" value="bon" checked>Bon
+	<br>
+	<input type="radio" name="nevel" value="trs_bon" checked>Très bon
+	<br>
+	<label for="competence">Vous acez des compétences en:</label>
+	<br>
+	<input type="radio" name="competence" value="c" checked>C
+	<br>
+	<input type="radio" name="competence" value="c++" checked>C++
+	<br>
+	<input type="radio" name="competence" value="java" checked>Java
+	<br>
+	<input type="radio" name="competence" value="caml" checked>Caml
+	<br>
+	<label for="autre_competence">Autre compétences:</label>
+	<br>
+	<textarea name="autre_compétences" id="autre_competence" rows="10" cols="40">
+	</textarea>

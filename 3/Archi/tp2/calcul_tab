@@ -1,0 +1,56 @@
+.data
+	start: .word 17:20
+	end: .word 0
+.text
+	la $a0,start
+	la $a1,end
+	jal Moy
+	jal print
+	j exit
+	
+
+#fonction qui calcul la somme d'un tableau
+Sum:	sw $ra, -4($sp)
+	sw $a0, -8($sp)
+	sw $a1, -12($sp)
+	addi $sp ,$sp, -12
+	li $v0, 0
+loop:	beq $a1, $a0, retSum#on arrête si a1 = a0
+	lw $t0, 0($a0)#t0 prend la valeur de la case courante
+	addi $a0, $a0, 4#on passe à la case suivante
+	add $v0, $v0, $t0
+	j loop
+retSum:	lw $ra, 8($sp)
+	lw $a0, 4($sp)
+	lw $a1, 0($sp)
+	addi $sp ,$sp, 12
+	jr $ra 
+
+#fonction qui calcul la moyenne d'un tableau
+Moy:	sw $ra, -4($sp)
+	addi $sp, $sp, -4
+	
+	jal Sum
+	#calcul de la taille du tableau
+	sub $t0, $a1, $a0
+	li $t1, 4
+	div $t0, $t1
+	mflo $t0
+	#calcul de la moyenne
+	div $v0, $t0
+	mflo $v0
+	
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	
+	jr $ra
+	
+#fonction qui affiche
+print:	la $a0, ($v0)
+	li $v0, 1
+	syscall
+	jr $ra
+
+#fonction qui termine un programme	
+exit:	li $v0, 10
+        syscall 

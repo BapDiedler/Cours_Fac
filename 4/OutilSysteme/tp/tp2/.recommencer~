@@ -1,0 +1,9 @@
+#!/bin/bash
+
+rm -r calculette
+rm -r DATA
+rm -r ressource
+rm -r sujet
+rm Expression.java
+
+cp doc/* ./

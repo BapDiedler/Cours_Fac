@@ -1,0 +1,109 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[ a4paper, hmargin={0.5cm, 0.5cm}, vmargin={2cm, 2cm}]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+\title{\textbf{Pagination}}
+\date{}
+\author{Valeran MAYTIE}
+
+\begin{document}
+\maketitle
+
+\begin{exo} Question de cours
+\begin{enumerate}
+    \item Pagination:\begin{itemize}
+        \item Découper la mémoire en cadres de taille fixe
+        \item Découper le processus en pages de taille fixe
+        \item Placer les pages dans les cadres
+    \end{itemize}
+
+    \item Il y a une perte de mémoire potentielle dans le dernier bloc.
+    \item ça permet de charger moins de tables de cadres dans la mémoire (donc économiser de l'espace mémoire).
+    \item  Cela permet de réduire le nombre de pages qui doivent être chargées dans la mémoire.
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Fondements
+\begin{enumerate}
+    \item C'est pour une traduction des adresse plus simple et que chaque bits soient utilisés.
+    \item \begin{itemize}
+        \item adresse logique: 13 bits ($2^3 + 2^{10}$)
+        \item adresse physique: 15 bits ($2^5 + 2^{10}$)
+    \end{itemize}
+    \item \begin{itemize}
+        \item On à $2048 / 8 = 256$ pages (8 bits) 
+        \item On à $8ko$ pour une page (13 bits)
+    \end{itemize} 
+    \item La table maxium de la table des pages est $2^8 * 6 = 1536$ bits
+    \item Les 3 programmes vont utiliser 137 pages de 8ko (1.096Mo)\\
+    Il y donc $1096 - 1082 = 14$ko de mémoire non utilisées (1\%)
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Pagination à 1 niveau
+\begin{enumerate}
+    \item La taille maximale de la mémoire physique est: $2^{32} = 4$Go
+    \item La taille de l'adresse logique est $16 + 16 = 32$bits ($4$Go$ / 64$ko $= 2^{16}$pages)
+    \item La quantité de mémoire virutelle maximale est $4$Go  $*$ $2048 = 8192$Go
+    \item Pour avoir une adresse qui va jusqu'à 1Go il faut que l'adresse fasse 30bits
+    \item \begin{itemize}
+        \item Décalage adresse logique: $64$ko $= 2^{16}$ (16 bits de décalage) 
+        \item Décalage adress physique: Même décalage que l'adress logique
+    \end{itemize}
+    \item Le numéro de page de l'adresse logique est codé sur 16bits
+    \item Le numéro de page de l'adresse physique est codé sur $30 - 16 = 14$bits
+    \item La taille maximale de la table des pages d'un processus est $(14 + 1) * 16 = 240$ bits
+    \item \begin{itemize}
+        \item $\mathtt{0x00030B72}$ on récupère la page 3 dont 
+                le cadre est à l'adresse $\mathtt{0x0B30000}$.\\
+                Le décalage est de $\mathtt{0x0B72}$ donc l'adresse physique est: 
+                $\mathtt{0x0B30000} + \mathtt{0x0B72} = \mathtt{0x0B30B72}$
+        \item $\mathtt{0x00060D81}$ on récupère la page 6 dont le cadres
+                est à l'adresse $\mathtt{0x0F00000}$.\\
+                Le décalage est de $\mathtt{0x0D81}$ donc l'adresse physique est:
+                $\mathtt{0x0F00000} + \mathtt{0x0D81} = \mathtt{0x0F00D81}$
+    \end{itemize}
+    \item Cette adresse appartient bien au programmes car sont adresse de cadre est 
+            $\mathtt{0x2A00000}$ et le bit de validité est à 1.
+    \item \begin{itemize}
+        \item $\mathtt{0x37}$: Oui elle est valide car elle est bien entre 0 et 1Go
+        \item $\mathtt{0x90003145}$: Non car elle n'est pas entre 0 et 1Go
+    \end{itemize}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Pagination à 1 niveau
+    
+\end{exo}
+
+\begin{exo} Pagination à 2 niveaux
+\begin{enumerate}
+    \item la taille de l'adresse logique est 26bits ($2^{26} = 64$Mo)
+    \item la taille de l'adresse physique est 32bits ($2^{32} = 4$Go)
+    \item Il y a $2^{20}$ cadre dans la RAM ($\frac{2^{32}}{2^{12}} = 2^{20}$)
+    \item Il y a $2^{14}$ pages par processus ($\frac{2^{26}}{2^{12}} = 2^{14}$)
+    \item Une ligne fait 32bits $2^5$ et il y a 14 pages donc la table fait $2^{14} * 2^5 = 0.5$Mo\\
+        En tout on à $0.5 * 1024 = 512$Mo pour les tables des pages.
+    \item 
+\end{enumerate}
+\end{exo}
+
+\end{document}

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+rm -r glaces
+rm -r DATA
+rm -r ressource
+rm -r sujet
+rm *.java
+
+cp doc/* ./

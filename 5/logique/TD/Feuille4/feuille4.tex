@@ -1,0 +1,157 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+\pagestyle{empty}
+\lstset{language=caml}
+
+
+\begin{document}
+\begin{center}
+    \large\sc Feuille d'exercice 4
+\end{center}
+
+\begin{exo}
+\begin{enumerate}
+    \item $\mathfrak{D} = \left\{a,b\right\}$\\
+        Base de Herbrand: $P(a), P(b), Q(a), Q(b)$ $2^4$ interprétation\\
+        $\left\{P(a) \wedge Q(a) \wedge (\neg P(a) \vee Q(b)), 
+                P(b) \wedge Q(b) \wedge (\neg P(a) \vee Q(b))\right\}$ 
+                
+        Or ces deux formules ne peuvent pas être vrai en même temps donc la formule est insatisfiable
+    \item $\mathfrak{D} = \left\{a,b\right\}$ \\
+        Base de Herbrand: $P(a), P(b), Q(a), Q(b)$\\
+        $\left\{(P(a) \vee Q(a)) \wedge \neg P(a) \wedge \neg Q(b), 
+                (P(b) \vee Q(b)) \wedge \neg P(a) \wedge \neg Q(b)\right\}$
+
+        Satisfiable si $P(a) = F, P(b) = V, Q(a) = V, Q(b) = F$
+
+    \item Signature: $f$ arité 1, on ajoute une constant $a$\\
+        $\mathfrak{D} = \left\{a, f(a), f(f(a)), \ldots, f(\ldots f(a))\right\}$ \\
+        Base de Herbrand: $P(a), P(f(a)), \ldots, P(f^n(a))$\\
+        $\left\{P(a), \wedge \neg P(f(a)), P(f(a)) \wedge \neg P(f^2(a)), \ldots\right\}$
+
+        insatisfiable car si $P(a) \wedge \neg P(f(a))$ 
+        est vrai alors $P(f(a)) \wedge \neg P(f^2(a))$ est faux car $P(f(a)), \neg P(f(a))$ 
+        doivent être vrai.
+
+    \item Signature: $s$ arrité 1 avec les constante a, b etc\\
+        $\mathfrak{D} = \left\{a, s(a), \ldots, s^n(a)\right\}$\\
+        Base de Herbrand: $B = \left\{R(s^k(a), s^l(a) | k, l \in \mathbb{N})\right\}$
+
+        satisfiable: $R_H = \left\{R(S^k(a), s^l(a)) | l > k\right\} $
+        
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Base de Herbrand sur ensembles de formules
+\begin{enumerate}
+  \item $\left\{\forall x, (P(x) \vee Q(x) \vee R(x)); \neg P(a); \neg Q(b); \neg R(c)\right\}$\\
+    Signature = $\left\{a, b, c\right\}$\\
+    $\mathfrak{D} = \left\{a, b, c\right\}$\\
+    Base de Herbrand: $P(a), P(b), P(c), Q(a), Q(b), Q(c), R(a), R(b), R(c)$\\
+    $\left\{(P(a) \vee Q(a) \vee R(a)), (P(b) \vee Q(b) \vee R(b)), (P(c) \vee Q(c) \vee R(c)),
+      \neg P(a), \neg Q(b), \neg R(c)\right\}$\\
+    Satsifiable si $P(b) = V, Q(c) = V, R(a) = V$
+
+  \item $\left\{\forall x, P(x); \forall x, \neg Q(x); \forall x, (\neg P(f(x)) \vee Q(f(x)))\right\}$\\
+    Signature = $f$ d'arrité 1 et une constant a\\
+    $\mathfrak{D} = \left\{a, f(a), \ldots, f(\ldots f(a))\right\}$\\
+    $\left\{P(f^n(a)); \neg Q(f^n(a)); \neg P(f^{n+1}(a)) \vee Q(f^{n+1}(a)) | n \in \mathbb{N}\right\}$
+    
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Ocaml
+\begin{lstlisting}
+    let rec clauseb = function                    let rec fncb = function
+        | Var n -> true                              | Var n -> true
+        | Bot -> true                                | Bot -> true
+        | Top -> true                                | Top -> true
+        | Neg f -> (match f with                     | Neg f -> clauseb (Neg f)
+                    |Var n -> True                   | Bin(f, Or, g) ->     
+                    | _ -> false)                       clauseb f && clauseb g
+        | Bin(f, Or, g) -> clauseb f && clause g     | Bin(f, Et, g) ->
+        | Bin(f, Et, g) -> false                        fncb f && fncb g
+        | Bin(f, Impl, g) -> false                   | Bin(f, Impl, g) -> false
+\end{lstlisting}
+\end{exo}
+
+\begin{exo} Formes normales
+\begin{enumerate}
+    \item $p \wedge q$ forme normale conjonctive et disjonctives
+    \item $p \vee \neg q$ clauses, forme normale conjonctive et disjonctives
+    \item $\neg(p \vee q)$ rien
+    \item $p \wedge q \vee r$ forme normale disjonctives
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Formes normales à partir d'une table de vérité
+    \begin{description}
+        \item[$P$]:\begin{description}
+            \item[$FNC$]: $(\neg a \vee \neg b \vee c) \wedge
+                (\neg a \vee b \vee \neg c) \wedge
+                (a \vee \neg b \vee \neg c)$
+            \item[$FND$]: $(a \wedge b \wedge c) \vee 
+                (a \wedge \neg b \wedge c) \vee 
+                (\neg a \wedge b \wedge c) \vee 
+                (\neg a \wedge \neg b \wedge c) \vee 
+                (\neg a \wedge \neg b \wedge \neg c)$
+
+                $\equiv c \vee (\neg a \wedge \neg b \wedge \neg c)$
+
+                $\equiv c \vee (\neg a \wedge \neg b)$
+        \end{description} 
+    \end{description}
+\end{exo}
+
+\begin{exo}Formes normales
+\begin{enumerate}
+    \item 
+    \begin{enumerate}
+        \item \begin{align*}
+            (\neg p \wedge \neg q \wedge r) \Rightarrow (r \vee s)  
+                    &\equiv \neg(\neg p \wedge \neg q \wedge r) \vee (r \vee s)\\
+                    &\equiv (p \wedge q \wedge \neg r) \vee r \vee s          &\text{FND} \\
+                    &\equiv (p \vee r \vee s) \wedge (q \vee r \vee s) \wedge (\neg r \vee r \vee s) \\
+                    &\equiv (p \vee r \vee s) \wedge (q \vee r \vee s)          &\text{FNC}
+        \end{align*}
+        
+        \item \begin{align*}
+             p \Rightarrow ((\neg q \vee r) \Rightarrow s)
+                &\equiv \neg p \vee (\neg(\neg q \vee r) \vee s) \\
+                &\equiv \neg p \vee (q \wedge \neg r) \vee s     &\text{FNC} \\
+                &\equiv (\neg p \vee q \vee s) \wedge (\neg p \vee \neg r \vee s)  &\text{FND}
+        \end{align*}
+
+        \item 
+        \item $(p \Rightarrow q) \wedge \neg q \wedge \neg(q \Rightarrow p)$
+    \end{enumerate}
+
+    \item \begin{enumerate}
+        \item Vrai: r
+        \item Vrai: s
+    \end{enumerate}
+
+    \item \begin{itemize}
+        \item Oui, si il n'y a que des et ou que de ou
+        \item Non, on peut factoriser certaines clauses
+        \item 
+    \end{itemize}
+\end{enumerate}
+\end{exo}
+\end{document}

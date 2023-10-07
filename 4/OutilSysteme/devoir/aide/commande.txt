@@ -1,0 +1,43 @@
+Le code que vous avez fourni utilise la commande "getopts" pour analyser les options de ligne de commande passées à un script shell.
+ 
+Voici une explication détaillée de ce que fait cette commande :
+
+La structure de base de la commande getopts est la suivante :
+
+getopts optstring variable
+
+    optstring est une chaîne de caractères qui spécifie les options que le script doit accepter.
+ 
+    Chaque option est représentée par une lettre unique, et les options qui requièrent un argument doivent être suivies d'un signe deux-points (:).
+
+    variable est le nom de la variable qui contiendra la lettre de l'option détectée par getopts.
+
+
+Dans le code que vous avez fourni, la commande getopts est incluse dans une boucle "while" pour parcourir toutes les options passées à un script shell.
+ 
+La boucle continue tant qu'il y a des options à traiter.
+
+
+Le optstring dans ce script est ":bh".
+ 
+Cela signifie que le script peut accepter deux options, "-b" et "-h".
+ 
+L'option "-b" nécessite un argument, tandis que l'option "-h" n'en nécessite pas.
+
+
+La variable "$opt" dans le script contiendra la lettre de l'option détectée par getopts.
+ Dans le cas où getopts détecte une option invalide, la variable "$opt" contiendra un point d'interrogation.
+
+
+Dans la partie case du code, les lettres des options sont testées.
+ Si getopts détecte l'option "-b", la variable "$backup_option" sera définie sur "-b".
+ De même, si getopts détecte l'option "-h", la variable "$backup_option" sera définie sur "-h".
+
+
+Si getopts détecte une option invalide, le code exécutera la partie "?" de la structure case.
+ Dans ce cas, le message "Option invalide: -$OPTARG" sera affiché à l'utilisateur, où "$OPTARG" contient la lettre de l'option invalide.
+ Le script exécutera ensuite la fonction "usage", qui doit être définie ailleurs dans le script, et quittera avec un code de sortie de 1 (qui indique une erreur).
+
+
+En résumé, le code que vous avez fourni utilise la commande getopts pour traiter les options de ligne de commande passées à un script shell, 
+et utilise une structure case pour traiter les différentes options possibles.

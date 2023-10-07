@@ -1,0 +1,848 @@
+
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{tikz}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{subcaption}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usetikzlibrary{automata, positioning, arrows}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+
+\tikzset{
+->, % makes the edges directed
+initial text=$ $
+}
+
+\begin{document}
+\begin{center}
+\large\sc Feuille d'exercice 1
+\end{center}
+
+\begin{exo} Donnez des automates reconnaissants:
+  \begin{itemize}
+    \item[$\bullet$] Les mots commençant par $aabab$.
+
+      \begin{tikzpicture}
+        \node[state, initial] at (0, 0) (q1) {};
+        \node[state] at (2, 0) (q2) {};
+        \node[state] at (4, 0) (q3) {};
+        \node[state] at (6, 0) (q4) {};
+        \node[state] at (8, 0) (q5) {};
+        \node[state, accepting] at (10, 0) (q6) {};
+
+        \draw (q1) edge[above] node {$a$} (q2)
+              (q2) edge[above] node {$a$} (q3)
+              (q3) edge[above] node {$b$} (q4)
+              (q4) edge[above] node {$a$} (q5)
+              (q5) edge[above] node {$b$} (q6)
+              (q6) edge[loop above] node {$a, b$} (q6);
+        
+      \end{tikzpicture}
+    \item[$\bullet$] Les mots finissant par $abbaba$.
+
+      \begin{tikzpicture}
+        \node[state, initial] at (0, 0) (q1) {};
+        \node[state] at (2, 0) (q2) {};
+        \node[state] at (4, 0) (q3) {};
+        \node[state] at (6, 0) (q4) {};
+        \node[state] at (8, 0) (q5) {};
+        \node[state] at (10, 0) (q6) {};
+        \node[state, accepting] at (12, 0) (q7) {};
+
+        \draw (q1) edge[above] node {$a$} (q2)
+              (q2) edge[above] node {$b$} (q3)
+              (q3) edge[above] node {$b$} (q4)
+              (q4) edge[above] node {$a$} (q5)
+              (q5) edge[above] node {$b$} (q6)
+              (q6) edge[above] node {$a$} (q7)
+              (q1) edge[loop above] node {$b$} (q1)
+              (q2) edge[loop above] node {$a$} (q2)
+              (q3) edge[bend right=40, above] node {$a$} (q2)
+              (q4) edge[bend left=40, above] node {$b$} (q1)
+              (q5) edge[bend right=50, above] node {$a$} (q2)
+              (q6) edge[bend left=40, above] node {$b$} (q4)
+              ;
+      \end{tikzpicture}
+
+    \item[$\bullet$] Les mots contenant $abaabb$.
+
+      \begin{tikzpicture}
+        \node[state, initial] at (0, 0) (q1) {};
+        \node[state] at (2, 0) (q2) {};
+        \node[state] at (4, 0) (q3) {};
+        \node[state] at (6, 0) (q4) {};
+        \node[state] at (8, 0) (q5) {};
+        \node[state] at (10, 0) (q6) {};
+        \node[state, accepting] at (12, 0) (q7) {};
+
+        \draw (q1) edge[above] node {$a$} (q2)
+              (q2) edge[above] node {$b$} (q3)
+              (q3) edge[above] node {$a$} (q4)
+              (q4) edge[above] node {$a$} (q5)
+              (q5) edge[above] node {$b$} (q6)
+              (q6) edge[above] node {$b$} (q7)
+              (q1) edge[loop above] node {$b$} (q1)
+              (q2) edge[loop above] node {$a$} (q2)
+              (q3) edge[bend left=40, above] node {$b$} (q1)
+              (q4) edge[bend left=40, above] node {$b$} (q1)
+              (q5) edge[bend right=30, above] node {$b$} (q3)
+              (q6) edge[bend left=40, above] node {$a$} (q4)
+              (q7) edge[loop above] node {$a,b$} (q7)
+              ;
+      \end{tikzpicture}
+
+    \item[$\bullet$] Les représentations en binaire des multiples de 5.
+
+      \begin{tikzpicture}
+        \node[state, initial, initial where=above] at (90:2) (q0) {$0$};
+        \node[state] at (18:2) (q1) {$1$};
+        \node[state] at (-54:2) (q2) {$2$};
+        \node[state] at (-126:2) (q3) {$3$};
+        \node[state] at (162:2) (q4) {$4$};
+
+        \draw (q0) edge[in=30,out=60,loop, above] node {$0$} (q0)
+              (q0) edge[above] node {$1$} (q1)
+              (q1) edge[right] node {$0$} (q2)
+              (q1) edge[below, bend left=10] node {$1$} (q3)
+              (q2) edge[above] node {$0$} (q4)
+              (q2) edge[above right] node {$1$} (q0)
+              (q3) edge[above, bend left=10] node {$0$} (q1)
+              (q3) edge[below] node {$1$} (q2)
+              (q4) edge[left] node {$0$} (q3)
+              (q4) edge[in=120,out=150,loop,above] node {$1$} (q4)
+              ;
+      \end{tikzpicture}
+
+    \item[$\bullet$] Les mots sur $\left\{a, b, c\right\}$ 
+      ayant un nombre pair de $a$, pair de $b$ et pair de $c$.
+
+      \begin{tikzpicture}
+        \node[state, initial, accepting, minimum size=15pt] at (0, 0) (q000) {};
+        \node[state, minimum size=15pt] at (3, 0) (q100) { };
+        \node[state, minimum size=15pt] at (0, 3) (q010) {};
+        \node[state, minimum size=15pt] at (3, 3) (q110) {};
+        \node[state, minimum size=15pt] at (1, 1) (q001) {};
+        \node[state, minimum size=15pt] at (4, 1) (q101) {};
+        \node[state, minimum size=15pt] at (1, 4) (q011) {};
+        \node[state, minimum size=15pt] at (4, 4) (q111) {};
+
+        \draw[<->] (q000) edge[above] node {$b$} (q100)
+              (q000) edge[right] node {$a$} (q010)
+              (q100) edge[left] node {$a$} (q110)
+              (q010) edge[below] node {$b$} (q110)
+              (q001) edge[above] node {$b$} (q101)
+              (q001) edge[right] node {$a$} (q011)
+              (q101) edge[left] node {$a$} (q111)
+              (q011) edge[below] node {$b$} (q111)
+              (q000) edge[above left] node {$c$} (q001)
+              (q100) edge[above left] node {$c$} (q101)
+              (q010) edge[above left] node {$c$} (q011)
+              (q110) edge[above left] node {$c$} (q111)
+              ;
+        
+      \end{tikzpicture}
+\newpage
+    \item[$\bullet$] les mots sur $\left\{0, 1\right\}$ donc la $k^{ieme}$ 
+      lettre avant la fin est 1 ($k$ est une constante)
+
+      \begin{itemize}
+        \item Non déterministe ($k = 5$):
+
+          \begin{tikzpicture}
+              \node[state, initial] at (0, 0) (q1) {};
+              \node[state] at (2, 0) (q2) {};
+              \node[state] at (4, 0) (q3) {};
+              \node[state] at (6, 0) (q4) {};
+              \node[state] at (8, 0) (q5) {};
+              \node[state, accepting] at (10, 0) (q6) {};
+
+              \draw (q1) edge[above, loop above] node {$0, 1$}
+                    (q1) edge[above] node {$1$} (q2)
+                    (q2) edge[above] node {$0, 1$} (q3)
+                    (q3) edge[above] node {$0, 1$} (q4)
+                    (q4) edge[above] node {$0, 1$} (q5)
+                    (q5) edge[above] node {$0, 1$} (q6)
+                    ;
+          \end{tikzpicture}
+
+          On a $k + 1$ états
+
+        \item déterministe ($k = 3$):
+
+          \begin{tikzpicture}
+              \node[state, initial] at (0, 0) (q1) {$000$};
+              \node[state] at (2, 0) (q2) {$001$};
+              \node[state] at (4, 2) (q3) {$010$};
+              \node[state] at (4, -2) (q4) {$011$};
+              \node[state, accepting] at (6, 3) (q5) {$100$};
+              \node[state, accepting] at (6, 1) (q6) {$101$};
+              \node[state, accepting] at (6, -1) (q7) {$110$};
+              \node[state, accepting] at (6, -3) (q8) {$111$};
+
+              \draw (q1) edge[above] node {$1$} (q2)
+                    (q1) edge[loop above, above] node {$0$} (q1)
+                    (q2) edge[above] node {$0$} (q3)
+                    (q2) edge[below] node {$1$} (q4)
+                    (q3) edge[above] node {$0$} (q5)
+                    (q3) edge[below] node {$1$} (q6)
+                    (q4) edge[above] node {$0$} (q7)
+                    (q4) edge[below] node {$1$} (q8)
+                    (q5) edge[above, bend right=30] node {$0$} (q1) 
+                    (q5) edge[above, bend right=40] node {$1$} (q2) 
+                    (q6) edge[above, bend right=30] node {$0$} (q3) 
+                    (q6) edge[above] node {$1$} (q4) 
+                    (q7) edge[right, bend right=30] node {$0$} (q5) 
+                    (q7) edge[right] node {$1$} (q6)
+                    (q8) edge[right] node {$0$} (q7) 
+                    (q8) edge[loop right] node {$1$} (q6)
+                    ;
+          \end{tikzpicture}
+
+          On a $2^k$ états
+      \end{itemize}
+  \end{itemize}
+\end{exo}
+
+\begin{exo} Soit deux automates déterministes $\mathcal{A}$ et $\mathcal{B}$
+
+  Pour savoir si un mot est dans $L(\mathcal{A}) \cap L(\mathcal{B})$ 
+  on parcours $\mathcal{A}$ et $\mathcal{B}$ en parallèle.
+
+  Pendnat le parcours on a donc une paire $(q_a, q_b)$ en mémoire.
+
+  On peut alors contruire l'automate produit
+  
+  \[\text{Automate Produit} =
+    \begin{cases}
+      Q   &= Q_a \times Q_b \\
+      Q_0 &= ({q_0}_a, {q_0}_b) \\
+      F   &= F_a \times F_b \\
+      T   &= \left\{(pq) \overset{a}{\to} (\bar{p}\bar{q}) 
+                | p \overset{a}{\to} \bar{p} \land q \overset{a}{\to} \bar{q} \right\}    
+    \end{cases}  
+  \]
+
+  Cette automate à donc $|Q_a| \times |Q_b|$ états.
+
+  On peut montrer $m \in L(\mathcal{A}) \cap L(\mathcal{B}) 
+          \Leftrightarrow m \in L(\mathcal{A} \times \mathcal{B})$
+
+    \begin{description}
+      \item[$\Rightarrow$]: On suppose que $m \in L(\mathcal{A}) \cap L(\mathcal{B})$
+
+        On a donc ${q_0}_a \overset{m}{\to} {q_F}_a \land {q_0}_b \overset{m}{\to} {q_F}_b$
+
+        Par contruction de $\mathcal{A} \times \mathcal{B}$ on a bien un chemin 
+        ${q_0}_a {q_0}_b \overset{m}{\to} {q_F}_a {q_F}_b$
+
+      \item[$\Leftarrow$]: On suppose que $m \in L(\mathcal{A} \times \mathcal{B})$
+
+        On a donc ${q_0}_a {q_0}_b \overset{m}{\to} {q_F}_a {q_F}_b$
+
+        On peut donc bien contuire une chemin dans $\mathcal{A}$ et dans $\mathcal{B}$
+
+        \begin{itemize}
+          \item chemin dans $\mathcal{A}$ on prend la première coordonée
+
+          \item chemin dans $\mathcal{B}$ on prend la seconde coordonée
+        \end{itemize}
+
+    \end{description}
+\newpage
+  On veut construire un automate qui reconnait les mots sur $\left\{a, b\right\}$
+  ayant un nombre pair de $a$ et contenant $ab$
+
+  \begin{tikzpicture}
+    
+    \node [state, initial]  at (0, 0) (qa0) {};
+    \node [state, accepting] at (0, -2) (qa1) {};
+
+    \draw (qa0) edge[loop above, above] node {$b$} (qa0)
+          (qa1) edge[loop below, below] node {$b$} (qa1)
+          (qa0) edge[bend right, left] node {$a$} (qa1)
+          (qa1) edge[bend right, right] node {$a$} (qa0)
+          ;
+
+    \node [state, initial]  at (2, 2) (qb0) {};
+    \node [state] at (4, 2) (qb1) {};
+    \node [state, accepting] at (6, 2) (qb2) {};
+
+    \draw (qb0) edge[loop above, above] node {$b$} (qb0)
+          (qb0) edge[above] node {$a$} (qb1)
+          (qb1) edge[above] node {$b$} (qb2)
+          (qb1) edge[loop above, above] node {$a$} (qb1)
+          (qb2) edge[loop above, above] node {$a, b$} (qb2)
+          ;
+
+    \node [state, initial]  at (2, 0) (q00) {};
+    \node [state] at (4, 0) (q01) {};
+    \node [state] at (6, 0) (q02) {};
+    \node [state,color=gray]  at (2, -2) (q10) {};
+    \node [state] at (4, -2) (q11) {};
+    \node [state, accepting] at (6, -2) (q12) {};
+
+    \draw 
+          (q12) edge[loop below, below] node {$b$} (q12)
+          (q00) edge[loop above, above] node {$b$} (q00)
+          (q02) edge[loop above, above] node {$b$} (q02)
+          (q00) edge[above] node {$a$} (q11)
+          (q01) edge[above] node {$b$} (q02)
+          (q11) edge[above] node {$b$} (q12)
+          ;
+
+    \draw [color=gray] (q10) edge[loop below, below] node {$b$} (q10)
+          (q10) edge[above, pos=0.1] node {$a$} (q01)
+          ;
+
+    \draw [<->] (q01) edge[right] node {$a$} (q11)
+          [<->] (q02) edge[right] node {$a$} (q12);
+
+  \end{tikzpicture}
+
+    On peut voir que l'état en bas à gauche est inaccessible.
+
+    On remarque dans la preuve qu'on n'est jamais obligé 
+    de se restraindre à des automates deterministe complet. 
+    Ainsi pour les automates non déterministes il sufit juste d'utiliser
+    le même algo.
+
+  Pour l'union on peut utiliser cette construction:
+
+  \[\text{Automate Produit} =
+    \begin{cases}
+      Q   &= Q_a \times Q_b \\
+      Q_0 &= ({q_0}_a, {q_0}_b) \\
+      F   &= \left\{(q_a, q_b) | q_a \in F_a {\color{red} \vee} q_b \in F_b \right\}\\
+      T   &= \left\{(pq) \overset{a}{\to} (\bar{p}\bar{q}) 
+                | p \overset{a}{\to} \bar{p} \land q \overset{a}{\to} \bar{q} \right\}    
+    \end{cases}  
+  \]
+
+    On peut montrer $m \in L(\mathcal{A}) \cup L(\mathcal{B}) 
+          \Leftrightarrow m \in L(\mathcal{A} \times_{\cup} \mathcal{B})$
+
+    \begin{description}
+      \item[$\Rightarrow$]: On suppose que $m \in L(\mathcal{A}) \cup L(\mathcal{B})$
+
+      \begin{itemize}
+        \item Si on a un chemin acceptant m dans A:
+
+          On a la première coordonée du chemin dans dans l'automate. 
+          Ensuite pour trouver la deuxième coordonée on prend un chemin 
+          dans B qui lit m. Mais pour qu'un telle chemain existe quelque soit 
+          l'automate il faut qu'il soit complet.
+
+        \item Si on a un chemin acceptant m dans B:
+
+          On fait la même chose que pour A et on se retrouve avec la même 
+          hypothèse pour A (il doit être complet)
+      \end{itemize}
+
+      \item[$\Leftarrow$]: On suppose que 
+        $m \in L(\mathcal{A} \times_{\cup} \mathcal{B})$
+
+        On a donc ${q_0}_a {q_0}_b \overset{m}{\to} {q_n}_a {q_n}_b$
+
+        On peut donc bien contuire une chemin dans $\mathcal{A}$ ou dans $\mathcal{B}$
+        selon si: ${q_n}_a \in F_A$ ou si ${q_n}_a \in F_B$ en prennant 
+        la première coordonée si ${q_n}_a \in F_A$ 
+        (chemin acceptant m dans $\mathcal{A}$). 
+
+        Même chose pour l'autre cas en prennant la seconde coordonnée.
+
+    \end{description}
+\end{exo}
+
+\begin{exo}
+  Algo: On parcours l'automate et on mémorise l'ensembles 
+  des états attégnables. On a focément une mémoire finie 
+  car il y a un nombre finie d'états
+
+  \[
+    \begin{cases}
+      \bar{Q} &= \mathcal{P}(Q) \\
+      \bar{Q_0} &= \left\{Q_0\right\} \\
+      \bar{F} &= \left\{q \in \bar{Q} | \exists \bar{q} \in q, \bar{q}
+           \in Q_f \right\} = \left\{P | P \cap F \neq \emptyset \right\} \\
+      \bar{T} &= P \overset{a}{\to} \bigcup_{p \in P} 
+                \left\{q | p \overset{a}{\to} q\right\}
+    \end{cases}
+  \]
+
+  Il y a donc $2^{|Q|}$ état après la determinisation
+      (On peut enlever ceux inaccessible).
+\end{exo}
+
+\newpage
+\begin{exo} Determinisez:
+  \begin{enumerate}
+    \item Automate:
+
+      \begin{tikzpicture}
+        \node[state, initial] at (0, 0) (q1) {$1$};
+        \node[state] at (2, 0) (q2) {$2$};
+        \node[state] at (4, 0) (q3) {$3$};
+        \node[state, accepting] at (6, 0) (q4) {$4$};
+
+        \draw (q1) edge[above] node{$a, b$} (q2)
+              (q2) edge[above] node{$a$} (q3)
+              (q3) edge[above] node{$b$} (q4)
+              (q1) edge[above, loop above] node{$a$} (q1)
+              (q4) edge[above, loop above] node{$a$} (q4)
+              (q4) edge[above, bend left] node{$a, b$} (q1)
+              ;
+
+        \node[state, initial] at (0, -4) (q1) {$\left\{1\right\}$};
+        \node[state] at (0, -6) (q2) {$\left\{2\right\}$};
+        \node[state, accepting] at (0, -8) (q4) {$\left\{3\right\}$};
+        \node[state] at (2, -4) (q3) {$\left\{1, 2\right\}$};
+        \node[state] at (2, -8) (q5) {$\left\{4\right\}$};
+        \node[state] at (4, -8) (q6) {$\left\{1, 4\right\}$};
+        \node[state] at (6, -8) (q7) {$\left\{1, 2, 4\right\}$};
+        \node[state, accepting] at (9, -8) (q8) {$\left\{1, 2, 3, 4\right\}$};
+        \node[state, accepting] at (5, -4) (q9) {$\left\{1, 2, 3\right\}$};
+        \node[state] at (6, -8) (q7) {$\left\{1, 2, 4\right\}$};
+        \node[state] at (8, -4) (q10) {$\left\{2, 4\right\}$};
+        \node[state, accepting] at (8, -6) (q11) {$\left\{1, 2, 3\right\}$};
+        \node[state] at (-2, -8) (qt) {$\emptyset$};
+
+        \draw (q1) edge[left] node{$b$} (q2)
+              (q1) edge[above] node{$a$} (q3)
+              (q2) edge[left] node{$a$} (q4)
+              (q4) edge[above] node{$b$} (q5)
+              (q5) edge[left] node{$b$} (q1)
+              (q5) edge[above] node{$a$} (q6)
+              (q6) edge[left] node{$b$} (q3)
+              (q6) edge[above] node{$a$} (q7)
+              (q7) edge[bend left, above] node{$a$} (q8)
+              (q8) edge[bend left, below] node{$b$} (q7)
+              (q8) edge[loop below, below] node{$a$} (q8)
+              (q3) edge[above] node{$a$} (q9)
+              (q9) edge[loop above, above] node{$a$} (q9)
+              (q9) edge[above] node{$b$} (q10)
+              (q10) edge[bend right=55, below] node{$b$} (q1)
+              (q3) edge[below] node{$b$} (q2)
+              (q10) edge[right] node{$a$} (q11)
+              (q11) edge[above left] node{$a, b$} (q7)
+              (q7) edge[right] node{$b$} (q9)
+              (q2) edge[above] node{$b$} (qt)
+              (q4) edge[above] node{$a$} (qt)
+              (qt) edge[loop left, left] node{$a, b$} (qt)
+              ;
+      \end{tikzpicture}
+
+    \item automate:
+
+      \begin{tikzpicture}
+        \node[state, initial, accepting, initial where=above] at (0, 0) (q1) {$1$};
+        \node[state] at (2, 1) (q2) {$2$};
+        \node[state] at (2, -1) (q3) {$3$};
+
+        \draw (q1) edge[loop left, left] node{$a$} (q1)
+              (q1) edge[above] node{$a$} (q2)
+              (q2) edge[loop right, right] node{$b$} (q2)
+              (q2) edge[right] node{$a$} (q3)
+              (q3) edge[loop right, right] node{$b$} (q3)
+              (q3) edge[above] node{$a$} (q1)
+              ;
+
+        \node [state, initial, accepting, initial where=above] at 
+                (8, 1) (q1) {$\left\{1\right\}$};
+        \node [state] at (10, 1) (q2) {$\left\{2\right\}$};
+        \node [state] at (12, 1) (q3) {$\left\{3\right\}$};
+        \node [state, accepting] at (8, -2) (q12) {$\left\{1, 2\right\}$};
+        \node [state, accepting] at (10, -4) (q123) {$\left\{1, 2, 3\right\}$};
+        \node [state] at (12, -2) (q23) {$\left\{2, 3\right\}$};
+        \node [state, accepting] at (10,  -2) (q13) {$\left\{1, 3\right\}$};
+        \node [state] at (6, 1) (q0) {$\emptyset$};
+
+
+        \draw (q1) edge[left] node{$a$} (q12)
+              (q12) edge[left] node{$a$} (q123)
+              (q12) edge[above] node{$b$} (q2)
+              (q2) edge[loop above, above] node{$b$} (q2)
+              (q2) edge[above] node{$a$} (q3)
+              (q3) edge[loop right, right] node{$b$} (q3)
+              (q3) edge[above, bend right=70] node{$a$} (q1)
+              (q123) edge[loop below, below] node{$a$} (q123)
+              (q123) edge[left] node{$b$} (q23)
+              (q23) edge[loop right, right] node{$b$} (q23)
+              (q23) edge[above] node{$a$} (q13)
+              (q13) edge[above] node{$b$} (q3)
+              (q13) edge[above] node{$a$} (q12)
+              (q1) edge[above] node{$b$} (q0)
+              (q0) edge[loop left, left] node{$a,b$} (q0)
+              ;
+      \end{tikzpicture}
+  \end{enumerate}
+\end{exo}
+
+\newpage
+\begin{exo} Minimisez:
+  \begin{enumerate}
+    \item Automate à minimiser: 
+
+      \begin{tikzpicture}
+        \node[state, accepting, initial] at (0, 0) (1) {$1$};
+        \node[state] at (2, 0) (2) {$2$};
+        \node[state] at (4, 0) (3) {$3$};
+        \node[state] at (6, 0) (4) {$4$};
+        \node[state] at (8, 0) (5) {$5$};
+        \node[state] at (0, -2) (6) {$6$};
+        \node[state, accepting] at (2, -2) (7) {$7$};
+        \node[state] at (6, -2) (8) {$8$};
+
+        \draw (1) edge[above] node {$a$} (2)
+              (1) edge[above] node {$b$} (7)
+              (2) edge[above right] node {$a$} (3)
+              (2) edge[right] node {$b$} (7)
+              (3) edge[above] node {$a$} (4)
+              (3) edge[below right] node {$b$} (7)
+              (4) edge[above] node {$a$} (5)
+              (4) edge[right] node {$b$} (8)
+              (5) edge[loop above, above] node {$a$} (5)
+              (5) edge[below right] node {$b$} (8)
+              (6) edge[left] node {$b$} (1)
+              (7) edge[loop below, below] node {$b$} (7)
+              (7) edge[below] node {$a$} (6)
+              (8) edge[below] node {$a, b$} (7)
+        ;
+        \coordinate (n1) at (-1, -1);
+        \coordinate (n2) at (4, 1);
+        \draw[->,rounded corners=5pt] (6.west) -| 
+                            (n1) |- node[pos=0.2, left] {$a$} (n2) |- (3.north);
+
+        \node[state, accepting, initial] at (10, 0) (17) {$1, 7$};
+        \node[state] at (12, 0) (26) {$2, 6$};
+        \node[state] at (12, -2) (3) {$3$};
+        \node[state] at (10, -2) (45) {$4, 5$};
+        \node[state] at (8, -2) (8) {$8$};
+
+        \draw (17) edge[bend left, above] node {$a$} (26)
+              (17) edge[loop above, above] node {$b$} (17)
+              (26) edge[right] node {$a$} (3)
+              (26) edge[bend left, above] node {$b$} (17)
+              (3) edge[above] node {$a$} (45)
+              (3) edge[above right] node {$b$} (17)
+              (45) edge[loop below, below] node {$a$} (45)
+              (45) edge[above] node {$b$} (8)
+              (8) edge[above left] node {$a, b$} (17)
+         ;
+      \end{tikzpicture}
+
+      On applique l'algo de minimisation:
+      \begin{table}[htb]
+          \begin{subtable}{.5\linewidth}\centering
+            { \begin{tabular}{ccccccccc}
+                & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+              a & 2 & 3 & 4 & 5 & 5 & 3 & 6 & 7 \\
+              b & 7 & 7 & 7 & 8 & 8 & 1 & 7 & 7
+            \end{tabular}}
+          \end{subtable}%
+          \begin{subtable}{.5\linewidth}\centering
+            {\begin{tabular}{ll}
+              i & classes\\
+              \hline
+              0 & $17/234568$ \\
+              1 & $17/236/45/8$ \\
+              2 & $17/236/45/8$ \\
+              3 & $17/26/3/45/8$ \\
+              4 & $17/26/3/45/8$ 
+            \end{tabular}}
+          \end{subtable}
+      \end{table}
+
+    \item Automate à minimiser:
+
+      \begin{tikzpicture}
+        \node[state, initial] at (0, -4) (1) {$1$};
+        \node[state] at (2, -4) (2) {$2$};
+        \node[state, accepting] at (4, -4) (3) {$3$};
+        \node[state, accepting] at (0, -2) (4) {$4$};
+        \node[state] at (2, -2) (5) {$5$};
+        \node[state] at (4, -2) (6) {$6$};
+        \node[state] at (0, 0) (7) {$7$};
+        \node[state, accepting] at (2, 0) (8) {$8$};
+        \node[state, accepting] at (4, 0) (9) {$9$};
+
+        \draw (1) edge[left] node {$a$} (4)
+              (1) edge[above] node {$b$} (2)
+              (2) edge[bend left, above] node {$a$} (3)
+              (2) edge[bend right, left] node {$b$} (5)
+              (3) edge[bend right, right] node {$a$} (9)
+              (3) edge[bend left, below] node {$b$} (2)
+              (4) edge[above] node {$a$} (5)
+              (4) edge[right] node {$b$} (7)
+              (5) edge[bend left, right] node {$a$} (8)
+              (5) edge[bend right, right] node {$b$} (2)
+              (6) edge[right] node {$a$} (3)
+              (6) edge[above] node {$b$} (2)
+              (7) edge[above] node {$a$} (8)
+              (7) edge[above] node {$b$} (5)
+              (8) edge[above] node {$a$} (9)
+              (8) edge[bend left, left] node {$b$} (5)
+              (9) edge[above] node {$a$} (5)
+              (9) edge[right] node {$b$} (6)
+        ;
+
+        \node[state, initial] at (10, -2) (1) {$1$};
+        \node[state] at (12, -2) (2567) {$2, 5, 6, 7$};
+        \node[state, accepting] at (10, 0) (49) {$4, 9$};
+        \node[state, accepting] at (12, 0) (38) {$3, 8$};
+
+        \draw (1) edge[left] node {$a$} (49)
+              (1) edge[below] node {$b$} (2567)
+              (49) edge[below left] node {$a,b$} (2567)
+              (2567) edge[bend left, left] node {$a$} (38)
+              (2567) edge[loop right, right] node {$b$} (2567)
+              (38) edge[above] node {$a$} (49)
+              (38) edge[bend left, right] node {$b$} (2567)
+        ;
+      \end{tikzpicture}
+
+      On applique l'algo de minimisation:
+      \begin{table}[htb]
+          \begin{subtable}{.5\linewidth}\centering
+            {\begin{tabular}{cccccccccc}
+            \   & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+            \ a & 4 & 3 & 9 & 5 & 8 & 3 & 8 & 9 & 5 \\
+            \ b & 2 & 5 & 2 & 7 & 2 & 2 & 5 & 5 & 6 \\
+            \end{tabular}}
+          \end{subtable}%
+          \begin{subtable}{.5\linewidth}\centering
+            {\begin{tabular}{ll}
+              \ i & classes \\
+              \hline
+              \ 0 & $3478/12567$ \\
+              \ 1 & $38/49/12567$ \\
+              \ 2 & $38/49/1/2567$ \\
+            \end{tabular}}
+          \end{subtable}
+      \end{table}
+  \end{enumerate}
+\end{exo}
+
+\newpage
+\begin{exo}
+  \begin{itemize}
+    \item[$\bullet$] $L = \left\{a^nb^n|n \in \mathbb{N}\right\}$
+
+      On cherche le $Future_L(u)$ de chaque mot $u \in \left\{a, b\right\}^*$
+
+      \begin{tabular}{cc}
+        $u$                                     &   $Future_L(u)$ \\
+        \hline
+        $\varepsilon$                           &   $a^nb^n$ \\
+        $a$                                     &   $a^nb^{n+1}$ \\
+        $a^2$                                   &   $a^nn^{n+2}$ \\
+        \ldots                                  &   \ldots \\
+        $\forall p \geq 0, a^p$                 &   $a^db^{p+d}$ \\
+        \ldots                                  &   \ldots \\
+        $a^nb$                                  &   $b^{n-1}$ \\
+        \ldots                                  &   \ldots \\
+        $\forall p \geq 0, d > 0, a^{p+d}b^d$   &   $a^p$ \\
+        \ldots                                  &   \ldots \\
+        $a^nb^n$                                &   $\varepsilon$ \\
+        reste                                   &   $\emptyset$
+      \end{tabular}
+
+      On a $a^pb$ et $a^qb$ avec $p < q$. En parant de $q_0$ c'est 
+      de mots ne peuvent pas conduire au même état. car ils n'ont pas 
+      le même future.
+
+      L n'est pas reconnaissable car on a un nombre infinie de classes.
+
+    \item[$\bullet$] On construit l'automate déterministe complet et propre 
+      qui se souvient des k dernière lettres lue (il a $2^k$ états).
+
+      Soit p et q deux états différents. Ils se souvient alors de $u$ et 
+      $v$ ($u \neq v$). 
+      
+      Comme $u \neq v$ on à $u = u_1 a u_2$ et $v = v_1 b v_2$ avec 
+      $|u_1| = |v_1| = x$ et $|u_2| = |v_2| = y$.
+
+      On à $T(p, a^x)$ non final et $T(q, a^x)$ final donc p et q 
+      non pas le même future donc p et q ne peuvent pas être fusioné. 
+      Donc l'automate à $2^k$ états est minimal.
+  \end{itemize}
+\end{exo}
+
+\begin{exo} Le Barman aveugle
+  \begin{enumerate}
+    \item Il y a $2^4$ configurations. La pluspart sont équivalentes
+      Au final on a que 4 configurations possibles.
+
+      a
+
+      \begin{tikzpicture}
+        \node[circle, draw=black, minimum size = 3cm] at (0, 0) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (135:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (45:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (-45:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (-135:0.75) {};
+      \end{tikzpicture}
+
+      b
+
+      \begin{tikzpicture}
+        \node[circle, draw=black, minimum size = 3cm] at (0, 0) {};
+        \node[circle, draw=black, minimum size = 0.5cm, fill=black] at (135:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (45:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (-45:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (-135:0.75) {};
+      \end{tikzpicture}
+
+      c
+
+      \begin{tikzpicture}
+        \node[circle, draw=black, minimum size = 3cm] at (0, 0) {};
+        \node[circle, draw=black, minimum size = 0.5cm, fill=black] at (135:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (45:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (-45:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm, fill=black] at (-135:0.75) {};
+      \end{tikzpicture}
+
+      d 
+
+      \begin{tikzpicture}
+        \node[circle, draw=black, minimum size = 3cm] at (0, 0) {};
+        \node[circle, draw=black, minimum size = 0.5cm, fill=black] at (135:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (45:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm, fill=black] at (-45:0.75) {};
+        \node[circle, draw=black, minimum size = 0.5cm] at (-135:0.75) {};
+      \end{tikzpicture}
+        
+      Le barman peut en retrouner un (U), peut retourner une colonne (C) et une 
+      diagonale (D). Il n'a donc que 3 mouvements.
+
+    \item On peut donc construire un automate qui représente 
+          les différents états du jeu :
+
+      \begin{tikzpicture} 
+        \node[initial, state] at (0, 0) (a) {$a$};
+        \node[initial, state, initial where=right] at (3, 0) (b) {$b$};
+        \node[initial, state] at (0, 3) (c) {$c$};
+        \node[initial, state, initial where=right] at (3, 3) (d) {$d$};
+
+        \draw (a) edge[above] node {$U$} (b)
+              (b) edge[below, loop below] node {$D, C$} (b)
+              (c) edge[above, loop above] node {$D$} (c)
+          ;
+
+        \draw [<->]  (a) edge[left] node {$C$} (c)
+              (b) edge[right, pos=.3] node {$U$} (c)
+              (b) edge[right] node {$U$} (d)
+              (a) edge[left, pos=0.3] node {$D$} (d)
+              (c) edge[above] node {$C$} (d)
+          ;
+      \end{tikzpicture}
+
+    \newpage
+    \item Séquence pour laquel le client gagne:
+
+      \begin{tikzpicture}
+        \node[initial, state, accepting] at (0, 0) (b) {$b$};
+        \node[initial, state, initial where=right, accepting] at (2, 0) (c) {$c$};
+        \node[initial, state, initial where=right, accepting] at (2, 2) (d) {$d$};
+
+        \draw [<->] (b) edge[left] node {$U$} (d)
+                    (c) edge[right] node {$U$} (d)
+                    (b) edge[above] node {$C$} (c)
+                    (d) edge[loop above, above] node {$D, C$} (d)
+                    (c) edge[loop below, below] node {$D$} (d)
+        ;
+      \end{tikzpicture}
+
+      On déterminise et on complète l'automate pour l'exercice suivant
+
+      \begin{tikzpicture}
+        \node[initial, state, accepting] at (0, 0) (bcd) {$b, c, d$};
+        \node[state, accepting] at (2, 0) (dc) {$d, c$};
+        \node[state, accepting] at (4, 0) (bd) {$b, d$};
+        \node[state, accepting] at (6, 0) (d) {$d$};
+        \node[state, accepting] at (6, -2) (bc) {$b, c$}; 
+        \node[state, accepting] at (8, -2) (c) {$c$}; 
+        \node[state, accepting] at (8, 0) (b) {$b$};
+        \node[state] at (10, 0) (v) {$\emptyset$};
+
+        \draw (bcd) edge[loop above, above] node{$U, C$} (bcd)
+              (bcd) edge[bend right, below] node{$D$} (dc)
+              (dc) edge[bend right, above] node {$U$} (bcd)
+              (dc) edge[loop above, above] node {$D$} (dc)
+              (dc) edge[bend right, below] node {$C$} (bd)
+              (bd) edge[bend left=60, below] node {$U$} (bcd)
+              (bd) edge[bend right, above] node {$C$} (dc)
+              (bd) edge[above] node {$D$} (d)
+              (d) edge[loop above] node {$D, C$} (d)
+              (bc) edge[loop left, left] node {$C$} (bc)
+              (bc) edge[above] node {$D$} (c)
+              (c) edge[below left] node {$U$} (d)
+              (c) edge[loop below, below] node {$D$} (c)
+              (b) edge[above] node {$U$} (d)
+              (v) edge[loop above, above] node {$U, C, D$} (v)
+              (b) edge[above] node {$D$} (v)
+        ;
+
+        \draw[<->]
+              (d) edge[right] node {$U$} (bc)
+              (c) edge[right] node {$C$} (b)
+              ;
+      \end{tikzpicture}
+
+    \item Pour avoir la contraposer d'un langage on inverse juse 
+      les états terminaux et les états normaux. En faisait ça sur l'automate 
+      présédent on obtient la liste des coups pour que le barman gagne
+
+      \begin{tikzpicture}
+        \node[initial, state] at (0, 0) (bcd) {$b, c, d$};
+        \node[state] at (2, 0) (dc) {$d, c$};
+        \node[state] at (4, 0) (bd) {$b, d$};
+        \node[state] at (6, 0) (d) {$d$};
+        \node[state] at (6, -2) (bc) {$b, c$}; 
+        \node[state] at (8, -2) (c) {$c$}; 
+        \node[state] at (8, 0) (b) {$b$};
+        \node[state, accepting] at (10, 0) (v) {$\emptyset$};
+
+        \draw (bcd) edge[loop above, above] node{$U, C$} (bcd)
+              (bcd) edge[bend right, below] node{$D$} (dc)
+              (dc) edge[bend right, above] node {$U$} (bcd)
+              (dc) edge[loop above, above] node {$D$} (dc)
+              (dc) edge[bend right, below] node {$C$} (bd)
+              (bd) edge[bend left=60, below] node {$U$} (bcd)
+              (bd) edge[bend right, above] node {$C$} (dc)
+              (bd) edge[above] node {$D$} (d)
+              (d) edge[loop above] node {$D, C$} (d)
+              (bc) edge[loop left, left] node {$C$} (bc)
+              (bc) edge[above] node {$D$} (c)
+              (c) edge[below left] node {$U$} (d)
+              (c) edge[loop below, below] node {$D$} (c)
+              (b) edge[above] node {$U$} (d)
+              (v) edge[loop above, above] node {$U, C, D$} (v)
+              (b) edge[above] node {$D$} (v)
+        ;
+
+        \draw[<->]
+              (d) edge[right] node {$U$} (bc)
+              (c) edge[right] node {$C$} (b)
+              ;
+      \end{tikzpicture}
+
+      On peut donc conclure que ce n'est pas une bonne idée de jouer avec le barman.
+
+  \end{enumerate}
+\end{exo}
+\end{document}

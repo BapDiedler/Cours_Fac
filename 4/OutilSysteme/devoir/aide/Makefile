@@ -1,0 +1,15 @@
+#make pour du code C
+
+all: main #on peut mettre autre chose que main
+
+main: %.o #compilation d'un fichier par des .o
+	cc $^ -o $@
+
+%.o: %.c %.h #compilation de fichier par des .h et .c
+	cc -c $^
+
+#rejouter si cas appart
+
+#make pour du java
+
+2> /dev/null | true

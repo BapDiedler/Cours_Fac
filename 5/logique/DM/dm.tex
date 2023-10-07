@@ -1,0 +1,148 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+\usepackage{stmaryrd}
+
+\usepackage{tikz}
+\usetikzlibrary{graphs}
+
+\title{Devoir Maison}
+\author{Valeran MAYTIE}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+    \item Traduction en formule logique:
+    \begin{enumerate}
+        \item $\forall x, E(x,x) \Rightarrow (\exists y, E(x, y) \wedge \neg(x = y))$
+        \item $\forall x, \exists y, (E(x, y) \vee E(y, x))$
+        \item $\exists, x, y, z, \neg (x = y) \wedge \neg(x = z) \wedge \neg(y = z)
+            \wedge ((E(x, y) \vee E(y, x)) \wedge (E(y, z) \vee E(z, y)) 
+            \wedge (E(z, y) \vee E(y, z)))$
+    \end{enumerate}
+
+    \item Traduction en langue naturelle:
+    \begin{enumerate}
+        \item 2 sommets sont reliés que dans une direction.
+        \item Tout sommet a deux arètes sortantes qui peuvent arriver sur le même sommet.
+        \item Il existe 2 sommets (possiblement égaux) qui ne sont reliés dans aucun sens.
+    \end{enumerate}
+
+    \item \begin{itemize}
+        \item $\forall x, x = x$
+        \item $\forall x y, x = y \Rightarrow y = x$
+        \item $\forall x y z, x = y \wedge y = z \Rightarrow   x = z$
+        \item $\forall x y, x = y \wedge E(x, y) \Rightarrow E(y, x)$
+        \item $\forall x_1 x_2 y_1 y_2, x_1 = x_1 \wedge x_2 = y_2 \wedge E(x_1, y_1) \Rightarrow E(x_2, y_2)$
+    \end{itemize}
+
+    \item \begin{enumerate}
+        \item Prenons un modèle de ces trois axiomes avec un domaine $\mathcal{D}$.
+
+            Supposons $\mathcal{D}$ fini, on a donc $\mathcal{D} = \left\{a_1, \ldots, a_n\right\}$ 
+            avec $n \in \mathbb{N}$.
+
+            Pour vérifier l'axiome $T$, on donne $E_I = \left\{(a_i, a_{i+1}), (a_n, a_0) 
+            | i \in \llbracket 0, n - 1\rrbracket\right\}$, une interprétation de $E$.
+
+            Or, on peut tout de suite voir que $E_I$ ne satisfait pas l'axiome $O$, ce qui nous oblige 
+            à avoir au moins un sommet qui n'a pas d'arète entrante. Donc, pour 
+            satisfaire $T$ et $O$ il faut que 2 sommets pointent vers le même sommet.
+            Or, l'axiome $I$ nous dit que si deux arètes pointent vers le même sommet alors ces 
+            deux sommets sont égaux. Ainsi, si nous voulons respecter ces 3 axiomes on aura $\mathcal{D}$ vide
+            ce qui par définition est impossible.
+
+            On est donc obligé d'avoir un domaine infini pour avoir un modèle de ces 3 axiomes.
+        \item Pour chaque cas, on va trouver une interprétation finie vérifiant les deux axiomes choisis.
+        \begin{description}
+            \item[On enlève T]: On construit l'interprétation $Int$:\\
+                $\mathfrak{D} = \left\{a, b\right\}$\\
+                $=_{Int} = \left\{\right\} $\\
+                $E_{Int} = \left\{\right\}$\\
+                On a bien $Int \models O \wedge I$
+
+            \item[On enlève O]: On construit l'interprétation $Int$:\\
+                $\mathfrak{D} = \left\{a, b\right\}$\\
+                $=_{Int} = \left\{\right\} $\\
+                $E_{Int} = \left\{(a, b), (b, a)\right\}$
+
+                \begin{tikzpicture}
+                    \graph {a -> [bend left] b -> [bend left]a};
+                \end{tikzpicture}
+
+                On a bien $Int \models T \wedge I$
+
+            \item[On enlève I]: On construit l'interprétation $Int$:\\
+                $\mathfrak{D} = \left\{a, b, c\right\}$\\
+                $=_{Int} = \left\{\right\} $\\
+                $E_{Int} = \left\{(a, b), (b, a), (c, b)\right\}$
+
+                \begin{tikzpicture}
+                    \graph {a -> b -> [bend left]c -> [bend left]b};
+                \end{tikzpicture}
+
+                On a bien $Int \models T \wedge O$
+        \end{description}
+        Je n'ai pas mis d'environnement car nous n'avons pas de variables.
+    \end{enumerate}
+
+    \item \begin{enumerate}
+        \item $C_0[x, y] = E(x, y)$
+        \item $C_n[x, y] = \exists z, C_{n-1}[x, z] \wedge E(z, y)$
+    \end{enumerate}
+
+    \item On pose 
+    $A = \mathcal{G} \cup \left\{\neg C_n[a,b]|n \in \mathbb{N}\right\} 
+        \cup \left\{\neg C[a,b]\right\}$
+    \begin{enumerate}
+        \item On prend $S$ un sous ensemble fini de $A$.
+
+            On veut montrer que $S$ est satisfiable pour une interprétation $I$.
+
+            On commence par poser $N = \left\{n_1, \ldots , n_k\right\}$ de taille finie
+            tel que $C = \left\{\neg C_n[a, b]| n \in N\right\} \subseteq S $ et $C$ 
+            contient toutes les formules de la forme $\neg C_n[a, b]$ de $S$.
+            $N$ peut être vide si on ne trouve pas la formule $\neg C_n[a, b]$ dans $S$.
+
+            On va maintenant construire $I$ en fonction de $S$:
+
+            On pose $k \in \mathbb{N}, k \notin N$\\
+            $\mathfrak{D} = \left\{c_{0}, \ldots, c_{k + 1}\right\}$\\
+            $=_I = \left\{\right\} $\\
+            $E_I = \left\{(c_n, c_{n+1}) | n \in \llbracket 0, k\rrbracket \right\}$\\
+            $a_I = c_0$ et $b_I = c_{k+1}$
+
+            Si on analyse cette interprétation on peut voir que ça représente 
+            un graph avec un chemin entre $a$ et $b$ de longueur $k$.
+
+            On peut voir que cette interprétation rend vrai toutes les formules de $S$:
+
+            Déjà, notre interprétation rend vrai n'importe quelle formule de $\mathcal{G}$.
+            De plus, elle rend vrai aussi n'importe quelle formule de $C$ car il n'y a pas 
+            de chemin de longueur $n \in N$ entre $a$ et $b$.
+            Et pour finir si $C[a,b]$ est dans $S$ notre interprétation est vraie
+            car, on a bien un chemin de longueur quelconque qui va de $a$ et ver $b$.
+
+        \item $A$ est insatisfiable car s'il existe un chemin de longueur quelconque
+            entre $a$ et $b$, il est forcément de taille $n \in \mathbb{N}$. Or, on a aussi
+            une formule dans $A$ qui nous dit qu'il n'y a pas de chemin de taille $n$ 
+            entre $a$ et $b$. Donc, peu importe notre interprétation, $A$ ne peut 
+            pas être satisfiable.
+    \end{enumerate}
+
+    \item On sait que tout sous ensemble fini de $\mathcal{G} \cup \left\{\neg C_n[a,b]|n \in \mathbb{N}\right\} 
+        \cup \left\{\neg C[a,b]\right\}$ sont satisfiables. Or, d'après
+        le théorème de la compacité on a $\mathcal{G} \cup \left\{\neg C_n[a,b]|n \in \mathbb{N}\right\} 
+        \cup \left\{\neg C[a,b]\right\}$ satisfiable, ce qui est absurde car on a montré
+        que l'ensamble était insatisfiable à la question précédente. Donc, notre supposition
+        qu'il existe une formule du premier ordre $C[a,b]$ est fausse.
+\end{enumerate}
+\end{document}

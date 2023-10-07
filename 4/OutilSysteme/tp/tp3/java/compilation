@@ -1,0 +1,29 @@
+#!/bin/bash
+#make permettant la compilation java
+
+#si aucun argument
+if [ $# = 0 ] ; then
+    java java/Main
+fi
+
+svg=$IFS
+IFS="."
+cpt=0
+tab=()
+for file in $1 ; do
+    tab[$cpt]=$file
+    let cpt=$cpt+1
+done
+IFS=$svg
+
+#compilation
+if [ $1 =~ \.class ] ; then
+    file=--classpath java/calculette/* java/${tab[0]}.java
+    javac $file
+fi
+
+#il faut faire le test
+if [ $cpt -eq 1 ] ; then
+    java java/$1
+fi
+

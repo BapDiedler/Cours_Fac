@@ -1,0 +1,12 @@
+#!/bin/bash
+
+tmp=$IFS
+IFS=";"
+cat notes.csv | while read prenom nom email note ; do
+    newTexte=$(sed -e "s/<PRENOM>/$prenom/g; s/<NOM>/$nom/g; s/<NOTE>/$note/g" gabarit.txt)
+    bash mock_mail -s "note outils systeme" email
+    echo $newTexte
+done
+IFS=$tmp
+
+

@@ -1,0 +1,271 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[ a4paper, hmargin={0.5cm, 0.5cm}, vmargin={2cm, 2cm}]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+\title{\textbf{Ordonnancement}}
+\date{}
+\author{Valeran MAYTIE}
+
+\begin{document}
+\maketitle
+
+\begin{exo} Questions de cours
+\begin{enumerate}
+\item C'est le fait de passer d'une adresse symbolique à l'adresse mémoire
+
+\item C'est dépend des cas ça se joue entre \textit{Worth-Fit} et \textit{Best-Fit}
+
+\item On peut avoir des segment paratgés et on peut gérer les droits.
+
+\item En comparent la limite et le décalage si décalage > limite alors on a un débordement
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Mémoire contiguë:
+\begin{enumerate}
+\item L'adresse physique doit faire 16 bit
+\item Comme se n'est pas précisé l'adresse logique fait 
+    la même taille que l'adresse physique.
+\item  $T=1$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=3.75cm, align=center] at (2, -0.25) {P1};
+\end{tikzpicture}
+
+$T=2$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=3.75cm, align=center] at (2, -0.25) {P1};
+    \node[draw, text width=1.75cm, align=center] at (5, -0.25) {P2};
+    \node[draw, text width=7.75cm, align=center] at (10, -0.25) {P3};
+\end{tikzpicture}
+
+$T=8$:\\
+$P_4$ en attente\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=3.75cm, align=center] at (2, -0.25) {P1};
+    \node[draw, text width=7.75cm, align=center] at (10, -0.25) {P3};
+    \node[draw, text width=0.75cm, align=center] at (4.5, -0.25) {P5};
+\end{tikzpicture}
+
+$T=10$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=2.75cm, align=center] at (1.5, -0.25) {P4};
+    \node[draw, text width=0.75cm, align=center] at (4.5, -0.25) {P5};
+    \node[draw, text width=7.75cm, align=center] at (10, -0.25) {P3};
+\end{tikzpicture}
+
+$T=12$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=2.75cm, align=center] at (1.5, -0.25) {P4};
+    \node[draw, text width=0.75cm, align=center] at (4.5, -0.25) {P5};
+    \node[draw, text width=7.75cm, align=center] at (10, -0.25) {P3};
+\end{tikzpicture}
+
+$T=14$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=2.75cm, align=center] at (1.5, -0.25) {P4};
+    \node[draw, text width=7.75cm, align=center] at (7, -0.25) {P6};
+\end{tikzpicture}
+
+\item  le dernier processus ce termine à $T=22$
+\item \begin{description}
+    \item[$T_8$]: $2 / 52$
+    \item[$T_{10}$]: $ 4 / 48$
+    \item[$T_{12}$]: $ 4 / 48$ Mais $P_6$ en attente
+    \end{description}
+
+\item Les deux autres méthode ne changent pas grand choses
+\item  $T=1$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=3.75cm, align=center] at (2, -0.25) {P1};
+\end{tikzpicture}
+
+$T=2$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=3.75cm, align=center] at (2, -0.25) {P1};
+    \node[draw, text width=1.75cm, align=center] at (13, -0.25) {P2};
+    \node[draw, text width=7.75cm, align=center] at (8, -0.25) {P3};
+\end{tikzpicture}
+
+$T=4$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=3.75cm, align=center] at (2, -0.25) {P1};
+    \node[draw, text width=7.75cm, align=center] at (8, -0.25) {P3};
+    \node[draw, text width=3.75cm, align=center] at (14, -0.25) {P4};
+\end{tikzpicture}
+
+$T=10$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=0.75cm, align=center] at (3.5, -0.25) {P5};
+    \node[draw, text width=7.75cm, align=center] at (8, -0.25) {P3};
+    \node[draw, text width=3.75cm, align=center] at (14, -0.25) {P4};
+\end{tikzpicture}
+
+$T=14$:\\
+\begin{tikzpicture}
+    \draw (0 ,0) -- (16,0);
+    \foreach \x [evaluate=\x as \y using int(\x * 4)] in {0, ..., 16} {
+            \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\y$};        
+    }
+    \node[draw, text width=0.75cm, align=center] at (3.5, -0.25) {P5};
+    \node[draw, text width=7.75cm, align=center] at (8, -0.25) {P6};
+    \node[draw, text width=3.75cm, align=center] at (14, -0.25) {P4};
+\end{tikzpicture}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Segmentation simple
+\begin{enumerate}
+    \item $2^{16}=65 536$
+    \item $2^{12}=4096$
+    \item Justification avec décalage < limite
+    \begin{description}
+        \item[$\mathtt{0x0430}$]: Segment 0 $@physique = \mathtt{0x0430} + \mathtt{0x02B9} = \mathtt{0x06E9}$
+        \item[$\mathtt{0x1010}$]: Segment 1 $@physique = \mathtt{0x1010} + \mathtt{0x2A00} = \mathtt{0x2A10}$
+        \item[$\mathtt{0x2B0F}$]: Segment 2 $@physique = \mathtt{0x2B0F} + \mathtt{0x0090} = \mathtt{0x2B9F}$
+        \item[$\mathtt{0x34FF}$]: Segment 3 $@physique = \mathtt{0x34FF} + \mathtt{0xC3A7} = \mathtt{0xC8A6}$
+        \item[$\mathtt{0x4100}$]: Segment 3 $@physique = \mathtt{0x4100} + \mathtt{0x1D52} = \mathtt{0x1E52}$
+    \end{description}
+    \item $\mathtt{0x5FF} + \mathtt{0x014} + \mathtt{0x100} + \mathtt{0x5D0} + \mathtt{0x09F} = \mathtt{0xD82}$
+
+    Le processus à 3458 octets
+\end{enumerate}
+\end{exo}
+
+\begin{exo}Mini segmentation
+\begin{enumerate}
+    \item l'adresse physique fait 14 bits
+    \item La taille maximale d'un segment est $2^4 + 2^6 = 2^{10} = 1024$
+    \item Composition de l'adresse logique:\\
+        \begin{tikzpicture}
+            \draw (0 ,0) -- (17,0);
+            \foreach \x in {0, ..., 17} {
+                    \draw (\x, 0) -- (\x, 0.2) node[anchor=south]{$\x$};        
+            }
+            \node[draw, text width=6.75cm, align=center] at (3.5, -0.25) {Selecteur de Segment};
+            \node[draw, text width=9.75cm, align=center] at (12, -0.25) {Décalage};
+        \end{tikzpicture}
+    \item Selecteur de segment sur 6 bits:
+        \begin{description}
+            \item[$\mathtt{0xA8C7}$]: (Selecteur de segment: $\mathtt{0x2A}$) (Décalage: $\mathtt{0x0C7}$)\\
+                On n'a pas $\mathtt{0x0C7} < (\mathtt{0x3} * 64 = \mathtt{0xC0})$ donc Seg fault
+
+                %$@physique = \mathtt{0x0C7} + \mathtt{0x1B0} = \mathtt{0x18E}$ Seg fault
+
+            \item[$\mathtt{0x1A2C}$]: (Selecteur de segment: $\mathtt{0x06}$) (Décalage: $\mathtt{0x22C}$)\\
+                On n'a pas $\mathtt{0x22C} < (\mathtt{0x4} * 64 = \mathtt{0x100})$ donc Seg fault
+        \end{description}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Segmentation avancée
+\begin{enumerate}
+    \item Il y a 1Mo de mémoire physique, c'est à dir $2^{20}$ octets, 
+        donc l'adresse physique font 20bits.
+
+    \item $(256=2^8)$ et $(64Ko=2^{16})$ l'adresse logique fait donc $8+16=24$
+    
+    \item bits par ligne 
+    \begin{description}
+        \item[12bits]: base $(20 - 8)bits$  car multpli de 256
+        \item[16bits]: limite des $64Ko$ 
+        \item[4bits]: Pour les droits 
+    \end{description}
+    On a donc $32bits = 4o$ par ligne donc la table fait $4 \times 128=512o$
+
+    \item \begin{itemize}
+        \item \verb/Ox2A04E5/: le bit de points fort est à 0 donc local à $P_1$\\
+            Segment = \verb/0x2A/, et \verb/0x04E5/ $<$ \verb/0xD704/\\
+            L'accèse en écriture est autorisé donc c'est possible d'écrir à cette adresse.
+        \item \verb/0xA10386/: le bit de points fort est à 1 donc globale\\
+            Segment \verb/0x2A/, mais \verb/0x0386/ $>$ \verb/0x0100/\\
+            Le décalage est trop grand il y aura une seg fault
+        \item  \verb/0x0c1F5E/: le bit de points fort est à 0 donc local à $P_1$\\
+            Segment = \verb/0x0C/, et \verb/0x1F5E/ $<$ \verb/4000/ mais le bit W est égale à 0\\
+            le décalage est correcte mais on n'a pas les permissions donc on ne peut pas écrire 
+            dedans
+    \end{itemize}
+
+    \item Il est probablement stocké dans \verb/0x0C/ de la table locale voir dans le \verb/0x6C/ dans 
+        la table global, mais il serai préférable de le mettre dans la table loale.
+
+    \item Ils ont la même position dans l'adresse physique mais avec des permissions différente.
+        Cela permet à l'OS de paratger ça mémoire sans que le processus ne puis la modifier.
+
+    \item C'est un segment vide sans aucune permissions. Utilisé pour le pointeur NULL et répérer 
+        des erreurs de programtion.
+
+    \item L'OS peut réserver quelques segments dans la table globale pour partager 
+        son code et ses données. Les segments globaux sont accécible par tous le monde
+        sans reconfigurer la MMU et avec le bit S il peut être rendu inaccécible pour 
+        des raisons de sécurité.
+
+        Lors d'une interuption l'OS n'a pas besoins de reconfigurer la MMU. Il n'a qu'a utilisé
+        la configuration du processus courant.
+
+    \item  Il est déjà possible pour un processus d'adresser une telle quantité de mémoire.
+        Mais les adresses de base des segments ne couvrent pas plus de 1Mo de mémoire physique.
+
+        On ne peut pas augmenter la taille car sinon une ligne ferra plus de 32bits
+        Il faudrait que les segments commencent sur des adresse physique mulitple de 1024, 
+        comme ça on pourra enlever les 1à bits de poinds faible.
+\end{enumerate}
+\end{exo}
+\end{document}

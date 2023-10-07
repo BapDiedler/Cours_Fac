@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ $# -eq 1 ] ; then
+    wget -O document.txt $1
+    if [ $? -eq 0 ] ; then
+	awk 'BEGIN{RS=" "; FS="\""} /^href=.*[.]pdf/{print $2;}' document.txt >> listePDF.txt
+	awk 'BEGIN{FS="\"";RS=" "} /^href=.*[.]pdf/{lastPDF=NR;} /href=.*/ && lastPDF!=NR{print $2;}' document.txt >> ad-hoc.txt
+	awk 'BEGIN{RS=" "; FS="\""} /^href="http.*members[.]loria[.]/{print $2;}' document.txt >> pileAVisiter.txt
+
+	cat pileAVisiter.txt | while read lien ; do
+	    if ! grep -q ^$lien$ pileDejaVisite.txt ; then
+		echo $lien >> pileDejaVisite.txt
+		bash scriptUrl $lien #visite récursivede l'arborescence de fichiers
+	    fi
+	done
+    fi
+else
+    echo " le nombre d'argument doit être de 1"
+fi

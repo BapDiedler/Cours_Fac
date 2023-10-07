@@ -1,0 +1,429 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={1cm, 1cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning}
+
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\sc Exercice 1
+\end{center}
+
+\begin{enumerate}
+    \item $LR(0)$:\\
+    \begin{tikzpicture}
+        \node (q0) [state, initial, rectangle] at (0, 0) 
+            {$S \prec \bullet E \#$}; 
+        \node (qf) [state, rectangle, accepting] at (1, 2) 
+            {$S \prec E \bullet \#$}; 
+        \node (qn1) [state, rectangle] at (0, -2) 
+            {$E \prec \bullet n$};
+        \node (qn2) [state, rectangle] at (1, -4) 
+            {$E \prec n \bullet$};
+        \node (qa1) [state, rectangle] at (4, 0) 
+            {$E \prec \bullet E + E$};
+        \node (qa2) [state, rectangle] at (4, 2) 
+            {$E \prec E \bullet + E$};
+        \node (qa3) [state, rectangle] at (8, 0) 
+            {$E \prec E + \bullet E$};
+        \node (qa4) [state, rectangle] at (12, 0) 
+            {$E \prec E + E \bullet$};
+
+        \node (qp1) [state, rectangle] at (4, -2) 
+            {$E \prec \bullet (E)$};
+        \node (qp2) [state, rectangle] at (8, -2) 
+            {$E \prec (\bullet E)$};
+        \node (qp3) [state, rectangle] at (8, -4) 
+            {$E \prec (E \bullet )$};
+        \node (qp4) [state, rectangle] at (12, -4) 
+            {$E \prec (E) \bullet$};
+
+        \draw [->] (q0) -- (qf) node[left, pos=0.5]{$E$};
+        \draw [dashed, ->] (q0) -- (qn1) node[left, pos=0.5]{$\varepsilon$};
+        \draw [->] (qn1) -- (qn2) node[left, pos=0.5]{$n$};
+
+        \draw [dashed, ->] (q0) -- (qa1) node[above, pos=0.5]{$\varepsilon$};
+        \draw [dashed, ->] (qa1.150) to [distance=10mm] 
+            node[above, pos=0.5]{$\varepsilon$} (qa1.north west);
+        \draw [dashed, ->] (qa1) -- (qp1) node[left, pos=0.2]{$\varepsilon$};
+        \draw [dashed, ->] (qa1) -- (qn1) node[above, pos=0.2]{$\varepsilon$};
+        \draw [->] (qa1) -- (qa2) node[left, pos=0.5]{$E$};
+        \draw [->] (qa2) -- (qa3) node[above, pos=0.5]{$+$};
+        \draw [dashed, ->] (qa3) -- (qa1) node[above, pos=0.5]{$\varepsilon$};
+        \draw [dashed, ->] (qa3) -- (qp1) node[above, pos=0.3]{$\varepsilon$};
+        \draw [->] (qa3) -- (qa4) node[above, pos=0.5]{$E$};
+
+        \draw [->] (qp1.350) -- (qp2.190) node[below, pos=0.5]{$($};
+        \draw [dashed, ->] (qp2.170) -- (qp1.10) node[above, pos=0.5]{$\varepsilon$};
+        \draw [dashed, ->] (qp2) -- (qa1) node[below, pos=0.2]{$\varepsilon$};
+        \draw [->] (qp2) -- (qp3) node[left, pos=0.5]{$E$};
+        \draw [->] (qp3) -- (qp4) node[above, pos=0.5]{$)$};
+
+        \draw [dashed, ->] (q0) -- (qp1.west) node[above, pos=0.2]{$\varepsilon$};
+    \end{tikzpicture}
+
+    Déterminisation:\\
+    \begin{tikzpicture}
+        \node (q0) [state, initial, rectangle] at (0, 0) 
+            {$S \prec \bullet E \#$}; 
+        \node (q1) [state, rectangle] at (0, -2) 
+            {$E\prec n \bullet$};
+        \node (q2) [state, accepting, rectangle, text width=2cm] at (4, 2) 
+            {$S \prec E \bullet \#$ $E\prec E \bullet + E$}; 
+        \node (q3) [state, rectangle, text width=2cm] at (8, 0) 
+            {$E\prec E + \bullet E$};
+        \node (q4) [state, rectangle, text width=2cm] at (12, 0) 
+            {$E\prec E + E \bullet$ $E \prec E \bullet + E$};
+        \node (q5) [state, rectangle] at (4, 0) 
+            {$E \prec (\bullet E )$};
+        \node (q6) [state, rectangle, text width=2cm] at (4, -2) 
+            {$E\prec E + E \bullet$ $E \prec E \bullet + E$ $E\prec (E\bullet)$};
+        \node (q7) [state, rectangle] at (8, -2) 
+            {$E\prec (E)\bullet$};
+        \node (q8) [state, rectangle] at (8, 2) 
+            {$E\prec n\bullet$};
+        
+        \draw[->] (q0) -- (q1) node[left, pos=.5]{$n$};
+        \draw[->] (q5) -- (q1) node[above, pos=.5]{$n$};
+        \draw[->] (q3) -- (q8) node[right, pos=.5]{$n$};
+        \draw[->] (q0) -- (q2) node[above left, pos=.5]{$E$};
+        \draw[->] (q2) -- (q3) node[above right, pos=.5]{$+$};
+        \draw[->] (q3.10) -- (q4.170) node[above, pos=.5]{$E$};
+        \draw[->] (q4.190) -- (q3.350) node[below, pos=.5]{$+$};
+        \draw[->] (q0) -- (q5) node[above, pos=.5]{$($};
+
+        \draw[->] (q5.80) to [distance=10mm] 
+            node[left, pos=0.8]{$($} (q5.100);
+        \draw[->] (q5) -- (q6)
+            node[left, pos=0.5]{$E$};
+        \draw[->](q6) -- (q3)
+            node[above, pos=0.5]{$+$};
+        \draw[->](q6) -- (q7)
+            node[above, pos=0.5]{$)$};
+    \end{tikzpicture}
+
+    \item L'ambiguïté se trouve au niveau de la grammaire
+
+    \begin{description}
+        \item[$1+2\bullet+3+4$]:\\
+        \begin{table}[h!]
+            \begin{minipage}[t]{.4\linewidth}
+                \begin{tabular}{c|c|c}
+                    Pile & Reste & Action \\
+                    \hline
+                    $E+E$ & $+3+4$ & réd. $E \prec E + E$ \\
+                    $E$ & $+3+4$ & progression
+                \end{tabular}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{.4\linewidth}
+                \begin{tabular}{c|c|c}
+                    Pile & Reste & Action \\
+                    \hline
+                    $E+E$ & $+3+4$ & progression \\
+                    $E+E+$ & $3+4$ & progression
+                \end{tabular}
+            \end{minipage}
+        \end{table}
+
+        \item[$1+2+3\bullet+4$]:\\
+        \begin{table}[h!]
+            \begin{minipage}[t]{.4\linewidth}
+                \begin{tabular}{c|c|c}
+                    Pile & Reste & Action \\
+                    \hline
+                    $\ldots E + E$ & $+4$ & réd. $E \prec E + E$ \\
+                    $\ldots E$ & $+4$ & progression \\
+                \end{tabular}
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{.4\linewidth}
+                \begin{tabular}{c|c|c}
+                    Pile & Reste & Action \\
+                    \hline
+                    $\ldots E + E$ & $+4$ & progression \\
+                    $\ldots E + E +$ & $4$ & progression \\
+                \end{tabular}
+            \end{minipage}
+        \end{table}
+
+        \begin{tikzpicture}
+            \node (1) at (0, 0) {$1$};
+            \node (+1) at (0.5, 0) {$+$};
+            \node (2) at (1, 0) {$2$};
+            \node (+2) at (1.5, 0) {$+$};
+            \node (3) at (2, 0) {$3$};
+            \node (+3) at (2.5, 0) {$+$};
+            \node (4) at (3, 0) {$4$};
+
+            \draw (1) -- (0, 0.5) -- (1, 0.5) -- (2);
+            \draw (+1) -- (0.5, 0.5);
+            \draw (0.5, 0.5) -- (0.5, 1) -- (2, 1) -- (3);
+            \draw (+2) -- (1.5, 1);
+            \draw (1.5, 0.5) -- (1.5, 1.5) -- (3, 1.5) -- (4);
+            \draw (+3) -- (2.5, 1.5) -- (2.5, 2);
+
+            \node (1) at (5, 0) {$1$};
+            \node (+1) at (5.5, 0) {$+$};
+            \node (2) at (6, 0) {$2$};
+            \node (+2) at (6.5, 0) {$+$};
+            \node (3) at (7, 0) {$3$};
+            \node (+3) at (7.5, 0) {$+$};
+            \node (4) at (8, 0) {$4$};
+
+            \draw (1) -- (5, 0.5) -- (6, 0.5) -- (2);
+            \draw (+1) -- (5.5, 0.5);
+            \draw (3) -- (7, 0.5) -- (8, 0.5) -- (4);
+            \draw (+3) -- (7.5, 0.5);
+            \draw (5.5, 0.5) -- (5.5, 1) -- (7.5, 1) -- (7.5, 0.5);
+            \draw (+2) -- (6.5, 1.5);
+
+            \node (1) at (10, 0) {$1$};
+            \node (+1) at (10.5, 0) {$+$};
+            \node (2) at (11, 0) {$2$};
+            \node (+2) at (11.5, 0) {$+$};
+            \node (3) at (12, 0) {$3$};
+            \node (+3) at (12.5, 0) {$+$};
+            \node (4) at (13, 0) {$4$};
+
+            \draw(3) -- (12, 0.5) -- (13, 0.5) -- (4);
+            \draw(+3) -- (12.5, 0.5);
+            \draw(2) -- (11, 1) -- (12.5, 1) -- (12.5, 0.5);
+            \draw(+2) -- (11.5, 1);
+            \draw(1) -- (10, 1.5) -- (11.5, 1.5) -- (11.5, 1);
+            \draw(+1) -- (10.5, 2);
+        \end{tikzpicture}
+    \end{description}
+
+\end{enumerate}
+
+\newpage
+\begin{center}
+\large\sc Exercice 2
+\end{center}
+\begin{enumerate}
+    \item automate:\\
+    \begin{tikzpicture}
+        \node (s0) [state, initial, rectangle, align=left] at (0, 0) 
+            {$prog' \prec$ $\bullet$ $prog$}; 
+        \node (s1) [state, rectangle, align=left] at (-6, -3) 
+            {$expr \prec$ IF $\bullet$ COND $seq$ \\ 
+            $expr \prec$ IF $\bullet$ COND $seq$ ELSE $seq$};
+        \node (s2) [state, rectangle, align=left] at (-6, -6) 
+            {$expr \prec$ IF COND $\bullet$ $seq$ \\ 
+            $expr \prec$ IF COND $\bullet$ $seq$ ELSE $seq$};
+        \node (s3) [state, rectangle, align=left] at (0, -3) 
+            {$expr \prec$ ATOM $\bullet$}; 
+        \node (s4) [state, rectangle, align=left] at (-6, -9) 
+            {$expr \prec$ IF COND $seq$ $\bullet$ \\ 
+            $expr \prec$ IF COND $seq$ $\bullet$ ELSE $seq$\\
+            $seq \prec seq$ $\bullet$ SEMI $expr$};
+        \node (s5) [state, rectangle, align=left] at (7, -9) 
+            {$seq \prec seq$ SEMI $\bullet$ $expr$};
+        \node (s6) [state, rectangle, align=left] at (7, -13) 
+            {$seq \prec seq$ SEMI $expr$ $\bullet$};
+        \node (s7) [state, rectangle, align=left] at (0, -11) 
+            {$ecpr \prec$ IF COND $seq$ ELSE $\bullet$ $seq$};
+        \node (s8) [state, rectangle, align=left] at (0, -13) 
+            {$expr \prec$ IF COND $seq$ ELSE $seq$ $\bullet$\\
+            $seq \prec seq$ $\bullet$ SEMI $expr$};
+        \node (s9) [state, rectangle, align=left] at (4, -3) 
+            {$seq \prec expr$ $\bullet$}; 
+        \node (s10) [state, rectangle, align=left] at (7, 0) 
+            {$prog \prec seq$ $\bullet$ EOF \\ 
+            $seq \prec seq$ $\bullet$ SEMI $expr$}; 
+        \node (s11) [state, rectangle, align=left] at (7, 2) 
+            {$prog \prec seq$ EOF $\bullet$}; 
+        \node (s12) [state, rectangle, align=left] at (0, 2) 
+            {$prog' \prec prog$ $\bullet$};
+
+        \draw[->] (s0) -- (s1) node[above, pos=.5]{IF};
+        \draw[->] (s0) -- (s3) node[left, pos=.5]{ATOM};
+        \draw[->] (s0) -- (s10) node[above, pos=.5]{$seq$};
+        \draw[->] (s0) -- (s12) node[left, pos=.5]{$prog$};
+        \draw[->] (s0) -- (s9) node[right, pos=.5]{$expr$};
+
+        \draw [->] (s1.340) -- (s2.20) node[right, pos=.2]{COND};
+
+        \draw [->] (s2.160) -- (s1.200) node[left, pos=.2]{IF};
+        \draw [->] (s2.north east) -- (s3) node[left, pos=.2]{ATOM};
+        \draw [->] (s2) -- (s4) node[left, pos=.2]{$seq$};
+        \draw [->] (s2.east) -- (s9) node[below right, pos=.02]{$expr$};
+
+        \draw [->] (s4.east) -- (s5) node[above, pos=.1]{SEMI};
+        \draw [->] (s4) -- (s7) node[below, pos=.3]{ELSE};
+
+        \draw [->] (s5.north west) -- (s1.south east) node[below, pos=.2]{IF};
+        \draw [->] (s5) -- (s3) node[below, pos=.2]{IF};
+        \draw [->] (s5) -- (s6) node[right, pos=.5]{$expr$};
+
+        \draw [->] (s7) -- (s1.south east) node[left, pos=.1]{IF};
+        \draw [->] (s7) -- (s3) node[right, pos=.5]{ATOM};
+        \draw [->] (s7) -- (s8) node[right, pos=.5]{$seq$};
+        \draw [->] (s7) -- (s9) node[right, pos=.1]{$expr$};
+
+        \draw [->] (s8.north east) -- (s5) node[below right, pos=.4]{SEMI};
+
+        \draw [->] (s10) -- (s5) node[right, pos=.5]{SEMI};
+        \draw [->] (s10) -- (s11) node[right, pos=.5]{EOF};
+    \end{tikzpicture}
+
+    \newpage
+    \item \begin{description}
+        \item[State 8]: IF COND $seq$ ELSE $seq$ $\bullet$ SEMI $expr$\\
+            \begin{tikzpicture}
+                \node (If) at (0,  0) {IF};
+                \node (Cond) at (1,  0) {COND};
+                \node (seq1) at (2,  0) {$seq$};
+                \node (Else) at (3,  0) {ELSE};
+                \node (seq2) at (4,  0) {$seq$};
+                \node (Semi) at (5,  0) {SEMI};
+                \node (expr) at (6,  0) {$expr$};
+                \node (seq3) at (5,  1) {$seq$};
+                \node (expr2) at (2.5, 2) {$expr$};
+
+                \draw (seq2) -- (4, 0.5) -- (6, 0.5) -- (expr);
+                \draw (Semi) -- (seq3);
+                \draw (If) -- (0, 1.5) --(5, 1.5) -- (seq3);
+                \draw (2.5, 1.5) -- (expr2);
+                \draw (Cond) -- (1, 1.5);
+                \draw (seq1) -- (2, 1.5);
+                \draw (Else) -- (3, 1.5);
+
+
+                \node (If) at (10,  0) {IF};
+                \node (Cond) at (11,  0) {COND};
+                \node (seq1) at (12,  0) {$seq$};
+                \node (Else) at (13,  0) {ELSE};
+                \node (seq2) at (14,  0) {$seq$};
+                \node (Semi) at (15,  0) {SEMI};
+                \node (expr) at (16,  0) {$expr$};
+                \node (seq3) at (12,  2) {$seq$};
+                \node (expr2) at (12, 1) {$expr$};
+                \node (expr3) at (14, 3) {$expr$};
+
+                \draw (Cond) -- (11, 0.5);
+                \draw (seq1) -- (12, 0.5);
+                \draw (Else) -- (13, 0.5);
+                \draw (seq2) -- (14, 0.5) -- (10, 0.5) -- (If);
+                \draw (12, 0.5) -- (expr2);
+                \draw (expr2) -- (seq3);
+                \draw (seq3) -- (12, 2.5) -- (16, 2.5) -- (expr);
+                \draw (Semi) -- (15, 2.5);
+                \draw (14, 2.5) -- (expr3);
+            \end{tikzpicture} 
+        \item[State 4]: IF COND IF COND $seq$ $\bullet$ ELSE $seq$\\
+            \begin{tikzpicture}
+                \node (If1) at (0,  0) {IF};
+                \node (Cond1) at (1,  0) {COND};
+                \node (If2) at (2,  0) {IF};
+                \node (Cond2) at (3,  0) {COND};
+                \node (seq1) at (4,  0) {$seq$};
+                \node (Else) at (5,  0) {ELSE};
+                \node (seq2) at (6,  0) {$seq$};
+                \node (expr1) at (3,  1) {$expr$};
+                \node (seq3) at (3,  2) {$seq$};
+                \node (expr2) at (3,  3) {$expr$};
+
+                \draw (If2) -- (2, 0.5) -- (4, 0.5) -- (seq1);
+                \draw (Cond2) -- (expr1) -- (seq3);
+                \draw (If1) -- (0, 2.5) -- (6, 2.5) -- (seq2); 
+                \draw (Cond1) -- (1, 2.5);
+                \draw (Else) -- (5, 2.5);
+                \draw (expr2) -- (seq3);
+
+                \node (If1) at (10,  0) {IF};
+                \node (Cond1) at (11,  0) {COND};
+                \node (If2) at (12,  0) {IF};
+                \node (Cond2) at (13,  0) {COND};
+                \node (seq1) at (14,  0) {$seq$};
+                \node (Else) at (15,  0) {ELSE};
+                \node (seq2) at (16,  0) {$seq$};
+                \node (expr1) at (14,  1) {$expr$};
+                \node (seq3) at (14,  2) {$seq$};
+                \node (seq4) at (12,  3) {$expr$};
+
+                \draw (If2) -- (12, 0.5) -- (16, 0.5) -- (seq2);
+                \draw (Cond2) -- (13, 0.5);
+                \draw (Else) -- (15, 0.5);
+                \draw (seq1) -- (expr1) -- (seq3);
+                \draw (If1) -- (10, 2.5) -- (14, 2.5) -- (seq3);
+                \draw (Cond1) -- (11, 2.5);
+                \draw (12, 2.5) -- (seq4);
+            \end{tikzpicture}
+        \item[State 4]: IF COND $seq$ $\bullet$ SEMI $expr$\\
+            \begin{tikzpicture}
+                \node (If) at (0,  0) {IF};
+                \node (Cond) at (1,  0) {COND};
+                \node (seq1) at (2,  0) {$seq$};
+                \node (Semi) at (3,  0) {SEMI};
+                \node (expr1) at (4,  0) {$expr$};
+                \node (seq2) at (3, 1) {$seq$};
+                \node (expr2) at (1.5, 2) {$expr$};
+
+                \draw (seq1) -- (2, 0.5) -- (4, 0.5) -- (expr1);
+                \draw (Semi) -- (seq2);
+                \draw (If) -- (0, 1.5) -- (3, 1.5) -- (seq2);
+                \draw (Cond) -- (1, 1.5);
+                \draw (1.5, 1.5) -- (expr2);
+
+                \node (If) at (10,  0) {IF};
+                \node (Cond) at (11,  0) {COND};
+                \node (seq1) at (12,  0) {$seq$};
+                \node (Semi) at (13,  0) {SEMI};
+                \node (expr1) at (14,  0) {$expr$};
+                \node (expr2) at (11, 1) {$expr$};
+                \node (seq2) at (11, 2) {$seq$};
+                \node (expr3) at (12.5, 3) {$expr$};
+
+                \draw (If) -- (10, 0.5) -- (12, 0.5) -- (seq1);
+                \draw (Cond) -- (expr2) -- (seq2);
+                \draw (seq2) -- (11, 2.5) -- (14, 2.5) -- (expr1);
+                \draw (Semi) -- (13, 2.5);
+                \draw (12.5, 2.5) -- (expr3);
+            \end{tikzpicture}
+    \end{description}
+\end{enumerate}
+
+\newpage
+\begin{center}
+\large\sc Exercice 3
+\end{center}
+\begin{enumerate}
+    \item \begin{description}
+        \item[State 4]: \\
+        \begin{tikzpicture}
+            \node (id) at (0, 0) {ID};
+            \node (tu) at (1, 0) {tuple};
+            \node (ex) at (0.5, 1.5) {expr};
+
+            \draw (id) -- (0, 1) -- (1, 1) -- (tu);
+            \draw (0.5, 1) -- (ex);
+
+            \node (id) at (5, 0) {ID};
+            \node (tu) at (6, 0) {tuple};
+            \node (se) at (6, 1) {simple};
+            \node (ex) at (5.5, 2) {expr};
+
+            \draw (se) -- (tu);
+            \draw (id) -- (5, 1.5) -- (6, 1.5) -- (se);
+            \draw (5.5, 1.5) -- (ex);
+        \end{tikzpicture} 
+
+        \item [State 13]:\\
+        \begin{tikzpicture}
+            
+        \end{tikzpicture}
+    \end{description}
+\end{enumerate}
+
+\end{document}

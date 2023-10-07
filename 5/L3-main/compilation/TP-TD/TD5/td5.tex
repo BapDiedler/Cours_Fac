@@ -1,0 +1,238 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={1cm, 0.5cm}, vmargin={3cm, 3cm}]{geometry}
+\usepackage{proof}
+
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning}
+
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\sc TD Types
+\end{center}
+
+\section{Expressions typables}
+
+\begin{exo} Types simples:
+\begin{enumerate}
+    \item $\texttt{fun f = fun x -> x+1 in f (f 1)}$
+    
+    \tiny
+    \[
+    \infer{\vdash\texttt{let f = fun x -> x+1 in f (f 1)}: int}
+    {
+      \infer{\vdash\texttt{fun x -> x + 1}: int \to int}
+      {
+        \infer{f:int \to int \vdash \texttt{f}: int \to int}{}&
+        \infer{f:int \to int \vdash \texttt{f 1}: int}
+          {
+            \infer{f:int \to int \vdash \texttt{f}: int \to int}{}&
+           \infer{f:int \to int \vdash \texttt{1}: int}{}
+          }
+      }
+      & 
+      \infer{f:int \to int \vdash \texttt{f (f 1)}: int}
+      {
+        \infer{f:int \to int \vdash \texttt{f}: int \to int}{}&
+        \infer{f:int \to int \vdash \texttt{f 1}: int}
+          {
+            \infer{f:int \to int \vdash \texttt{f}: int \to int}{}&
+            \infer{f:int \to int \vdash \texttt{1}: int}{}
+          }
+      }
+    }
+    \]
+    \normalsize
+
+  \item $\texttt{let f = fun x -> x + 1 in f f}$
+
+    Impossible car f ne peut pas être appliqué à lui même.
+
+  \item $\texttt{let f = fun x -> fun y -> x in f 1}$
+
+    \tiny
+    \[
+      \infer{\vdash \texttt{let f = fun x -> fun y -> x in f 1}: int \to int}
+        { \infer{\vdash \texttt{fun x -> fun y -> x}: int \to int \to int}
+          { \infer{x : int \vdash \texttt{fun y -> x} : int \to int}
+            { 
+              \infer{x : int, y : int \vdash x : int}{}
+            }
+            &
+            \infer{f : int \to int \to int \vdash \texttt{f 1} : int \to int}
+            {
+              \infer{f : int \to int \to int \vdash f : int \to int \to int}{}
+              &
+              \infer{f : int \to int \to int \vdash 1 : int}{}
+            }
+          }
+        }
+    \]
+    \normalsize
+
+  \item $\texttt{let f = fun x -> fun y -> x in f 1 2 3}$
+
+    Impossible car f est de type $int \to int \to int$ 
+    et il est appliqué à 3 $int$ au lieu de 2.
+
+  \item $\texttt{let f = fun x -> fun y -> x in f f 2 3}$
+
+    Impossible f devrai être de type $\tau = \tau \to int \to \tau$
+
+  \item $\texttt{let f = fun x -> fun y -> x in f (fun z -> z) 2 3}$
+
+    Tytpable avec f de type $(int \to int) \to int \to (int \to int)$
+
+  \item $\texttt{fun x -> fun y -> fun z -> x z (y z)}$
+
+    Tytpalble $(\tau_1 \to \tau_2 \to \tau_3) \to (\tau_1 \to \tau_2) 
+              \to \tau_1 \to \tau_3$
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Types polymorphes
+\begin{enumerate}
+  \item $\texttt{fun x -> x x}$
+
+    Typable avec $(\forall \alpha \to \alpha) \to (\forall \alpha \to \alpha)$
+
+    H-M:
+    
+    Impossible car x devrai avoir un type infini 
+        $\alpha_1 \to (\alpha_1 \to (\ldots))$ \\
+    car on applique x à lui même donc doit se renvoyer lui même 
+
+  \item $\texttt{let f = fun x -> fun y -> x + 1 in f f 1}$
+
+    f: $int \to \alpha \to int$ non applicable à elle même
+
+  \item $\texttt{let f = fun x -> fun y -> x + 1 in f 1 f}$
+
+    f: $int \to \alpha \to int$ avec $\alpha$ instancié avec $int \to \beta \to int$
+
+  \item $\texttt{let f = fun x -> fun y -> x in f f 2 3} $
+
+    f: $\forall \alpha \beta, \alpha \to \beta \to \alpha$
+\end{enumerate}
+\end{exo} 
+
+\newpage
+\section{Extensions}
+\begin{exo}Paires\vspace{5mm} \\
+  \infer{\Gamma \vdash \texttt{(e1, e2)} : \tau_1 \times \tau_2}{
+    \Gamma \vdash e1 : \tau_1 
+    &
+    \Gamma \vdash e2 : \tau_2
+  }\vspace{5mm}
+
+  \infer{\Gamma \vdash \texttt{fst(e)}:\tau_1}{\Gamma \vdash e : \tau_1 \times \tau_2}
+  \vspace{5mm}
+
+  \infer{\Gamma \vdash \texttt{snd(e)}: \tau_2}{\Gamma \vdash e: \tau_1 \times \tau_2}
+  \vspace{5mm}
+
+  \infer{\Gamma \vdash \texttt{let x, y = e1 in e2}: \tau}
+  {
+    \Gamma \vdash e1: \tau_1 \times \tau_2
+    &
+    \Gamma, x: \tau_1, y: \tau_2 \vdash e2 : \tau
+  }
+\end{exo}
+
+\begin{exo}Booléens \vspace{5mm}\\
+  \infer{\Gamma \vdash \texttt{true}: bool}{}
+  \infer{\Gamma \vdash \texttt{false}: bool}{}\vspace{5mm}
+
+  \infer{\Gamma \vdash \texttt{e1 < e2}: bool}
+  {\Gamma \vdash \texttt{e1}: int & \Gamma \vdash \texttt{e2}: int} \vspace{5mm}
+
+  \infer{\Gamma \vdash \texttt{e1 = e2} : bool}
+    {\Gamma \vdash \texttt{e1}: \tau & \Gamma \vdash \texttt{e2}: \tau} \vspace{5mm}
+
+  \infer{\Gamma \vdash \texttt{e1 \&\& e2}: bool}
+    {\Gamma \vdash \texttt{e1}: bool & \Gamma \vdash \texttt{e2}: bool} \vspace{5mm}
+
+  \infer{\Gamma \vdash \texttt{if e0 then e1 else e2} : \tau}
+  {
+    \Gamma \vdash \texttt{e0} : bool
+    & \Gamma \vdash \texttt{e1} : \Gamma \vdash \tau & \texttt{e2}: \tau
+  }
+\end{exo}
+
+\begin{exo}Point fixe \vspace{5mm} \\
+  \infer{\vdash \texttt{let rec x = e1 in e2}: \tau_1}
+  {
+    \texttt{x}: \tau \vdash \texttt{e1} : \tau
+    &
+    \texttt{e2}: \tau_1
+  }\vspace{5mm}
+
+  \infer{\vdash \texttt{let rec f = fun x -> 1 + f x in f 0} : int}
+  {}
+\end{exo}
+
+\begin{exo}Mise en oeuvre
+    
+\end{exo}
+
+\section{Raisonnements}
+\begin{exo}Opérateur paresseux
+  
+  On a $F(e_1 \&\& e_2) = \text{if } F(e_1) \text{ then }
+                                F(e_2) \text{ else } false$
+
+    et $F(e) = e$
+
+  On va montrer $\Gamma \vdash e : \tau \Rightarrow \Gamma \vdash F(e) : \tau$
+  Par récurence:
+
+  Seul cas intéressent $\Gamma \vdash e_1 \&\& e_2 : bool$ avec les prémisses
+  $\Gamma \vdash e_1:bool$ et $\Gamma \vdash e_2 : bool$.
+  
+  Or la règle de typage pour le if nous donne bien $F(e_1 \&\& e_2) : bool$.
+\end{exo}
+
+\begin{exo}Affaiblissement
+  
+  On va procéder par induvtion structurelle sur les règles de dérivations:
+
+  On a $\Gamma \subseteq \Delta$
+
+\begin{itemize}
+  \item $\Gamma \vdash x : \Gamma(x)$ par défintion de l'inclusion.
+
+  \item $\Gamma \vdash \texttt{fun x -> e} : \tau_1 \to \tau_2$ On a bien
+    $\Gamma, x: \tau_1 \subseteq \Delta, x : \tau_1$. 
+
+    Donc par hypothèse de récurence on à bien $\Delta \vdash
+            \texttt{fun x -> e} : \tau_1 \to \tau_2 $
+
+  \item \ldots
+\end{itemize}
+\end{exo}
+
+\begin{exo}Adéquation
+  
+  Démonstration par récurence assez simples.
+    
+\end{exo}
+
+\begin{exo}Préservation des types
+    
+\end{exo}
+\end{document}

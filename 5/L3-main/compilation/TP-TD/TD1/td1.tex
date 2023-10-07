@@ -1,0 +1,531 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\sc Feuille d'exercice 1
+\end{center}
+
+%%
+% EX 1
+%%
+\begin{exo}
+   $ \Sigma = \left\{Nil : liste, 
+   Cel : \mathbb{N} \times liste \rightarrow liste\right\}$
+
+\begin{enumerate}
+\item 
+    \[ longueur (l) =
+    \begin{cases}
+    longueur(Nil) = 0 \\
+    longueur(Cel(x, l)) = 1 + longueur(l)
+    \end{cases}
+    \]
+        
+\item 
+    \[ concat (l1, l2) =
+    \begin{cases}
+    concat(Nil, l2) = l2 \\
+    concat(Cel(x, l), l2) = Cel(x, concat(l, l2))
+    \end{cases}
+    \]
+        
+\item
+    \begin{equation*}
+        \forall l_1, l_2 \in lists,\hspace{3mm} 
+        longueur(concat(l_1, l_2)) = longueur(l_1) + longueur(l_2) 
+    \end{equation*}
+        \vspace{3mm} \\
+        On résone par récurrence sur $l_1$
+
+    \begin{description}
+    \item[$\bullet$ Cas de base] $l_1 = Nil$
+        \begin{align*} 
+            longueur(l_1, l_2) &= longueur(l_2) \\
+                               &= longueur(Nil) + longueur(l_2) \\
+                               &= longueur(l_1) + longueur(l_2) 
+        \end{align*}
+    \item[$\bullet$ Cas récursif] $l_1 = Cel(x, l'_1)$ 
+                
+        \underline{Hypothèse de récurence:} $longueur(concat(l'_1, l_2)) = 
+                                        longueur(l'_1) + longueur(l_2)$
+                
+        \begin{align*}
+            longueur(concat(Cel(x, l'_1), l_2)) 
+                &= longueur(Cel(x, concat(l'_1, l_2))) \\
+                &= 1 + longueur(concat(l'_1, l_2)) \\
+                &= 1 + longueur(l'_1) + longueur(l_2) \\
+                &= longueur(Cel(x, l'_1)) + longueur(l_2) \\
+                &= longueur(l_1) + longueur(l_2)
+        \end{align*}
+    \end{description}
+\item
+    \begin{equation*}
+        \forall l_1, l_2, l_3 \in lists,\hspace{3mm} 
+        concat(l_1, concat(l_2, l_3)) = concat(concat(l_1, l_2), l_3) 
+    \end{equation*}
+    On résonne par récurence sur $l_1$
+    \begin{description}
+    \item[$\bullet$ Cas de base] $l_1 = Nil$
+        \begin{align*} 
+            concat(l_1, concat(l_2, l_3)) &= concat(l_2, l_3) \\
+                            &= concat(concat(Nil, l_2), l_3) 
+        \end{align*}
+    \item[$\bullet$ Cas récursif] $l_1 = Cel(x, l'_1)$ 
+                
+        \underline{Hypothèse de récurence:} $concat(l_1, concat(l_2, l_3)) = 
+                                        concat(concat(l_1, l_2), l_3)$
+                
+        \begin{align*}
+            concat(l_1, concat(l_2, l_3)) 
+                &= concat(Cel(x, l'_1), concat(l_2, l_3)) \\
+                &= Cel(x, concat(l'_1, concat(l_2, l_3))) \\
+                &= Cel(x, concat(concat(l'_1, l_2), l_3)) \\
+                &= concat(Cel(x, concat(l'_1, l_2)), l_3) \\
+                &= concat(concat(Cel(x, l'_1), l_2), l_3) \\
+                &= concat(concat(l_1, l_2), l_3) \\
+        \end{align*}
+    \end{description}
+\end{enumerate}
+\end{exo}
+
+\newpage
+
+%%
+% EX 2
+%%
+\begin{exo} \hspace{1,8cm}
+    $rev : list \rightarrow  list $
+    \[ rev(l) =
+        \begin{cases}
+        rev(Nil) &= Nil \\
+        rev(Cel(x, l)) &= concat(rev(l), Cel(x, Nil))
+        \end{cases}
+    \]
+
+\begin{enumerate}
+\item 
+    \begin{equation*}
+        \forall l \in lists,\hspace{3mm} 
+        longueur(rev(l)) = longueur(l) 
+    \end{equation*}
+    Par récurence sur $l$
+    \begin{description}
+    \item[$\bullet$ Cas de base] $l = Nil$
+        \begin{align*} 
+            longueur(rev(Nil)) = longueur(Nil) 
+        \end{align*}
+    \item[$\bullet$ Cas récursif] $l = Cel(x, l')$ 
+                
+        \underline{Hypothèse de récurence:} $longueur(rev(l')) = longueur(l')$
+                
+        \begin{align*}
+            longueur(rev(l)) 
+                &= longueur(rev(Cel(x, l')))\\
+                &= longueur(concat(rev(l'), Cel(x, Nil))) \\
+                &= longueur(rev(l')) + longueur(Cel(x, Nil)) & \textrm{vue ex(1.3)}\\
+                &= longueur(rev(l')) + 1 \\
+                &= longueur(l') + 1 & \textrm{par HP}\\
+                &= longueur(l)
+        \end{align*}
+    \end{description}
+
+\item 
+    \begin{equation*}
+        \forall l_1, l_2 \in lists,\hspace{3mm} 
+        rev(concat(l_1,l_2)) = concat(rev(l_2),rev(l_1)) 
+    \end{equation*}
+    Par récurence sur $l_1$
+    \begin{description}
+    \item[$\bullet$ Cas de base] $l_1 = Nil$
+        \begin{align*} 
+            rev(concat(l_1,l_2)) = rev(l_2) &= concat(rev(l_2), Nil) \\
+                                            &= concat(rev(l_2), rev(l_1))
+        \end{align*}
+    \item[$\bullet$ Cas récursif] $l_1 = Cel(x, l'_1)$ 
+                
+        \underline{Hypothèse de récurence:} $rev(concat(l'_1,l_2)) = concat(rev(l_2),rev(l'_1))$
+                
+        \begin{align*}
+            rev(concat(l_1,l_2)) 
+                &= rev(concat(Cel(x, l'_1),l_2)) \\
+                &= rev(Cel(x,concat(l'_1,l_2))) \\
+                &= concat(rev(concat(l'_1, l_2)), Cel(x, Nil)) \\
+                &= concat(concat(rev(l_2), rev(l'_1), Cel(x, Nil))) &\textrm{par HP} \\
+                &= concat(rev(l_2), concat(rev(l'_1)), Cel(x, Nil)) \\
+                &= concat(rev(l_2), rev(Cel(x, l'_1))) \\
+                &= concat(rev(l_2), rev(l_1))
+        \end{align*}
+    \end{description}
+\newpage
+\item 
+    \begin{equation*}
+        \forall l \in lists,\hspace{3mm} 
+        rev(rev(l)) = l 
+    \end{equation*}
+    Par récurence sur $l$
+    \begin{description}
+    \item[$\bullet$ Cas de base] $l = Nil$
+        \begin{align*} 
+            rev(rev(l)) = Nil = l
+        \end{align*}
+    \item[$\bullet$ Cas récursif] $l = Cel(x, l')$ 
+                
+        \underline{Hypothèse de récurence:} $rev(rev(l')) = l'$
+        
+        \begin{align*}
+            rev(rev(l)) &= rev(rev(Cel(x, l'))) \\
+                        &= rev(concat(rev(l'), Cel(x, Nil))) \\
+                        &= concat(rev(Cel(x, Nil)), rev(rev(l'))) \\
+                        &= concat(rev(Cel(x, Nil)), l') & \textrm{par HP}\\
+                        &= concat(Cel(x, Nil), l') \\
+                        &= l
+        \end{align*}
+    \end{description}
+\end{enumerate}
+\end{exo}
+
+
+%%
+% EX 3
+%%
+\begin{exo} $rev\_rt : list \rightarrow list$
+\begin{enumerate}
+\item 
+        \[ rev\_acc (l, acc) =
+        \begin{cases}
+        rev\_acc(Nil, acc) &= acc \\
+        rev\_acc(Cel(x, l), acc) &= rev\_acc(l, Cel(x, acc)) 
+        \end{cases}
+        \]
+        \begin{center}
+            $rev\_rt(l) = rev\_acc(l, Nil)$                
+        \end{center}
+
+\item
+    \begin{equation*}
+        \forall l \in lists,rev\_rt(l) = rev(l) \\
+    \end{equation*}
+    Pour cela nous allons montrer par récurence:
+    \begin{equation*}          
+        rev\_acc(l, acc) = concat(acc, rev(l))
+    \end{equation*}
+    \begin{description}
+    \item[$\bullet$ Cas de base] $l = Nil$
+        \begin{align*} 
+            rev\_acc(l, acc) = acc &= concat(Nil, acc) \\
+                                    &= concat(rev(l), acc)
+        \end{align*}
+    \item[$\bullet$ Cas récursif] $l = Cel(x, l')$ 
+                
+        \underline{Hypothèse de récurence:} 
+        $rev\_acc(l', acc) = concat(rev(l') ,acc)$
+                
+        \begin{align*}
+            rev\_acc(l, acc) &= rev\_acc(Cel(x, l'), acc) \\
+                            &= rev\_acc(l', Cel(x, acc)) \\
+                            &= concat(rev(l'), Cel(x, acc)) & \textmd{Par HP} \\
+                            &= concat(rev(l'), concat(Cel(x, Nil), acc)) \\
+                            &= concat(concat(rev(l'), Cel(x, Nil), acc)) \\
+                            &= concat(concat(rev(Cel(x, l')), acc)) \\
+                            &= concat(rev(l), acc)
+        \end{align*}
+    \end{description}
+\end{enumerate}
+\end{exo}
+
+\newpage
+
+%%
+% EX 4
+%%
+\begin{exo}
+varaible locales définies par la signature $\left\{n, x, Add, Mul, Let\right\}$
+\begin{enumerate}
+\item  Montrons que, si $x \notin fv(e)$, alors pour tout $v$ on a $e[x := v] = e$
+
+    On va donc procédé par récurence sur $e$
+    \begin{description}
+    \item[$\bullet$ Cas de base]
+        \begin{itemize}
+            \item $e = n \Rightarrow e[x := v] = e$ 
+            \item $e = (y \neq x)  \Rightarrow e[x := v] = e$ 
+            \item $e = x$ impossible
+        \end{itemize}
+                    
+    \item[$\bullet$ Cas récursif] Supossons $x \notin fv(e_1)\wedge x\notin fv(e_2) \Rightarrow
+        (e_1[x:=v]=e_1) \wedge (e_2[x:= v]=e_2)$
+
+        On sait que $x\notin fv(e)$
+        \begin{itemize}
+        \item $e = Add(e_1,e_2)$ Par definition de $Add$:
+                            
+            $fv(e) = fv(e_1) \cup fv(e_2)$ donc $x \notin fv(e) 
+            \Rightarrow x\notin fv(e_1) \wedge x \notin fv(e_2)$\vspace{3mm}
+                            
+            \hspace{1cm}On a donc:
+            \begin{align*}    
+                e[x:=v] &= Add(e_1,e_2)[x:=v] \\
+                        &= Add(e_1[x:=v],e_2[x:=v]) \\
+                        &= Add(e_1,e_2) & \textmd{Par HP}
+            \end{align*}
+            
+        \item $e = Mul(e_1,e_2)$ Même méthode que pour $Add$
+            \begin{align*}    
+                e[x:=v] &= Mul(e_1,e_2)[x:=v] \\
+                        &= Mul(e_1[x:=v],e_2[x:=v]) \\
+                        &= Mul(e_1,e_2) & \textmd{Par HP}
+            \end{align*}
+            
+        \item $e = ($let $ y = e_1 $ in $ e_2), y \neq x$\vspace{3mm}
+                                                        
+            $fv(e) = fv(e_1) \cup (fv(e_2) \backslash \ \left\{x\right\} )$ 
+            \begin{description}
+            \item[Si $y = x$:] On peut dir:
+                                
+                $x \notin fv(e) \Rightarrow x\notin fv(e_1)$ car $y = x$ $(\bigtriangledown)$\vspace{3mm}
+
+                Par definition
+                \begin{align*}
+                    (\textmd{let } y = e_1 \textmd{ in } e_2)[x := v] &= 
+                    (\textmd{let } y = e_1[x := v] \textmd{ in } e_2) \\
+                                &= (\textmd{let } y = e_1 \textmd{ in } e_2) & \textmd{Par HP et $\bigtriangledown$}
+                \end{align*}
+                                
+            \item[Si $y \neq x$:] On peut dir:
+                                
+                $x \notin fv(e) \Rightarrow x\notin fv(e_1) \wedge x \notin fv(e_2)$ 
+                car $y \neq x$ $(\bigtriangleup)$\vspace{3mm}
+
+                Par definition
+                \begin{align*}
+                    (\textmd{let } y = e_1 \textmd{ in } e_2)[x := v] &= 
+                    (\textmd{let } y = e_1[x := v] \textmd{ in } e_2[x := v]) \\
+                                &= (\textmd{let } y = e_1 \textmd{ in } e_2) & \textmd{Par HP et $\bigtriangleup$}
+                \end{align*}
+            \end{description}
+        \end{itemize}
+    \end{description}
+
+\item  $Let(x, e_1, e_2) \Leftrightarrow Let(y, e_1, e_2[x:=y])$ 
+        
+    On va modifier cette propriété pour qu'elle soit vrai
+    \begin{enumerate}
+    \item On prend $Let(x, Add(1, 2), Add(x, y)) \rightarrow 3 + y$ 
+    
+        Si on subsitue $x$ par $y$  on aurra $Let(y, Add(1, 2), Add(y, y)) \rightarrow 6$
+
+    \item Pour que les expressions soit équivalentes il faut que $x \notin fv(e_2)$
+
+    \item Montrons: 
+        \begin{equation*}            
+x \notin fv(e_2) \Rightarrow Let(x, e_1, e_2) \Leftrightarrow Let(y, e_1, e_2[x:=y])
+        \end{equation*} 
+        Autrement dit en notant $v_1 = eval(e_1, \rho)$:
+        \begin{equation*}            
+x \notin fv(e_2) \Rightarrow eval(e_2, \rho[x \mapsto  v_1]) = eval(e_2[x:=y], \rho[y \mapsto  v_1])
+        \end{equation*} 
+        
+        Supossons que $x\notin fv(e_2)$
+
+        Par récurence sur $n_2$
+        \begin{itemize}
+        \item Cas n: immédiat
+        \item Cas z: Si 
+            \begin{itemize}
+            \item $z = x$: Alors $eval(x,\rho[x \mapsto  v1]) = v_1$ et 
+            $eval(x[x := y],\rho[y \mapsto  v1]) = eval(y,\rho[y \mapsto  v1]) = v1$
+            \item $z = y$: interdit car $y \in fv(e_2)$
+            \item Sinon: résultat immédiat
+            \end{itemize} 
+        \item Cas $Add(e'_1, e'_2)$: Alors:
+            \begin{align*}
+                eval(Add(e'_1, e'_2), \rho[x \mapsto  v_1]) &= eval(e'_1, \rho[x \mapsto  v_1]) + eval(e'_2, \rho[x \mapsto  v_1]) \\
+                                                    &=  eval(e'_1[x := y], \rho[x \mapsto  v_1]) + eval(e'_2[x := y], \rho[x \mapsto  v_1]) \\
+                                                    \intertext{avec $y \notin fv(e'_1) \wedge y \notin fv(e'_2)$}
+                                                    &= eval(Add(e'_1[x:=y], e'_2[x:=y]), \rho[y \mapsto  v_1]) \\
+                                                    &= eval(Add(e'_1, e_2)[x:=y], \rho[y \mapsto  v_1])
+            \end{align*}
+        \item Cas $Mul$: similaire
+        \item Cas $Let(z, e'_1, e'_2)$: On note $v'_1 = eval(e'_1, \rho[x \mapsto  v_1])$
+        
+            On a aussi $y \notin fv(e'_1)$ donc $v'_1 = eval(e'_1[x:=y], \rho[y \mapsto v_1])$
+            \begin{itemize}
+                \item Si $z = x$:
+                    \begin{align*}
+                        eval(Let(z, e'_1, e'_2)[x:=y], \rho[y \mapsto v_1]) 
+                            &= eval(Let(z, e'_1[x:=y], e'_2), \rho[y \mapsto v_1]) \\
+                            &= eval(Let(e'_2, (\rho[y \mapsto v_1])[z \mapsto v'_1]))
+                    \end{align*}
+                \item Si $z \neq x$ et $z \notin fv(y)$, on a
+                    \begin{align*}
+                        eval(Let(z, e'_1, e'_2)[x:=y],\rho[y\mapsto v_1])
+                            &= eval(Let(z, e'_1[x:=y], e'_2[x:=y]),\rho[y\mapsto v_1]) \\
+                            &= eval(e'_2[x:=y],(\rho[y\mapsto v_1])[z\mapsto v'_1]) \\
+                            &= eval(e'_2[x:=y],(\rho[z\mapsto v_1])[y\mapsto v'_1]) & (y \neq z)\\
+                            &= eval(e'_2,(\rho[z\mapsto v_1])[x\mapsto v'_1]) & \text{H.P}\\
+                            &= eval(e'_2,(\rho[x\mapsto v_1])[z\mapsto v'_1]) & (z \neq y)\\
+                            &= eval(Let(z, e'_1, e'_2),\rho[x\mapsto v_1])\\
+                    \end{align*}
+            \end{itemize}
+        \end{itemize}
+    \end{enumerate}
+\end{enumerate}
+\end{exo}
+    
+\newpage
+
+%%
+% EX 5
+%%
+\begin{exo} $\Sigma = \left\{F: arbre, N: arbre \times \mathbb{N} 
+                \times arbre \rightarrow arbre \right\}$
+
+\begin{enumerate}
+    \item infixe: arbre $\rightarrow$ arbre 
+    
+        \[ infixe(a) =
+        \begin{cases}
+            infixe(F) = Nil \\
+            infixe(N(a_1, x, a_2)) = concat(infixe(a_1) Cel(x, infixe(a_2)))
+        \end{cases}
+        \]
+
+    \item appartient: $\mathbb{N} \times arbre \rightarrow \mathbb{B}$
+    
+        \[ appartient(n, a) =
+        \begin{cases}
+            appartient(n, F) = False \\
+            appartient(n, N(a_1, x, a_2)) = (x = n) \vee appartient(n, a_1) 
+                                                \vee appartient(n, a_2)
+        \end{cases}
+        \]
+
+    \item 
+    \begin{enumerate}
+        \item $N(N(F,1,F),2,N(F,3,F))$ Vrai
+        \item $N(F,2,N(N(F,1,F),3,F))$ Faux
+    \end{enumerate}
+
+    \item $a_1=N(F,1,N(F,2,N(F,3,N(F,4,F))))$  \hspace{0.5cm}
+            $infixe(a_1) = Cel(1, Cel(2, Cel(3, Cel(4))))$
+
+        $a_2=N(N(F,1,F),2,N(F,3,N(F,4,F)))$  \hspace{0.5cm}
+            $infixe(a_2) = Cel(1, Cel(2, Cel(3, Cel(4))))$
+
+    \item Montrons que si $a$ est un ABR alors $infixe(a)$ est trié
+    
+    \begin{description}
+        \item[$\bullet$ Cas de base] $a=F$
+        
+            On a donc $infixe(a) = Nil$ or la liste est vide est bien trié
+            
+        \item[$\bullet$ Cas récursif] $a=N(a_1,n,a_2)$ et a un ABR
+   
+            \underline{Hypothèse de récurence:} 
+            $infixe(a_1) \wedge infixe(a_2)$ sont triées
+                    
+            \begin{align*}
+                infixe(a) &= concat(infixe(a_1), Cel(n, infixe(a_2)))
+            \end{align*}
+            
+                Par HP on sait que $infixe(a_1)$ et $infixe(a_2)$ sont bien triées
+            or comme a un ABR $n$ est plus grand que n'importe quel éléments de $infixe(a_1)$
+            et est plus petit que n'importe quel éléments de $infixe(a_2)$. \vspace{3mm}
+
+            On peut donc dir que $l = Cel(n,infixe(a_2))$ est triée et que 
+            $concat(infixe(a_2), l)$ est trié aussi donc $infixe(a)$ est triée aussi.
+    \end{description}
+
+    \item Il faut chercher dans $t_1$ quand $m < n$ sinon si $m > n$ dans 
+            $t_2$ sinon $m = n$ fini.
+    
+    \item appartient\_abr: $\mathbb{N} \times arbre \rightarrow \mathbb{B}$
+    
+        \[ appartient\_abr(n, a) =
+        \begin{cases}
+            appartient\_abr(F) = False \\
+            appartient\_abr(N(a_1, m, a_2))= True & \text{si } n = m\\
+            appartient\_abr(N(a_1, m, a_2)) = appartient\_abr(a_2) & \text{si } x < n\\
+            appartient\_abr(N(a_1, m, a_2)) = appartient\_abr(a_1) & \text{si } x > n
+        \end{cases}
+        \]
+
+    \item Montrons: $appartient\_abr(n, t) \Rightarrow appartient(n, t)$
+    
+    Par récurrence sur \textbf{t}.
+        \begin{itemize}
+            \item Cas $F$: $appartient\_abr(n, F) = False$ rien à montrer.
+            \item Cas $N(t_1, m, t_2)$ on regarde quand  $appartient\_abr(n, N(t_1, m, t_2))$ est vrai.
+                \begin{itemize}
+                    \item Cas $n = m$. Alors $appartient(n, N(t_1, m, t_2)) = true$
+                    \item Cas $n < m \wedge appartient\_abr(n, t_1)$. En particulier 
+                        $appartient\_abr(n, t_1)$ 
+                    
+                        donc par H.R $appartient(n, t_1) = True$, donc $appartient(n, N(t_1, m, t_2)) = true$.
+                    \item Cas $m < n \wedge \ldots$ similaire.
+                \end{itemize}
+        \end{itemize}
+    
+        \item Montrons: $t \in ABR \wedge appartient(n, t) \Rightarrow appartient\_abr(n, t)$
+    
+        Par récurrence sur \textbf{t}.
+        \begin{itemize}
+            \item Cas $F$: $appartient(n, F) = False$ rien à faire.
+            \item Cas $N(t_1, m, t_2)$. Par disjonction de cas $appartient(n, N(t_1, m, t_2))$.
+                \begin{itemize}
+                    \item Cas $n = m$. Alors $appartient\_abr(n, N(t_1, m, t_2)) = true$
+                    \item Cas $appartient(n, t_1) = true$. Par H.R, $appartient\_abr(n, t_1) = true$.
+                    
+                        En outre $N(t_1, m, t_2)$ étant un $ABR$ et n étant déjà présent dans le sous-arbre
+                        gauche, on a $n \leq m$. Or $n = m$ a déjà été traité.
+                        Donc $appartient\_abr(n, N(t_1, m, t_2)) = true$
+                    \item Cas $appartient(n, t_2) = true$ similaire.
+                \end{itemize}
+        \end{itemize}
+
+    \item verif: $\mathbb{N} \times \mathbb{N} \times arbre \rightarrow \mathbb{B}$
+    
+    \[ verif(m, M, t) =
+    \begin{cases}
+        verif(m, M, F) = true \\
+        verif(m, M, N(t_1, n, t_2)) = m \leq n \leq M \wedge verif(m, n, t_1) \wedge verif(n, M, t_2)
+    \end{cases}
+    \]
+
+    \item Montrons que $verif(m, M, t) \Rightarrow t \in ABR \wedge 
+            \max(t) \leq M \wedge \min(t) \geq m$ fonctionne
+
+        Récurence sur t
+        \begin{itemize}
+            \item Cas $F$: correcte car F est bien un ABR
+            \item Cas $N(t_1, n, t_2)$. 
+            
+                Si $verif(m,M,N(t_1,n,t_2)) = true$ alors on a 
+                $m \leq n \leq N verif(m, M, t_1), verif(m, M, t_2)$. Par H.R on a $t_1$ et $t_2$
+                des ABR avec pour tous éléments $n_1$ de $t_1$ $m \leq n_1 \leq n$ et pour tous
+                éléments $n_2$ de $t_2$ $n \leq n_2  \leq M$. Donc $N(t_1, n, t_2)$ est bien un ABR
+                de min $m$ et de max $M$
+        \end{itemize}
+
+    \item voir fichier \textit{ex5\_12.ml}
+\end{enumerate}
+        
+\end{exo}
+\end{document}

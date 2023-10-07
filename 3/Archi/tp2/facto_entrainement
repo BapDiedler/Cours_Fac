@@ -1,0 +1,37 @@
+.text 
+	li $a0, 6
+	jal facto
+	jal print
+	j exit
+	
+facto:	#sauvegarde des données
+	sw $ra, -4($sp)
+	sw $a0, -8($sp)
+	addi $sp, $sp, -8
+	
+	beqz $a0, ret#$a0 = 0
+	
+	addi $a0, $a0, -1
+	jal facto
+	addi $a0, $a0, 1
+	mul $v0, $v0, $a0
+	
+	#récupération des données
+	lw $a0, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+#si $a0 = 1 ou 0 return 1
+ret:	li $v0, 1
+	lw $a0, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+	
+print:	move $a0, $v0
+	li $v0, 1
+	syscall
+	jr $ra
+
+exit:	li $v0, 10
+        syscall

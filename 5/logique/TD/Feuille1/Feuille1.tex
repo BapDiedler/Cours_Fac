@@ -1,0 +1,222 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\sc Feuille d'exercice 1
+\end{center}
+
+\begin{exo} constraposée de formule
+\begin{enumerate}
+    \item \begin{description}
+        \item[$P \Rightarrow Q$]:  Il est midi donc j'ai faim
+        \item[$\neg Q \Rightarrow \neg P$]:  Il n'est pas midi donc je n'ai pas faim
+        \item[$Q \Rightarrow P$]:  J'ai faim donc il est midi
+        \item[$\neg P \Rightarrow \neg Q$]: Je n'ai pas faim donc il n'est pas midi
+    \end{description}
+
+    \item table de vérité: \vspace{3mm} \\
+    \begin{tabular} {c|c|c|c|c|c}
+        P & Q & $P \Rightarrow Q$ & $\neg Q \Rightarrow \neg P$ & $Q \Rightarrow P$ & $\neg P \Rightarrow \neg Q$ \\
+        \hline
+        0 & 0 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 1 & 1 & 0 & 0 \\
+        1 & 0 & 0 & 0 & 1 & 1 \\
+        1 & 1 & 1 & 1 & 1 & 1 \\
+    \end{tabular}
+
+    \item Non car si P est faux alors Q peut être vrai ou faux on ne sais pas.
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Table de vérité
+\begin{enumerate}
+    \item $(P \wedge Q \Rightarrow R) \Leftrightarrow ((P \wedge Q) \Rightarrow R)$
+
+    $(P \Rightarrow Q \Rightarrow R) \Leftrightarrow (P \Rightarrow (Q \Rightarrow R))$
+
+    \item Table de vérité: \vspace{3mm} \\
+    \begin{tabular} {c|c|c|c|c}
+        P & Q & R & $P \wedge Q \Rightarrow R$ & $P \Rightarrow Q \Rightarrow R$\\
+        \hline
+        0 & 0 & 0 & 1 & 1 \\
+        0 & 0 & 1 & 1 & 1 \\
+        0 & 1 & 0 & 1 & 1 \\
+        0 & 1 & 1 & 1 & 1 \\
+        1 & 0 & 0 & 1 & 1 \\
+        1 & 0 & 1 & 1 & 1 \\
+        1 & 1 & 0 & 0 & 0 \\
+        1 & 1 & 1 & 1 & 1 
+    \end{tabular}
+
+    \item $(P \vee Q \Rightarrow R) \Leftrightarrow ((P \vee Q) \Rightarrow R)$
+    
+    $((P \Rightarrow R) \wedge (Q \Rightarrow R)) \Leftrightarrow ((P \Rightarrow R) \wedge (Q \Rightarrow R))$
+
+    \begin{tabular} {c|c|c|c|c}
+        P & Q & R & $P \vee Q \Rightarrow R$ & $(P \Rightarrow R) \wedge (Q \Rightarrow R)$\\
+        \hline
+        0 & 0 & 0 & 1 & 1 \\
+        0 & 0 & 1 & 1 & 1 \\
+        0 & 1 & 0 & 0 & 0 \\
+        0 & 1 & 1 & 1 & 1 \\
+        1 & 0 & 0 & 0 & 0 \\
+        1 & 0 & 1 & 1 & 1 \\
+        1 & 1 & 0 & 0 & 0 \\
+        1 & 1 & 1 & 1 & 1 
+    \end{tabular}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Enigme
+\begin{enumerate}
+    \item $\neg P_1 \wedge \neg P_2$
+    \item $(P_1 \wedge \neg P_2) \vee (P_2 \wedge \neg P_1)$
+    \item $I_1 = P_1$\\
+        $I_2 = \neg P_2$ \\
+        $I_3 = \neg P_1$
+    \item Le portrai est dans le coffre 2.
+\end{enumerate}
+\end{exo}
+
+\begin{exo} ``Les personnes qui aiment la montagne aiment aussi al campagne''
+\begin{enumerate}
+    \item On ne peut rien dir
+    \item On ne peut rien dir
+    \item $(a) \Leftrightarrow (c)$ et $(b)$ est équivalentes à l'affirmation du logicien.
+    \item \begin{itemize}
+        \item logicien: $\text{(aime-montagne)} \Rightarrow \text{(aime-campagne)}$
+        \item (a): $\neg \text{(aime-montagne)} \Rightarrow \neg \text{(aime-campagne)}$
+        \item (b): $\neg \text{(aime-campagne)} \Rightarrow \neg \text{(aime-montagne)}$
+        \item (c): $\text{(aime-campagne)} \Rightarrow \text{(aime-montagne)}$
+    \end{itemize}
+    \item $\neg (\text{(aime-montagne)} \Rightarrow \text{(aime-campagne)})$
+
+    $\text{(aime-montagne)} \wedge \neg \text{(aime-campagne)}$
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Calcul booléen et programmation
+\begin{enumerate}
+    \item il y a 3 entrée possible donc il y a $2^3$ entrées possibles.
+    \item table de vérité pour ``a'', ``b'', ``c'', ``d'' \\
+    \begin{tabular} {c|c|c|c|c|c|c}
+        p & q & r & ``a'' & ``b''& ``c''& ``d''\\
+        \hline
+        0 & 0 & 0 & 1 & 0 & 1 & 1 \\
+        0 & 0 & 1 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 0 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 1 & 1 & 1 & 1 & 1 \\
+        1 & 0 & 0 & 0 & 0 & 0 & 1 \\
+        1 & 0 & 1 & 0 & 1 & 0 & 1 \\
+        1 & 1 & 0 & 1 & 1 & 0 & 1 \\
+        1 & 1 & 1 & 1 & 1 & 0 & 1 
+    \end{tabular}
+
+    On pourra afficher ``a'', ``b'', ``d''
+    \item $verif(P) = verif\_aux(\top, P)$
+    \[
+    \begin{cases}
+        verif\_aux(C, elt) &= sat(C) \\
+        verif\_aux(D, \text{if } C \text{ then } P_1 \text{ else } P_2) &= verif\_aux(D \wedge C, P_1) 
+                                \wedge verif\_aux(D \wedge \neg C, P_2) 
+    \end{cases}
+    \]
+
+    \item Il est bien décidable car on a réussi à faire une fonction qui vérifie ça ($verif$).
+\end{enumerate}    
+\end{exo}
+
+\begin{exo} Formalisation logique
+\begin{itemize}
+    \item $B(x), H(x), V(X)$: le dragon x est bleu, est heureux, vole
+    \item $P(x, y)$: le dragon x est parent du dragon y
+    \item $x = y$: les dragons x et y sont égaux 
+\end{itemize}
+\begin{enumerate}
+    \item \begin{enumerate}
+        \item $\forall x, B(x) \Rightarrow V(x)$ \\
+                $\exists x, B(x) \wedge V(x)$
+        \item $\forall x, \exists p, m, \neg (p = m) \wedge P(p, x) \wedge P(m, x)$
+        \item $\forall x, (\forall e, P(x, e) \Rightarrow V(e) \Rightarrow H(x))$
+        \item $\forall x, (\exists p, P(p, x) \Rightarrow B(p) \Rightarrow  B(x))$
+        \item $\forall x, (\neg H(x) \Rightarrow \neg V(x))$
+    \end{enumerate}
+    \item \begin{enumerate}
+        \item Un dragon qui vole n'a qu'un seul enfant.
+        \item Tous dragon à au moin un fils heureux.
+        \item Il existe un dragon heureux qui est fils de tous les dragons.
+    \end{enumerate}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Enigme:
+\begin{enumerate}
+    \item Soit A, B, C des varaibles propositionnelle vrai si Albert, 
+    Bernard et Charles prennent un dessert.
+    \begin{enumerate}
+        \item $A \Rightarrow B$
+        \item $(B \vee C) \wedge (\neg B \vee \neg C)$
+        \item $A \vee C$
+        \item $C \Rightarrow A$
+    \end{enumerate}
+
+    \item Table de vérité:\\
+    \begin{tabular}{c|c|c|c|c|c|c}
+        A & B & C & $A \Rightarrow B$ & $(B \vee C) \wedge (\neg B \vee \neg C)$ &
+        $A \vee C$ & $C \Rightarrow A$  \\ \hline
+        0 & 0 & 0 & 1 & 0 & 0 & 1 \\
+        0 & 0 & 1 & 1 & 1 & 1 & 0 \\
+        0 & 1 & 0 & 1 & 1 & 0 & 1 \\
+        0 & 1 & 1 & 1 & 0 & 1 & 0 \\
+        1 & 0 & 0 & 0 & 1 & 1 & 1 \\
+        1 & 0 & 1 & 0 & 1 & 1 & 1 \\
+        1 & 1 & 0 & 1 & 1 & 1 & 1 \\
+        1 & 1 & 1 & 1 & 0 & 1 & 1 \\        
+    \end{tabular}
+
+    On voit que les affirmation sont vrai seulement quand Albert et Bernard prennent
+    un dessert seulement.
+
+    \item Non car chaques affirmations donnent une information en plus.
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Partiel 2012
+\begin{enumerate}
+    \item \begin{itemize}
+        \item $B$: vrai si il boit
+        \item $D$: vrai si il dort
+        \item $M$: vrai si il mange
+        \item $C$: vrai si il content
+    \end{itemize}
+
+    \item
+    \begin{enumerate}
+        \item  On sait qu'il est content aujourd'hui (5). Avec la (2) on 
+            a $B \Rightarrow \neg C \wedge D$ or $\neg C \wedge D$ est fausse
+            donc pour que l'affirmation soit vrai il faut avoir $\neg B$.
+            On peut donc affirmer qu'il n'a pas bu.
+
+        \item On peut dir qu'il n'a pas ni mangé (3) ni dormi (1) avec le même 
+            résonnment sur les formules associées.
+    \end{enumerate}
+\end{enumerate}
+\end{exo}
+
+\end{document}

@@ -1,0 +1,344 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{tikz}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+\pagestyle{empty}
+\lstset{language=caml}
+
+
+\begin{document}
+\begin{center}
+    \large\sc Feuille d'exercice 5
+\end{center}
+
+\begin{exo} Forme clausale
+\begin{enumerate}
+    \item \begin{align*}
+        F_1 &=\forall x, (p(x) \Rightarrow \exists y, \forall x, q(x, y)) \\
+            &\equiv \forall x, (\neg p(x) \vee (\exists y, \forall x, q(x, y))) \\
+            &\leadsto  \forall x', (\neg p(x') \vee (\forall x, q(x, a))) \\
+            &\equiv \forall x', x (\neg p(x') \vee (q(x, a))) \\
+    \end{align*}
+    Forme clausale: $\left\{\neg p(x') \vee q(x, a)\right\}$
+
+    \item \begin{align*}
+        F_2 &= ((\exists x, (p(x) \Rightarrow r(x))) \vee \forall y, p(y)) \wedge 
+                    \forall x, \exists y, (r(y) \Rightarrow p(x)) \\
+            &\equiv (\exists x, (\neg p(x) \vee r(x)) \vee \forall y, p(y)) \wedge 
+                    \forall x, \exists y, (\neg r(y) \vee p(x)) \\
+            &\leadsto (\neg p(a) \vee r(a) \vee \forall y, p(y)) \wedge 
+                    \forall x, (\neg r(f(x)) \vee p(x)) \\
+            &\equiv \forall y, x, (\neg p(a) \vee r(a) \vee p(y)) \wedge 
+                    (\neg r(f(x)) \vee p(x)) \\
+    \end{align*}
+    Forme clausale: $\left\{\neg p(a) \vee r(a) \vee p(y), \neg r(f(x)) \vee p(x)\right\}$
+
+    \item \begin{align*}
+        F_3 &= ((\forall x, (p(x) \Rightarrow \exists y, q(y))) \Rightarrow \exists z, r(z)) 
+                \Rightarrow \exists u, s(u) \\
+            &\equiv \neg ((\forall x, (p(x) \Rightarrow \exists y, q(y))) \Rightarrow 
+                \exists z, r(z)) \vee \exists u, s(u) \\
+            &\equiv ((\forall x, (p(x) \Rightarrow \exists y, q(y))) \wedge 
+                \forall z, \neg r(z)) \vee \exists u, s(u) \\
+            &\equiv ((\forall x, (\neg p(x) \vee \exists y, q(y))) \wedge
+                \forall z, \neg r(z)) \vee \exists u, s(u) \\
+            &\leadsto ((\forall x, (\neg p(x) \vee q(a))) \wedge
+                \forall z, \neg r(z)) \vee s(b) \\
+            &\equiv \forall x, z, ((\neg p(x) \vee q(a)) \wedge
+                \neg r(z)) \vee s(b) \\
+            &\equiv \forall x, z, (\neg p(x) \vee q(a) \vee s(b)) \wedge
+                (\neg r(z) \vee s(b)) \\
+    \end{align*}
+    Forme clausale: $\left\{\neg p(x) \vee q(a) \vee s(b), \neg r(z) \vee s(b) \right\}$
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Satisfiabilité
+\begin{enumerate}
+    \item $B=(\forall x, P(x)) \vee (\exists x, \neg P(x) \wedge \neg Q(x)) 
+            \vee (\forall x, Q(x))$
+    \item \begin{itemize}
+        \item Oui
+        \item Oui
+        \item Oui
+    \end{itemize}
+    \item \begin{align*}
+        C   &=(\forall x, P(x)) \vee (\neg P(a) \wedge \neg Q(a)) 
+                \vee (\forall x, Q(x)) \\
+            &\equiv \forall x, y, P(x) \vee (\neg P(a) \wedge \neg Q(a)) 
+                \vee Q(y)
+    \end{align*}
+    \item  \begin{itemize}
+        \item Non
+        \item Oui
+        \item Oui
+    \end{itemize}
+    \item \begin{itemize}
+        \item C est toujours Vraie dans un modèle dont le domaine a exactement un élément
+        \item Pareil pour A car on a $C \models B  \models A$
+    \end{itemize}
+    \item  Oui
+    \item $\neg A \equiv (\exists x, \neg P(x)) \wedge (\forall x, P(x) \vee Q(x)) 
+        \wedge (\exists x, \neg Q(x))$.
+
+        Après skolémisation on à les trois closes:\\
+        $C_1 = \neg P(a)$, $C_2 = P(x) \vee Q(x)$, $C_3 = \neg Q(b)$
+
+    \item $\mathcal{D}_H = \left\{a, b\right\} $\\
+        $\mathcal{B}_H = \left\{P(a), P(b), Q(a), Q(b)\right\} $
+
+    \item $\neg A$ est satsifiable avec $\left\{P(b) \leftarrow V, Q(a), \leftarrow V\right\}$\\
+        Comme $\neg A$ est satsifiable $A$ n'est pas valide.
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Forme de Herbrand
+    
+\end{exo}
+
+\begin{exo} Connecteur propositionnel IF
+\begin{enumerate}
+    \item \begin{description}
+        \item[$\neg P$]: $\textbf{IF}(P, \bot, \top)$s
+        \item[$P \wedge Q$]: $\textbf{IF}(P, Q, \bot)$
+        \item[$P \vee Q$]: $\textbf{IF}(P, \top, Q)$
+        \item[$P \Rightarrow Q$]: $\textbf{IF}(P, Q, \top)$
+    \end{description}
+
+    \item \begin{align*}
+        valIF(I, F) = \begin{cases}
+            valIF(I, \top) &= V \\
+            valIF(I, \bot) &= F \\
+            valIF(I, p) &= I(p) \\
+            valIF(I, \textbf{IF}(P, Q, R)) &= \text{si } valIF(I, P) \\
+                                        &\text{ alors } valIF(I, Q) \\
+                                        &\text{ sinon } valIF(I, R)
+        \end{cases}
+    \end{align*}
+
+    \item \begin{itemize}
+        \item Si $I \models P$: $\textbf{IF}(P, Q, R) \equiv Q$
+            \\ $A \equiv \textbf{IF}(Q, S, T)$ et $B \equiv \textbf{IF}(Q, S, T)$
+        \item  SI $I \not\models P$: $\textbf{IF}(P, Q, R) \equiv R$
+            \\ $A \equiv \textbf{IF}(R, S, T)$ et $B \equiv \textbf{IF}(R, S, T)$
+    \end{itemize}
+
+    \item \begin{align*}
+        IFn(P, Q, R) = \begin{cases}
+            IFn(\top, Q, R) &= Q \\
+            IFn(\bot, Q, R) &= R \\
+            IFn(p, Q, R) &= \textbf{IF}(p, Q, R) \\
+            IFn(\textbf{IF}(A, B, C), Q, R) &= IFn(A, 
+                \textbf{IF}(B, Q, R), \textbf{IF}(C, Q, R))
+        \end{cases}
+    \end{align*}
+    \begin{align*}
+        norm(P) = \begin{cases}
+            norm(\top) &= \top \\
+            norm(\bot) &= \bot \\
+            norm(p) &= p \\
+            norm(\textbf{IF}(P, Q, R)) &= Ifn(P, norm(Q), norm(R))
+        \end{cases}
+    \end{align*}
+
+    \item \begin{enumerate}
+        \item $\textbf{IF}(\textbf{IF}(\textbf{IF}(p, q, \top), p, \top), p, \top)$
+        \item \begin{align*}
+            \textbf{IF}(\textbf{IF}(\textbf{IF}(p, q, \top), p, \top), p, \top) 
+                &\equiv \textbf{IF}(\textbf{IF}(p, \textbf{IF}(q, p, \top), p, \top), p, \top) \\
+                &\equiv \textbf{IF}(p, \textbf{IF}(
+                        \textbf{IF}(q, p, \top), p, \top), \textbf{IF}(p, p, \top)) \\
+                &\equiv \textbf{IF}(p, \textbf{IF}(
+                    q, \textbf{IF}(p, p, \top), p), \textbf{IF}(p, p, \top)) \\
+        \end{align*}
+
+        \item Arbre:\\
+        \begin{tikzpicture}[level distance=1cm, level 1/.style={sibling distance=2cm},
+                    level 2/.style={sibling distance=1cm},
+                    level 3/.style={sibling distance=1cm}]
+            \node (root) {IF(p)}
+                child { node {IF(q)}
+                        child { node {IF(p)}
+                                child { node {p} }
+                                child { node {V} }
+                            }
+                        child { node {p} }
+                    }
+                child { node {IF(p)}
+                        child { node {p} }
+                        child { node {V} }
+                    }
+            ;
+        \end{tikzpicture}
+
+        \item Pour montrer que A est valide on regarde les branches qui ne 
+            débouche pas sur une feuille contenant $\top$ (sinon cas trivial):\\
+            Feuilles de gauche à droite:
+            \begin{itemize}
+                \item Première feuille: pour y aller il faut avoir $p$ vrai donc peut importe q
+                    la formule serra vrai
+                \item Deuxième feuille: Pareil que pour la deuxième pour y accèder il faut 
+                    avoir $p$ vrai
+                \item Troisième feuille: Jamais accéssible car pour alleer dans 
+                le premier noeuds il faut avoir $\neg p$ et après il faut avoir $p$
+            \end{itemize}
+
+            Donc peut importe notre interpretation la formule serra toujours valide.
+
+    \end{enumerate}
+
+    \item On normalise puis on simplifie l'arbre (varaible apparaissent 
+        qu'une seul foit par branche) et après il faut vérfier que les feuilles soient toutes vrai
+\end{enumerate}
+\end{exo}
+
+\begin{exo}Arbre de décision bianire
+\begin{enumerate}
+    \item \begin{align*}
+        vald(I, t) = \begin{cases}
+            vald(I, Bool(b)) &= b\\
+            vald(I, \textbf{IF}(x, P, Q)) &=  \text{si } I(x) \\ 
+                        &\text{ alors } vald(I, P) \\
+                        &\text{ sinon } vald(I, Q)
+        \end{cases}
+    \end{align*}
+    \item \begin{align*}
+        forme(t) = \begin{cases}
+            forme(Bool(true)) &= \top \\
+            forme(Bool(false)) &= \bot \\
+            forme(\textbf{IF}(p, A, B)) &= (p \wedge forme(A)) \vee (\neg p \wedge forme(B))
+        \end{cases}
+    \end{align*}
+
+    \item \begin{align*}
+        notd(t) = \begin{cases}
+            notd(Bool(true)) &= Bool(false) \\
+            notd(Bool(false)) &= Bool(true) \\
+            notd(\textbf{IF}(p, A, B)) &= \textbf{IF}(p, notd(A), notd(B))
+        \end{cases}
+    \end{align*}
+
+    \item \begin{align*}
+        opd(t, u) = \begin{cases}
+            opd(Bool(b_1), Bool(b_2)) &= Bool(b_1 \text{ op } b_2) \\
+            opd(IF(x, A, B), Bool(b)) &= \textbf{IF}(x, opd(A, Bool(b)), opd(B, Bool(b))) \\
+            opd(Bool(b), IF(x, A, B)) &= \textbf{IF}(x, opd(A, Bool(b)), opd(B, Bool(b))) \\
+            opd(\textbf{IF}(x, A, B), \textbf{IF}(y, C, D)) &= \\
+                            &\text{if } x = y \text{ alors} \\
+                                &\hspace{5mm} \textbf{IF}(x, opd(A, C), opd(B, D)) \\
+                            &\text{sinon si } x < y \text{ alors} \\
+                                &\hspace{5mm} \textbf{IF}(x, opd(A, IF(y, C, D)), opd(B, IF(y, C, D))) \\
+                            &\text{sinon } \\
+                                &\hspace{5mm} \textbf{IF}(y, opd(C, IF(y, A, B)), opd(D, IF(y, A, B)))
+        \end{cases}
+    \end{align*}
+
+    \item \begin{itemize}
+        \item valide: Toutes les feuilles $V$
+        \item satsifiable: Au moin une feuille $V$
+        \item insatsifaible: Toutes les feuilles $F$
+    \end{itemize}
+
+    \item Il faut trouver un chemin qui donne vers une feuille vraie
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Diagramme de décision bianire
+\begin{enumerate}
+    \item OBDD:\\
+        \begin{tikzpicture}
+            \node at (0, 1) {$(z \Leftrightarrow t)$};
+            \node [draw, circle](z) at (0, 0) {z};
+            \node [draw, circle](t1) at (-1, -1) {t};
+            \node [draw, circle](t2) at (1, -1) {t};
+            \node [draw](V) at (-1, -2) {V};
+            \node [draw](F) at (1, -2) {F};
+
+            \draw[] (z) -- (t1);
+            \draw[] (t1) -- (V);
+            \draw[] (t2) -- (F);
+            \draw[dashed] (z) -- (t2);
+            \draw[dashed] (t1) -- (F);
+            \draw[dashed] (t2) -- (V);
+
+            \node at (10, 1) {$(x \Leftrightarrow y) \wedge (z \Leftrightarrow t)$};
+            \node [draw, circle](x) at (10, 0) {x};
+            \node [draw, circle](y1) at (9, -1) {y};
+            \node [draw, circle](y2) at (11, -1) {y};
+            \node [draw, circle](z) at (8, -2) {z};
+            \node [draw, circle](t1) at (7, -3) {t};
+            \node [draw, circle](t2) at (9, -3) {t};
+            \node [draw](V) at (8, -5) {V};
+            \node [draw](F) at (10, -5) {F};
+
+            \draw[] (x) edge (y1) (y1) edge (z) (z) edge (t1) (t1) edge (V);
+            \draw[dashed] (x) edge (y2) (y2) edge (z) (z) edge (t2) (t2) edge (V);
+            \draw[dashed] (y1) -- (F);
+            \draw[] (y2) -- (F);
+            \draw[] (y1) -- (z);
+            \draw[] (x) -- (y1);
+            \draw[] (t2) -- (F);
+            \draw[dashed] (t1) -- (F);
+        \end{tikzpicture}
+
+    \item OBDD annoté:\\
+        \begin{tikzpicture}[minimum size=0.5cm]
+            \node at (0, 1) {$(z \Leftrightarrow t)$};
+            \node [draw](z) at (0, 0) {$(z \wedge t) \vee (\neg z \wedge \neg t)$};
+            \node [draw](t1) at (-1, -1) {$t$};
+            \node [draw](t2) at (1, -1) {$\neg t$};
+            \node [draw](V) at (-1, -2) {V};
+            \node [draw](F) at (1, -2) {F};
+
+            \draw[] (z) -- (t1);
+            \draw[] (t1) -- (V);
+            \draw[] (t2) -- (F);
+            \draw[dashed] (z) -- (t2);
+            \draw[dashed] (t1) -- (F);
+            \draw[dashed] (t2) -- (V);
+
+            \node at (10, 1) {$(x \Leftrightarrow y) \wedge (z \Leftrightarrow t)$};
+            \node [draw](x) at (10, 0) {$(a \wedge y \wedge x) \vee (a \wedge \neg y \wedge \neg x)$};
+            \node [draw](y1) at (9, -1) {$a \wedge y$};
+            \node [draw](y2) at (11, -1) {$a \wedge \neg y$};
+            \node [draw](z) at (7, -2) {$a=(z \wedge t) \vee (\neg z \wedge \neg t)$};
+            \node [draw](t1) at (7, -3) {$t$};
+            \node [draw](t2) at (9, -3) {$\neg t$};
+            \node [draw](V) at (8, -5) {V};
+            \node [draw](F) at (10, -5) {F};
+
+            \draw[] (x) edge (y1) (y1) edge (z) (z) edge (t1) (t1) edge (V);
+            \draw[dashed] (x) edge (y2) (y2) edge (z.north east) (z) edge (t2) (t2) edge (V);
+            \draw[dashed] (y1.349) -- (F);
+            \draw[] (y2) -- (F);
+            \draw[] (y1) -- (z);
+            \draw[] (x) -- (y1);
+            \draw[] (t2) -- (F);
+            \draw[dashed] (t1) -- (F);
+        \end{tikzpicture}
+
+    \item On va résonner par double implication:
+        \begin{description}
+            \item[$\Leftarrow$]: Si deux formules sont représenté par le même OBDD alors elles
+                ont la même table de vérité donc elles sont équivalentes.
+            
+            \item[$\Rightarrow$]: Supposons qu'on ait deux formules A et B équivalentes.
+                
+        \end{description}
+\end{enumerate}
+\end{exo}
+\end{document}

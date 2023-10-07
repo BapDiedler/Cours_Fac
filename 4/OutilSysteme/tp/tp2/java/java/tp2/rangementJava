@@ -1,0 +1,60 @@
+#!/bin/bash
+
+#fonction qui passe un fichier dans un tableau
+fichierToTable() {
+    svg=$IFS
+    IFS='.'
+    i=0
+    for e in $1 ; do
+	tableau[$i]=$e
+	let i="$i+1"
+    done
+    IFS=$svg
+}
+
+#creaton des bons répertoirs
+creationRepertoir() {
+    bash creationSrcOut $1
+}
+
+#fonction qui gère les fichiers
+gestionFichier(){
+    for fichier in `ls *.$1` ; do
+    fichierToTable $fichier
+    i=0
+    repertoire=${tableau[$i]}
+    while [ ${tableau[$i]}  != $1 ] ; do
+        if [ $i != 0 ] ; then
+            repertoire="$repertoire/${tableau[$i]}"
+        fi
+        creationRepertoir $repertoire
+        if [ ${tableau[$i+1]} = $1 ] ; then
+           # mv $fichier "${tableau[$i]}.$1"
+	    if [ $1 = java ] ; then
+		mv $fichier $repertoire/src
+	    else
+		mv $fichier $repertoire/out
+	    fi
+        fi
+        let i="$i+1"
+    done
+done
+}
+#PROGRAMME PRINCIPAL
+#creation des dossier externe
+bash creationDossier $1
+
+
+tableau=()
+#jestion de tous le .java
+java=java
+gestionFichier $java
+class=class
+gestionFichier $class
+
+mkdir -p divers
+for file in *; do
+  if [ -f "$file" ]; then
+    mv $file divers
+  fi
+done

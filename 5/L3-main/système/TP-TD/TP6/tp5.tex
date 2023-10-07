@@ -1,0 +1,126 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[ a4paper, hmargin={0.5cm, 0.5cm}, vmargin={2cm, 2cm}]{geometry}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+\title{\textbf{Pagination}}
+\date{}
+\author{Valeran MAYTIE}
+
+\begin{document}
+\maketitle
+
+\begin{exo} Question de cours
+\begin{enumerate}
+    \item \begin{itemize}
+        \item FIFO (Seconde chance)
+        \item Alogorithmre basé sur l'utilsiation (LFU, NRU LRU)
+    \end{itemize}
+
+    \item En pratique le meilleur serrai le LRU car il est rapide (O(1)).
+    \item Esapce mémoire en plus et plus de temps de calcul.
+    \item 2 bits (Reférencée, Modifiée) priorité selon ces 2 bits.
+    \item Complexité en $O(n)$.
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Segmentation paginée
+\begin{enumerate}
+    \item La taille de l'adresse physique fait 16 bits ($2^{16} = 64Ko$).
+    \item La taille de l'adresse logique fait 14 bits ($2^4 = 16$ et $2^{10} = 1Ko$).
+    \item La taille maximale de la mémoire virutelle pour un processus est de 16Ko (16 segements de 1Ko).\\
+            Donc la taille de la mémoire virutelle est de $16Ko \times 256 = 4Mo$
+    \item C'est un sgements qui est accessible par d'autres programmes.
+    \item La mémoire virutelle pour un processus fait donc 8Ko.\\
+            On a donc $8Ko \times 256 + 8Ko = 2056Ko$
+    \item Comme un processus peut faire 16Ko alors il peut utiliser $2^5 = 32$ pages
+    \item Il faut donc le numéro d'un cadre et un décalage dans celui-ci.\\
+            5 bits pour le numéro de cadre et 9 pour le décalage 
+            ($2^5 = 32$ et $2^9=512o$)
+    \item La limite d'un segment est de 1Ko donc 10 bits\\
+            La base est une adresse linaire donc 14 bits\\
+            Une ligne fait donc 24 bits.
+    \item 2 solutions diviser la table en 2 ou rajouter un bit poru savoir si 
+            c'est globale ou pas.
+    \item \begin{description}
+        \item[@logique]: $\texttt{0x0B50}$ 
+        \item[@linaire]: impossible $350 > 341$ segfault 
+        \item[@physique]: impossible
+        \end{description}
+    \item \begin{description}
+            \item[@logique]: $\texttt{0x0B50}$ 
+            \item[@linaire]: segment 2 $\texttt{0x3000} + \texttt{0x0350} = \texttt{0x3350}$  
+            \item[@physique]: Page 19: (cadre=$\texttt{0x55}$ 
+                    décalage=$\texttt{0x150}$) $\texttt{0xAB50}$  
+        \end{description}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Gestion de la mémoire
+\begin{enumerate}
+    \item 
+\end{enumerate}
+\end{exo}
+
+
+\begin{exo} Remplacement de page
+\begin{enumerate}
+    \item \begin{itemize}
+        \item FIFO simple:\\
+            \begin{tabular}{c c c c c c c c c c c c c}
+                    & 0 & 1 & 4 & 2 & 0 & 1 & 3 & 0 & 1 & 4 & 2 & 3 \\
+                0   & 0 &   &   & 2 &   &   & 3 &   &   &   &   &   \\
+                1   &   & 1 &   &   & 0 &   &   &   &   & 4 &   &   \\
+                2   &   &   & 4 &   &   & 1 &   &   &   &   & 2 &   \\
+                    & * & * & * & * & * & * & * &   &   & * & * &
+            \end{tabular}\\
+            Defauts de page = 9
+        \item  FIFO avec secode chance:\\
+            \begin{tabular}{c c c c r c c c c r c c c c c}
+                    & 0 & 1 & 4 &   & 2 & 0 & 1 &   & 3 & 0 & 1 & 4 & 2 & 3 \\
+                0   & 0 &   &   & $+$ & 2 &   &   & $+$ & 3 &   &   &   &   & $-$  \\
+                1   &   & 1 &   & $+$ &   & 0 &   & $+$ &   & $-$ &   & 4 &   &   \\
+                2   &   &   & 4 & $+$ &   &   & 1 & $+$ &   &   & $-$ &   & 2 &   \\
+                    & * & * & * & & * & * & * & & * &    &   & * & * & 
+            \end{tabular}\\
+            Defauts de page = 9
+        \item  LRU:\\
+            \begin{tabular}{c c c c c c c c c c c c c}
+                    & 0 & 1 & 4 & 2 & 0 & 1 & 3 & 0 & 1 & 4 & 2 & 3 \\
+                0   & 0 &   &   & 2 &   &   & 3 &   &   & 4 &   &   \\
+                1   &   & 1 &   &   & 0 &   &   & 0 &   &   & 2 &   \\
+                2   &   &   & 4 &   &   & 1 &   &   & 1 &   &   & 3 \\
+                    & * & * & * & * & * & * & * &   &   & * & * & *
+            \end{tabular}\\
+            Defauts de page = 10
+        \end{itemize}
+    \item Optimal:
+        \begin{tabular}{c c c c c c c c c c c c c}
+                & 0 & 1 & 4 & 2 & 0 & 1 & 3 & 0 & 1 & 4 & 2 & 3 \\
+            0   & 0 &   &   &   &   &   &   &   &   & 4 &   &   \\
+            1   &   & 1 &   &   &   &   &   &   &   &   & 2 &   \\
+            2   &   &   & 4 & 2 &   &   & 3 &   &   &   &   &   \\
+                & * & * & * & * &   &   & * &   &   & * & * & 
+        \end{tabular}\\
+        Defauts de page = 7\\
+        Taux de défaut de page 58\%
+\end{enumerate}
+\end{exo}
+\end{document}

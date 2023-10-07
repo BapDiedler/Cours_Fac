@@ -1,0 +1,231 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ntheorem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ a4paper, hmargin={2cm, 2cm}, vmargin={3cm, 3cm}]{geometry}
+
+\usepackage{tikz}
+\usepackage{xcolor}
+
+\theoremstyle{plain}
+\theorembodyfont{\normalfont}
+\theoremseparator{~--}
+\newtheorem{exo}{Exercice}%[section]
+
+
+\pagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\sc Feuille d'exercice 2
+\end{center}
+
+\begin{exo} Vrai ou Faux \\
+    \begin{tabular} {|c|}
+        \hline F \\ \hline V \\ \hline
+        \hline V \\ \hline F \\ \hline F \\ \hline
+        \hline V \\ \hline F \\ \hline F \\ \hline
+        \hline V \\ \hline F \\ \hline
+        \hline F \\ \hline F \\ \hline F \\ \hline
+    \end{tabular}
+\end{exo}
+
+\begin{exo}
+\begin{enumerate}
+    \item arbre:\\
+    \begin{tikzpicture}
+        \node at (-1, 0) {F:};
+        \node {$\vee$} 
+            [level distance=1cm,
+            sibling distance=10mm,
+            level 1/.style={sibling distance=20mm},
+            ]
+
+            child {
+                node {$\exists x$} 
+                    child {node {$p(x, f(x))$}}
+                }
+            child {
+                node {$\neg$}
+                child {node {$\forall y$} 
+                    child{ node{$q(y, g(a, z, f(z)))$}}
+                }
+        };
+
+        \node at (5, 0) {G:};
+        \node at (6, 0) {$\vee$} [level distance=1cm,
+            sibling distance=10mm,
+            level 1/.style={sibling distance=25mm},
+            level 2/.style={sibling distance=25mm},
+            level 3/.style={sibling distance=10mm},
+        ]
+            child {
+                node {$r(x)$} 
+            }
+            child {
+                node {$\wedge$}
+                    child {node {$\wedge$}
+                        child { node {$\exists x$}
+                            child { node {$\forall y$}
+                                child {node {$p(f(x, z))$}}
+                            }
+                        }
+                        child { 
+                            node {$r(a)$}
+                        }
+                    }
+                child {node {$\forall x$} 
+                    child {
+                        node{$q(y, g(x, z, x))$}
+                    }
+                }
+        };
+    \end{tikzpicture}
+
+    \item  \textcolor{green}{Varaible libre}
+    \begin{description}
+        \item[$F$]: $(\exists \textcolor{cyan}{x}, p(\textcolor{cyan}{x}, 
+                                                    f(\textcolor{green}{y}))) 
+            \vee \neg \forall \textcolor{red}{y}, q(\textcolor{red}{y}, 
+                                                        g(a, \textcolor{green}{z}
+                                                        , f(\textcolor{green}{z})))$
+
+        \item [$G$]: $r(\textcolor{green}{x}) \vee 
+            ((\exists \textcolor{cyan}{x}, \forall \textcolor{yellow}{y}
+                    , p(f(\textcolor{cyan}{x}), 
+                            \textcolor{green}{z})) 
+                \wedge r(a)) \wedge 
+                    \forall \textcolor{red}{x}, q(\textcolor{green}{y}, 
+                        g(\textcolor{red}{x}, \textcolor{green}{z}, \textcolor{red}{x}))$
+    \end{description}
+
+    \item Ce sont toutes les feuiilles des arbres de la question 1
+    \item \begin{description}
+        \item[$F$]: $x, f(x), y, g(a, z, f(z))$
+        \item[$G$]: $x, f(x, z), y, g(x, z, x)$ 
+    \end{description}
+    \item  \begin{description}
+        \item[$F$]: $(\exists x, p(x, f(f(a)))) \vee \neg \forall y, q(y, g(a, f(x), f(f(x))))$
+        \item[$G$]: $r(x), \vee ((\exists w, \forall y, p(f(w), f(x))) \wedge r(a)) 
+            \wedge \forall w, q(f(a), g(w, f(x), w))$ 
+    \end{description}
+\end{enumerate}
+\end{exo}
+
+\begin{exo} Arbre Binaire de Recherche 
+    \begin{enumerate}
+        \item   1: Oui $Node(Node(Node(Nil, 10, Nil), 15, Node(Nil, 20, Nil)), 33, Node(Nil, 40, Nil))$
+
+                2: Non (le noeud 12 devrai être à droite du noeud 10)
+
+        \item   $\max(n, t) := n \in t \wedge \forall x, x \in t \Rightarrow x = n \vee x < n$
+        
+        \item \begin{enumerate}
+            \item $\forall x, \neg(x \in nil)$: Il n'y a pas de valeur dans une feuille
+            \item $\forall$ $x$ $l$ $v$ $r, (x \in node(l, v, r) \Leftrightarrow  x \in l \vee x = v \vee x \ in)$:
+                    Si x est dans un arbre alors il est soit dans la racine soit 
+                    dans l'arbre de gauche soit dans l'arbre de droite
+            \item $\forall t_1 t_2, \exists t, \forall x, (x \in t \Leftrightarrow x \in t_1 \wedge x \in t_2)$:
+                    Il existe une intersection entre deux arbres.
+        \end{enumerate}
+
+        \item $abr(t)$ vrai si t est un Arbre Binaire de Rcherche
+
+            \begin{enumerate}
+                \item $abr(nil)$
+                \item $\forall l, v, r, (abr(node(l, v, r)) \Leftrightarrow abr(l) \wedge abr(r) \\
+                \wedge \forall x, (x \in l \Rightarrow x < v \wedge x \in r \Rightarrow v < x))$ 
+            \end{enumerate}
+
+        \item $\forall t,u, abr(t) \wedge abr(u) \Rightarrow (abr(union(t, u))
+                \wedge \forall z, (z \in union(t, u) \Leftrightarrow z \in t \vee z \in u))$
+    \end{enumerate}
+\end{exo}
+
+\begin{exo} Algorithmes satisfaibilité-validé
+
+    $satisfiable(P) := non(valide(\neg P))$
+
+    $valide(P) := non(satisfiable(\neg P))$
+\end{exo}
+
+\begin{exo} Interprétation en calcul des prédicats
+
+    \begin{enumerate}
+        \item formules: \\
+        \begin{tabular}{l c c c c c}
+                                                & 1 & 2 & 3 & 4 & 5 \\
+            $\forall x y, P(x, y)$              & F & V & F & F & F \\
+            $\exists x y, P(x, y)$              & F & V & V & V & V \\
+            $\exists  x, \forall y, P(x, y)$    & F & V & V & F & F \\
+            $\exists  y, \forall x, P(x, y)$    & F & V & F & V & F \\
+            $\forall  x, \exists y, P(x, y)$    & F & V & F & V & V \\
+            $\forall  y, \exists x, P(x, y)$    & F & V & V & F & F \\
+        \end{tabular}
+
+        \item 
+        \begin{itemize}
+            \item Toutes les cases sont noir
+            \item le tableau à au moin une case noir
+            \item Il y a une ligne noir
+            \item Il y a une colonne noir
+            \item il y a au moin une case noir par ligne
+            \item Il y a au moin une case noir pas colonne
+        \end{itemize}
+    \end{enumerate}
+\end{exo}
+
+\begin{exo}
+    Prouvez un résulatat théorique du théorème de la copacité
+    \begin{enumerate}
+        \item \begin{description}
+            \item[Satisfiable:] Il exite une interpretation I, $A_i$ vrai dans I
+            \item[Instasifiable:] Pour toutes interprétations I, au moins un
+                                $A_i$ est faux dans $\mathcal{E}$   
+        \end{description}
+
+        \item Grâce à la compacité on peut dir que si $H \subset \mathcal{E} $ est instasifiable
+                alors $\mathcal{E}$ est aussi instasifiable
+
+        \item $\mathcal{E}$ est instasifiable donc pour toutes interpretation
+                $I \in \mathbb{B}^{\mathbb{N}}$ il existe 
+                $A_i \subset \mathcal{E}$ tel que $A_i$ faux dans I
+
+                $H = \left\{A_i | i \in \mathbb{B}^{\mathbb{N}} \right\}$
+
+        \item \textbf{Lemme de Köning:} Tout arbre infini à branchement 
+            fini a une branche infinie.
+    \end{enumerate}
+\end{exo}
+
+\begin{exo} Colirage de graphe
+    \begin{itemize}
+        \item Couleurs: $c \in C$
+        \item $(x_i^c)$ vrai si $(x_i)$ est de couleur $c$
+    \end{itemize}
+
+    \[ Graphe
+        \begin{cases}
+            V = \left\{x_1, \ldots x_n\right\}  \\
+            E \subseteq V^2 \\
+            C = couleurs
+        \end{cases}
+        \]
+
+    $n$ sommets et $k$ couleurs
+    \begin{itemize}
+        \item $n^k$
+        \item 
+        \begin{itemize}
+            \item $\left\{x_i^c \Rightarrow \neg x_i^d | i \in V, c \neq d \in C\right\}$ 
+            \item $\left\{x_i^c \Rightarrow \neg x_j^c | c \in C, (x_i, x_j) \in E\right\}$ 
+            \item $\left\{x_i^{c_1}\vee \ldots \vee x_i^{c_n} | C = \left\{c_1, \ldots, c_n\right\}, x_i \in V\right\}$ 
+        \end{itemize}
+    \end{itemize}
+\end{exo}
+
+\end{document}

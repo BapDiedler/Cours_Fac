@@ -1,0 +1,9 @@
+
+all: Main
+
+%.class:%.java
+	javac $<
+
+%:%.java
+	javac $<
+	java $@

@@ -1,0 +1,19 @@
+- Une classe Main dans un package truc doit être compilé dans le dossier mère par javac truc/main.java puis java truc.main
+- Si déclaration d'une variable dans une boucle : elle est empilée et donc dépilé à la fin de la boucle. De même la variable de la boucle est gérée dans la pile. Quesitonner là dessus !!!!!!
+- Dans le cas d'une fonction test avec des assert, executer avec java -ea
+
+===== héritage ====
+- interface : une "classe" qui donne la structure. D'autres classes l'implements
+	(ex : interface expression avec le prototype des fonctions se retrouvants dans toutes les sous classes). 
+	Une interface peut hériter d'une interface (extends)
+- abstract (extends) : class abstraite qui demande à être étendue.
+	. Dans ce cadre, protected est un private ouvert au sous classes.
+	. possibilité d'écrire des fonctions qui se retrouveront telles quelles dans les sous classes (éventuellement surchargées)
+	. possibilité d'écrire des fonctions abstracts qui doivent être définies dans les sous classes.
+	. super dans le constructeur des sous classes permet de faire appel aux constructeur de la super-classe
+	. sous class extends super classe.
+	. Le constructeur d'une sous classe doit commencer par un super()
+- une classe hérite (extends) d'une autre classe (abstraite ou non)
+
+
+

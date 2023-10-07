@@ -1,0 +1,79 @@
+.text
+	#début du programme
+	li $a0, 10
+	jal sumfib
+	jal print
+	jal exit
+	
+	
+#fonction fibonnaci qui calcul FIBO($a0)
+fibo:	#sauvegarde des données
+	sw $ra, -4($sp)
+	sw $a0, -8($sp)
+	addi $sp, $sp, -8
+	#condition d'arrêt
+	beqz $a0, retfib
+	li $t0, 1
+	beq $a0, $t0, retfib
+	#calcul de FIBO(n-1)
+	addi $a0, $a0, -1
+	jal fibo
+	sw $v0, -4($sp)
+	addi $sp, $sp, -4
+	#calcul de FIBO(n-2)
+	addi $a0, $a0, -1
+	jal fibo
+	lw $t0, 0($sp)
+	addi $sp, $sp, 4
+	#FIBO(n-1) + FIBO(n-2)
+	add $v0, $v0, $t0
+	#récupération des données
+	lw $a0, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+#return de la fonction fibo
+retfib:	li $v0, 1
+	#récupération des données
+	lw $a0, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+
+
+#fonction qui calcul la somme des $a1 premiers nombre de la suite fibonnaci
+sumfib:	#sauvegarde des données
+	sw $ra, -4($sp)
+	sw $a1, -8($sp)
+	addi $sp, $sp, -8
+	
+	li $t0, -1#on arrête quand $a1 < 0
+	beq $a1, $t0, retsum
+	
+	move $a0, $a1
+	jal fibo
+	move $v1, $v0
+	addi $a1, $a1, -1
+	jal sumfib
+	add $v1, $v1, $t0
+	
+	lw $a1, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+	
+retsum:	lw $a1, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+
+
+#fonction d'affichage
+print:	move $a0, $v1
+	li $v0, 1
+	Syscall 
+
+
+#fonction de sortie
+exit:	li $v0, 10
+	Syscall 
