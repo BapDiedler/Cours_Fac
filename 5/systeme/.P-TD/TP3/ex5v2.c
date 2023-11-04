@@ -17,11 +17,16 @@ void *run(void *);
 
 int main(int argc, char const *argv[])
 {
+	int id[NB_THREAD];// tableau d'identifiant pour voir s'il y a des risques de famine.
+    for(int i=0; i<NB_THREAD; i++){
+        id[i] = i;
+    }
+
     srand(time(NULL));
     pthread_t thread1[NB_THREAD];
     for (size_t i = 0; i < NB_THREAD; i++)
     {
-        pthread_create(thread1 + i * sizeof(pthread_t), NULL, run, &i);
+        pthread_create(thread1 + i * sizeof(pthread_t), NULL, run, (void*)&id[i]);
     }
 
     for (size_t i = 0; i < NB_THREAD; i++)
@@ -36,20 +41,21 @@ void ecrire();
 
 void *run(void *args)
 {
+	int* id = (int*)args;
     while (1)
     {
         if ((rand() % 2) == 0)
         {
-            lire();
+            lire(*id);
         }
         else
         {
-            ecrire();
+            ecrire(*id);
         }
     }
 }
 
-void lire()
+void lire(int id)
 {
     pthread_mutex_lock(&ecriture_lock);
     pthread_mutex_lock(&lecture_lock);
@@ -63,7 +69,7 @@ void lire()
     pthread_mutex_unlock(&lecture_lock);
     pthread_mutex_unlock(&ecriture_lock);
 
-    printf("lire debut\n");
+    printf("lire debut %d\n",id);
     usleep(rand() % 500000);
     printf("lire fin\n");
 
@@ -78,13 +84,13 @@ void lire()
     pthread_mutex_unlock(&lecture_lock);
 }
 
-void ecrire()
+void ecrire(int id)
 {
     pthread_mutex_lock(&ecriture_lock);
     pthread_mutex_lock(&base_lock);
     pthread_mutex_unlock(&ecriture_lock);
 
-    printf("ecrire debut\n");
+    printf("ecrire debut %d\n",id);
     usleep(rand() % 500000);
     printf("ecrire fin\n");
 

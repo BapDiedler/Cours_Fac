@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/wait.h>
+
+
 
 #define NB_THREAD 10
 
