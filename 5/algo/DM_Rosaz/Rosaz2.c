@@ -301,6 +301,9 @@ void VideListe_of_list(List_of_list *L)
 /*                                               */
 /*************************************************/
 
+/// @brief fonction qui permet de savoir si l[0]+l[1] == l[2]
+/// @param l liste que l'on observe
+/// @return 0 si l[0]+l[1] != l[2] et 1 si l[0]+l[1] == l[2]
 int UnPlusDeuxEgaleTrois(Liste l){
     if(estVide(l))
         return 1;
@@ -314,6 +317,10 @@ int UnPlusDeuxEgaleTrois(Liste l){
     return prem+snd==trois;
 }
 
+/// @brief fonction qui permet de savoir si une liste est triée ou non
+/// @param l liste que l'on observe
+/// @return _0 si la liste n'est pas triée
+///         _1 si la liste est triée
 int Croissante(Liste l){
     if(estVide(l))
         return 1;
@@ -328,7 +335,10 @@ int Croissante(Liste l){
     return res;
 }
 
-
+/// @brief fonction qui permet de connaitre le nombre d'éléments qui se trouve à la même position dans deux listes.
+/// @param l1 première liste
+/// @param l2 deuxième liste
+/// @return le nombre d'éléments à la même position.
 int NombreMemePosition1(Liste l1, Liste l2){
     if(estVide(l1) || estVide(l2))
         return 0;
@@ -337,7 +347,10 @@ int NombreMemePosition1(Liste l1, Liste l2){
     return NombreMemePosition1(l1->suivant, l2->suivant);
 }
 
-
+/// @brief fonction qui permet de connaitre le nombre d'éléments qui se trouve à la même position dans deux listes.
+/// @param l1 première liste
+/// @param l2 deuxième liste
+/// @return le nombre d'éléments à la même position.
 int NombreMemePosition2(Liste l1, Liste l2){
     int res = 0;
     while(!(estVide(l1) || estVide(l2))){
@@ -350,7 +363,7 @@ int NombreMemePosition2(Liste l1, Liste l2){
 }
 
 
-//fonction auxiliaire pour la fonction NombreMemePosition
+//fonction auxiliaire pour la fonction NombreMemePosition3
 int NMP_aux3(Liste l1, Liste l2, int acc){
     if(estVide(l1) || estVide(l2))
         return acc;
@@ -358,6 +371,10 @@ int NMP_aux3(Liste l1, Liste l2, int acc){
         acc++;
     return NMP_aux3(l1->suivant, l2->suivant,acc);
 }
+/// @brief fonction qui permet de connaitre le nombre d'éléments qui se trouve à la même position dans deux listes.
+/// @param l1 première liste
+/// @param l2 deuxième liste
+/// @return le nombre d'éléments à la même position.
 int NombreMemePosition3(Liste l1, Liste l2){
     return NMP_aux3(l1,l2,0);
 }
@@ -371,40 +388,43 @@ void NMP_aux4(Liste l1, Liste l2, int* acc){
         NMP_aux4(l1->suivant, l2->suivant,acc);
     }
 }
+/// @brief fonction qui permet de connaitre le nombre d'éléments qui se trouve à la même position dans deux listes.
+/// @param l1 première liste
+/// @param l2 deuxième liste
+/// @return le nombre d'éléments à la même position.
 int NombreMemePosition4(Liste l1, Liste l2){
     int acc = 0;
     NMP_aux4(l1,l2,&acc);
     return acc;
 }
 
+
+//fonction auxiliaire qui retire le dernier élément
 Liste FVD(Liste l){
     if(estVide(l->suivant))
         return NULL;
     return ajoute(l->nombre,FVD(l->suivant));
 }
-//version récusive simple
+/// @brief version récusive simple
+/// @param l liste que l'on transforme
+/// @return la nouvelle liste sans le dernier élément
 Liste FonctVireDernier1(Liste l){
     if(estVide(l))
         return NULL;
     return FVD(l);
 }
 
-//version itérative
+/// @brief version itérative
+/// @param l liste que l'on transforme
+/// @return la nouvelle liste sans le dernier élément
 Liste FonctVireDernier2(Liste l){
     Liste nouvelleListe;
     initVide(&nouvelleListe);
-    Liste Q = NULL;
-    while (l != NULL){
+    Liste * Q = &nouvelleListe;//pointeur sur le dernier élément de la liste
+    while (l != NULL){//itération sur la liste
         if(!estVide(l->suivant)){
-            if(estVide(nouvelleListe)){
-                initVide(&nouvelleListe);
-                empile(l->nombre, &nouvelleListe);
-                Q = nouvelleListe;
-            }
-            else{
-                empile(l->nombre, &Q->suivant);
-                Q = Q->suivant;
-            }
+            empile(l->nombre, Q);
+            Q = &(*Q)->suivant;//pointe vers le drenier élément
         }
         l = l->suivant;
     }
@@ -412,7 +432,9 @@ Liste FonctVireDernier2(Liste l){
 }
 
 
-
+/// @brief Procédure qui ajoute un élément devant le Premier 0
+/// @param l Liste où l'on ajoute l'élément
+/// @param x élément ajouté
 void AjouteDevantPremierZero(Liste* l, int x){
     if(estVide(*l) || (*l)->nombre == 0)
         empile(x,l);
@@ -422,7 +444,7 @@ void AjouteDevantPremierZero(Liste* l, int x){
 
 
 
-
+//Procédure auxiliaire de ADDZ1
 void ADDZ_aux( Liste *l, int x, int *b) {
     if(estVide(*l)){
         if(!(*b))
@@ -437,6 +459,9 @@ void ADDZ_aux( Liste *l, int x, int *b) {
         }
     }
 }
+/// @brief procédure qui ajoute un élément devant le dernier 0. La procédure est récusive sur la liste.
+/// @param l liste où l'on ajoute l'élément
+/// @param x élément que l'on ajoute
 void AjouteDevantDernierZero1(Liste* l, int x){
     if(estVide(*l))
         empile(x,l);
@@ -446,71 +471,75 @@ void AjouteDevantDernierZero1(Liste* l, int x){
     }
 }
 
+/// @brief procédure qui ajoute un élément devant le dernier 0. La procédure est itérative sur la liste.
+/// @param l liste où l'on ajoute l'élément
+/// @param x élément que l'on ajoute
+void AjouteDevantDernierZero2(Liste *L, int x) {
+    Liste courant = *L;
+    Liste tmp = NULL;//sauvegarde du dernier 0
 
-/// @brief procédure qui ajoute un x devant le dernier 0
-/// @param l 
-/// @param x 
-void AjouteDevantDernierZero2(Liste *l, int x){
-    Liste P = *l;
-    Liste M = NULL;
-    
-    while(!estVide(P)){
-        printf("coucou\n");fflush(stdout);
-        if((P)->nombre == 0){
-            M = P;
+    if(courant == NULL){//si la liste est vide
+        empile(x,L);
+        return;
+    }
+
+    while(courant->suivant != NULL){//itération sur la liste
+        if(premier(courant->suivant) == 0){
+            tmp = courant;
         }
-        P = (P->suivant);
-    }
-    if(!estVide(M)){
-        empile(x,&M);
-    }
-}
-
-void AjouteDevantDernierZero3(Liste *l, int x) {
-    int b = 0;
-    Liste courant = *l;
-    Liste precedent = NULL;
-
-    // Cas spécial pour le premier élément
-    if (!estVide(courant) && courant->nombre == 0) {
-        empile(x, l);
-        b = 1;
-        courant = (*l)->suivant;
-    }
-
-    while (!estVide(courant)) {
-        if (courant->nombre == 0) {
-            if (estVide(courant->suivant)) {
-                // Cas où le dernier élément est 0, ajouter x devant
-                empile(x, &courant);
-                
-                if (estVide(precedent)) {
-                    // Si le premier élément est 0, mettre à jour le pointeur de la liste
-                    *l = courant;
-                } else {
-                    precedent->suivant = courant;
-                }
-                return;
-            } else {
-                b = 1;  // Indiquer que le dernier 0 a été trouvé
-            }
-        }
-        precedent = courant;
         courant = courant->suivant;
     }
 
-    if (b == 0) {
-        // Si aucun 0 n'a été trouvé, ajouter x en fin de liste
-        empile(x, l);
-    }
+    if(tmp == NULL){//si l'on n'a pas trouvé de 0, c'est qu'il est en tête de liste ou qu'il n'y en a pas
+        if(premier(*L) == 0)
+            empile(x,L);
+        else
+            empile(x,&(courant->suivant));
+    }else//on ajoute devant le dernier 0
+        empile(x,&(tmp->suivant));
 }
 
 
+//procédure auxiliaire.
+void ADDZ3_aux(Liste* L, Liste courant, Liste tmp, int x){
+    if(courant->suivant == NULL){
+        if(tmp == NULL){
+            if(premier(*L) == 0)
+                empile(x,L);
+            else
+                empile(x,&(courant->suivant));
+        }else
+            empile(x,&(tmp->suivant));
+    }else{
+        if(premier(courant->suivant) == 0){
+            tmp = courant;
+        }
+        ADDZ3_aux(L,courant->suivant,tmp,x);
+    }
+}
+/// @brief procédure qui ajoute un élément devant le dernier 0. La procédure est récusive terminale sur la liste.
+/// @param l liste où l'on ajoute l'élément
+/// @param x élément que l'on ajoute
+void AjouteDevantDernierZero3(Liste *L, int x) {
+    Liste courant = *L;
+    Liste tmp = NULL;
+
+    if(courant == NULL){
+        empile(x,L);
+        return;
+    }
+    ADDZ3_aux(L,courant,tmp,x);
+}
+
+
+/// @brief procédre qui ajoute un 0 devant tous les termes non nuls qui précèdent le premier 0 
+///        (s’il n’y a pas de 0: devant tous les termes) et enlève les zéros consécutifs qui suivent
+/// @param l liste que l'on transforme
 void TIC(Liste* l){
     if(!estVide(*l)){
         if((*l)->nombre!=0){
             empile(0,l);
-            TIC(&(*l)->suivant->suivant);
+            TIC(&(*l)->suivant->suivant);//appel sur PointeurSuite de PointeurSuite
         }else{
             while(!estVide(*l) && (*l)->nombre==0)
                 depile(l);
@@ -518,6 +547,12 @@ void TIC(Liste* l){
     }
 } 
 
+/*****************************************************/
+
+/// @brief Fonction qui ajoute un élément en tête de toutes les listes
+/// @param x 
+/// @param l 
+/// @return 
 List_of_list AETTL(int x, List_of_list l){
     if(estVide_of_list(l))
         return NULL;
@@ -529,12 +564,7 @@ List_of_list AETTL(int x, List_of_list l){
 
 List_of_list ATP(int n, Liste l){
     if(estVide(l)){
-        List_of_list aux;
-        initVide_of_list(&aux);
-        Liste singleton;
-        initVide(&singleton);
-        empile(n,&singleton);
-        return ajoute_of_list(singleton,aux);
+        return ajoute_of_list(ajoute(n,NULL),NULL);
     }
     return ajoute_of_list(
         ajoute(n,l),
@@ -566,6 +596,68 @@ List_of_list Permutations(int n){
         return l;
     }
     return ATLTP(n,Permutations(n-1));
+}
+
+
+typedef struct BlocZ
+{
+    int nombre;
+    struct BlocZ *next;
+    struct BlocZ **pre;
+} BlocZ;
+typedef BlocZ *ListeZ ;
+
+typedef ListeZ **AccesListe;
+
+ListeZ ZAjouterAvant(int x, AccesListe* acces){
+    ListeZ newList = malloc(sizeof(BlocZ));
+
+    newList->nombre = x;
+
+    if(*acces == NULL){//Il n'y a aucun élément dans la liste
+        newList->next = newList;
+        newList->pre = &newList->next;
+    }else{
+        AccesListe tmp = *acces;
+
+        newList->next = **tmp;
+        newList->pre = *tmp;
+        **tmp = newList;
+        *tmp = &newList->next;
+
+        
+    }
+    *acces = &newList->pre;
+    return newList;
+}
+
+void ALZ_aux(ListeZ L, ListeZ* dernier, ListeZ pos){
+    printf("Bloc %p : nombre->%d | %p<-next->%p | %p<-pre->%p\n",pos,L->nombre,&L->next,L->next,&L->pre,L->pre);
+    if(L->pre != dernier){
+        ALZ_aux(L->next, dernier, L);
+    }
+}
+void afficherListeZ(AccesListe acces, ListeZ L){
+    if(acces == NULL){
+        printf("La liste est vide\n");
+        return;
+    }
+    printf("acces : %p\n",acces);
+    ALZ_aux(L->next, *acces, L);
+}
+void libererListeZ(ListeZ liste){
+    if (liste == NULL) {
+        return;  // La liste est déjà vide
+    }
+
+    ListeZ current = liste;
+    ListeZ next;
+
+    do {
+        next = current->next;
+        free(current);
+        current = next;
+    } while (current != liste);
 }
 
 
@@ -826,10 +918,11 @@ void ADDZ1_test(){
 void ADDZ2_test(){
     Liste l1, l2;
     initVide(&l1); initVide(&l2);
-    empile(10,&l2);
 
+    empile(10,&l2);
     AjouteDevantDernierZero2(&l1,10);
-    printf("AjouterDevantDernierZero2([]) -> %s\n",equals(l1,l2)?"success":"failure");
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([]) -> %s\n",equals(l1,l2)?"success":"failure");
     
     depile(&l1);
     depile(&l2);
@@ -839,25 +932,19 @@ void ADDZ2_test(){
     empile(0,&l1);
     empile(5,&l1);
 
-    affiche_iter(l1);
-
     AjouteDevantDernierZero2(&l1,10);
-
-    affiche_iter(l1);
-    printf("AjouterDevantDernierZero2([5;0]) -> %s\n",equals(l1,l2)?"success":"failure");
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([5;0]) -> %s\n",equals(l1,l2)?"success":"failure");
     
     VireDernier_rec(&l1);
     initVide(&l2);
 
-    empile(0,&l2);
+    empile(0,&l2);    
     empile(10,&l2);
     empile(5,&l2);
-
-    affiche_iter(l1);
-
-
     AjouteDevantDernierZero2(&l1,0);
-    printf("AjouterDevantDernierZero2([5;10]) -> %s\n",equals(l1,l2)?"success":"failure");
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([5;10]) -> %s\n",equals(l1,l2)?"success":"failure");
 
     depile(&l2);
     depile(&l2);
@@ -867,12 +954,22 @@ void ADDZ2_test(){
     empile(3,&l2);
     empile(10,&l2);
     empile(5,&l2);
-
-    affiche_iter(l1);
-    affiche_iter(l2);
-
     AjouteDevantDernierZero2(&l1,3);
-    printf("AjouterDevantDernierZero2([5;10;0]) -> %s\n",equals(l1,l2)?"success":"failure");
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([5;10;0]) -> %s\n",equals(l1,l2)?"success":"failure");
+
+    initVide(&l1);
+    initVide(&l2);
+
+    empile(3,&l1);
+    empile(3,&l2);
+    empile(0,&l1);
+    empile(0,&l2);
+    empile(1,&l2);
+    AjouteDevantDernierZero2(&l1,1);
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([0;3]) -> %s\n",equals(l1,l2)?"success":"failure");
+
 
     VideListe(&l1);
     VideListe(&l2);
@@ -884,10 +981,11 @@ void ADDZ2_test(){
 void ADDZ3_test(){
     Liste l1, l2;
     initVide(&l1); initVide(&l2);
-    empile(10,&l2);
 
+    empile(10,&l2);
     AjouteDevantDernierZero3(&l1,10);
-    printf("AjouterDevantDernierZero3([]) -> %s\n",equals(l1,l2)?"success":"failure");
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([]) -> %s\n",equals(l1,l2)?"success":"failure");
     
     depile(&l1);
     depile(&l2);
@@ -898,31 +996,43 @@ void ADDZ3_test(){
     empile(5,&l1);
 
     AjouteDevantDernierZero3(&l1,10);
-    printf("AjouterDevantDernierZero3([5;0]) -> %s\n",equals(l1,l2)?"success":"failure");
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([5;0]) -> %s\n",equals(l1,l2)?"success":"failure");
     
     VireDernier_rec(&l1);
     initVide(&l2);
-    empile(0,&l2);
+
+    empile(0,&l2);    
     empile(10,&l2);
     empile(5,&l2);
-
-
-    affiche_iter(l1);
-    affiche_iter(l2);
-
     AjouteDevantDernierZero3(&l1,0);
-    printf("AjouterDevantDernierZero3([5;10]) -> %s\n",equals(l1,l2)?"success":"failure");
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([5;10]) -> %s\n",equals(l1,l2)?"success":"failure");
 
     depile(&l2);
     depile(&l2);
     depile(&l2);
-    empile(10,&l2);
-    empile(5,&l2);
+
     empile(0,&l2);
     empile(3,&l2);
-
+    empile(10,&l2);
+    empile(5,&l2);
     AjouteDevantDernierZero3(&l1,3);
-    printf("AjouterDevantDernierZero3([0;5;10;0]) -> %s\n",equals(l1,l2)?"success":"failure");
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([5;10;0]) -> %s\n",equals(l1,l2)?"success":"failure");
+
+    initVide(&l1);
+    initVide(&l2);
+
+    empile(3,&l1);
+    empile(3,&l2);
+    empile(0,&l1);
+    empile(0,&l2);
+    empile(1,&l2);
+    AjouteDevantDernierZero3(&l1,1);
+    affiche_rec(l1);
+    printf("AjouterDevantDernierZero1([0;3]) -> %s\n",equals(l1,l2)?"success":"failure");
+
 
     VideListe(&l1);
     VideListe(&l2);
@@ -952,6 +1062,15 @@ void Permutation_test(){
     List_of_list l = Permutations(3);
     affiche_of_list(l);
     VideListe_of_list(&l);
+}
+
+void ListeZ_test(){
+    AccesListe acces = NULL;
+    ListeZ L = ZAjouterAvant(1,&acces);
+    L = ZAjouterAvant(2,&acces);
+    L = ZAjouterAvant(3,&acces);
+    afficherListeZ(acces,L);
+    libererListeZ(L);
 }
 
 

@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -15,7 +13,7 @@
 #define NOT !
 #define then 
 
-typedef enum { false, true} bool;
+typedef enum {false, true} bool;
 
 
 /*************************************************/
@@ -104,11 +102,13 @@ long double Elongdouble () {
 /*************************************************/
 
 /**
- * Après avoir lancer le programme on ser rend compte que après n itérations la suite diverge. Cela est du à une erreur d'aproximation du codage des réels.
- * Car zn - yn ~ Ɛ*n!
+ * Après avoir lancer le programme on ser rend compte que après n itérations la suite diverge. Cela vient d'une erreur d'aproximation du codage des réels.
+ * Mais on remarque que les LongDouble ont moins d'erreurs d'approximation que les autres. Et que les double en ont moins que les float. 
+ * Car zn - yn ~ n!*Ɛ
 */
 
 ///@brief fonction affichant les n premiers termes de la suite yn = n yn−1 − 1 et y0 = e − 1 en float
+///@param n nombre d'itérations
 void afficheYfloat (int n) {
   float res = Efloat() -1;
   printf("%f\n",res);
@@ -121,6 +121,7 @@ void afficheYfloat (int n) {
 /*************************************************/
 
 ///@brief fonction affichant les n premiers termes de la suite yn = n yn−1 − 1 et y0 = e − 1 en double
+///@param n nombre d'itérations
 void afficheYdouble (int n) {
   double res = Edouble() -1;
   printf("%lf\n",res);
@@ -133,6 +134,7 @@ void afficheYdouble (int n) {
 /*************************************************/
 
 ///@brief fonction affichant les n premiers termes de la suite yn = n yn−1 − 1 et y0 = e − 1 en long double
+///@param n nombre d'itérations
 void afficheYlongdouble (int n) {
   long double res = Elongdouble() -1;
   printf("%Lf\n",res);
@@ -149,13 +151,17 @@ void afficheYlongdouble (int n) {
 /*                                               */
 /*************************************************/
 
-///@brief fonction auxiliaire de la puissance 1
+///@brief fonction auxiliaire de la puissance1
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power1_aux(double x, long n){
   if(n==0)
     return 1;
   return power1_aux(x,n-1)*x;
 }
 ///@brief RECURSIF SIMPLE, PAR n-1
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power1 (double x, long n) {
   double res = power1_aux(x, labs(n));
   return n<0 ? 1./res : res; //si n<0 alors 1./res sinon res
@@ -164,6 +170,8 @@ double power1 (double x, long n) {
 /*************************************************/
 
 ///@brief ITERATIF, PAR n-1 boucle pour
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power2a (double x, long n) {
   double res = 1.;
   long m = labs(n);
@@ -175,6 +183,8 @@ double power2a (double x, long n) {
 /*************************************************/
 
 ///@brief ITERATIF, PAR n-1 boucle while
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power2b (double x, long n) {
   double res = 1.;
   while(n>0){
@@ -194,6 +204,8 @@ void power3_aux(double x, long n, double* res){
   }
 }
 ///@brief RECURSIF TERMINAL AVEC SOUS-PROCEDURE, PAR n-1
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power3 (double x, long n) {
   double res = 1.;
   power3_aux(x,n,&res);
@@ -208,6 +220,8 @@ double power4_aux(double x, long n, double res){
   return power4_aux(x,n-1,res*x);
 }
 ///@brief RECURSIF TERMINAL AVEC SOUS-FONCTION, PAR n-1
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power4 (double x, long n) {
   return power4_aux(x,n,1);
 }
@@ -215,7 +229,8 @@ double power4 (double x, long n) {
 /*************************************************/
 
      //   Observation (1+1/10^k)^(10^k) : rame : 8 en 1/2s, 9 en qqs s, 10 en 1m
-
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power5 (double x, long n){
     if(n==0)
       return 1;
@@ -227,6 +242,8 @@ double power5 (double x, long n){
 /*************************************************/
 
 ///@brief RECURSIF SIMPLE, PAR n/2
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power6 (double x, long n) {
   if(n==0)
       return 1;
@@ -239,6 +256,8 @@ double power6 (double x, long n) {
 /*************************************************/
 
 ///@brief RECURSIF SIMPLE, PAR n/2, VARIANTE
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power7 (double x, long n) {
   if(n==0)
       return 1;
@@ -258,6 +277,8 @@ double power8_aux(double x, long n, double res){
   return (power8_aux(x*x,n/2,res*x)) ;
 }
 ///@brief RECURSIF SIMPLE, PAR n/2, AVEC SOUS-FONCTION
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power8 (double x, long n) {
   return power8_aux(x,n,1);
 }
@@ -265,6 +286,8 @@ double power8 (double x, long n) {
 /*************************************************/
 
 ///@brief SOUS-PROCEDURE
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 void power9_aux(double x, long n, double* res){
   if(n!=0){
     if(n%2!=0)
@@ -273,6 +296,8 @@ void power9_aux(double x, long n, double* res){
   }
 }
 ///@brief RECURSIF SIMPLE, PAR n/2, AVEC SOUS-PROCEDURE
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power9 (double x, long n) {
   double res = 1.;
   power9_aux(x,n,&res);
@@ -282,7 +307,8 @@ double power9 (double x, long n) {
 /*************************************************/
 
      //   Observation (1+1/10^k)^(10^k) : calcul immédiat
-
+///@param x double dont  l'on charche la puissance
+///@param n puissance de la fonction
 double power10 (double x, long n)
 {
     double r = 1.0 ;
@@ -358,84 +384,60 @@ float power12 (float x, long n)
 /*                                               */
 /*************************************************/
 
-//Une version recursive en m et iterative en n
 int A1(int m, int n) {
-  if(m==0)
+
+  if(m==0)//cas de base
     return n+1;
+
   int res = 1;
-  for(int i=0; i<n+1; i++)
+  for(int i=0; i<n+1; i++)//itération sur n
     res = A1(m-1,res);
   return res;
 }
-
+///@brief Une version recursive en m et iterative en n
+///@param m la valeur à calculer
 int Ackermann1 (int m) { return A1(m,0); }
 
 /*************************************************/
-//Une version iterative en m et recursive en n
+
+int A2(int m, int n){
+  if(m==0)//cas de base 1
+    return n+1;
+  if(n==0)//cas de base 2
+    return A2(m-1,1);
+  //cas récursif
+  return A2(m-1,A2(m,n-1));
+}
+///@brief Une version purement recursive
+///@param m la valeur à calculer
+int Ackermann2 (int m) { return A2(m,0); }
+
+/*************************************************/
+
 int A3(int m, int n) {
-    while (m >= 0) {
-        if (m == 0) {
+    while(m >= 0){//itération sur m
+        if(m == 0)// cas de base
             return n + 1;
-        }
-        if (n == 0) {
+        if(n == 0){
             m -= 1;
             n = 1;
-        } else {
-            n = A2(m, n - 1);
+        }else{
+            n = A3(m, n - 1);//cas récursif sur n
             m -= 1;
         }
     }
     return -1;  // Cette ligne ne devrait jamais être atteinte.
 }
-
+///@brief Une version iterative en m et recursive en n
+///@param m la valeur à calculer
 int Ackermann3 (int m) {
   return A3(m,0);
 }
 
 /*************************************************/
-int A2(int m, int n){
-  if(m==0)
-    return n+1;
-  if(n==0)
-    return A3(m-1,1);
-  return A3(m-1,A3(m,n-1));
-}
-//Une version purement recursive
-int Ackermann2 (int m) { return A3(m,0); }
 
-/*************************************************/
-int A4(int m, int n){
-  return 0;
-}
-
-//version purement itérative
-int Ackermann4 (int m) {
-  int n=0;
-  int pile[80000];//pile pour stocker les valeurs de m
-  int pos_pile = 0;//position du sommet de la pile
-  pile[pos_pile] = m;
-  while(pos_pile>=0){//tant qu'il y a un élément dans la pile
-    //dépile pour récupérer la dernière valeur de m
-    m=pile[pos_pile];
-    pos_pile--;
-    if(m==0)//cas de base pour la récursivité sur m
-      n++;
-    else{
-      //empile la valeur m-1
-      pos_pile++;
-      pile[pos_pile] = m-1;
-      if(n==0)
-        n=1;
-      else{
-        pos_pile++;
-        pile[pos_pile] = m;
-        n--;
-      }
-    }
-  }
-  return n;
-}
-
+//Implémentation d'une pile que simuler l'appel récursif de la fonction.
+//Elle est dynamique pour optimiser un minimum la mémoire de celle-ci.
 
 typedef struct Bloc
 {
@@ -495,11 +497,10 @@ void VideListe(Liste *L)
         VideListe(L);
     }
 }
+
 /*************************************************/
-/**
- * La fonction ne marche pas. Sans l'implémentation de la mémoïsation des valeurs, il n'y a aucun problème.
-*/
-int Ackermann5 (int m) {
+
+int Ackermann4 (int m) {
   int n=0;
   Liste pile;//pile pour stocker les valeurs de m
   initVide(&pile);
@@ -510,21 +511,85 @@ int Ackermann5 (int m) {
     m=depile(&pile);
     if(m==0)//cas de base pour la récursivité sur m
       n++;
-    else if(m==1)
-      n += 2;
     else{
       //empile la valeur m-1
       empile(m-1,&pile);
-        if(n==0)
-          n=1;
-        else{
-          empile(m,&pile);
-          n--;
-        }
+      if(n==0)
+        n=1;
+      else{
+        empile(m,&pile);
+        n--;
+      }
     }
   }
   VideListe(&pile);
   return n;
+}
+
+
+// Empile une valeur sur la liste ou incrémente le compteur
+void empile2(int value, Liste *pile, int *cpt) {
+    Bloc *nouveauBloc = (Bloc *)malloc(sizeof(Bloc));
+
+    nouveauBloc->nombre = value;
+    nouveauBloc->suivant = *pile;
+    *pile = nouveauBloc;
+
+    if (value == 0) {
+        (*cpt)++;
+    }
+}
+
+// Dépile une valeur de la liste
+int depile2(Liste *pile, int *cpt) {
+
+    Bloc *bloc = *pile;
+    int value = bloc->nombre;
+
+    *pile = bloc->suivant;
+    free(bloc);
+
+    if (value == 0) {
+        (*cpt)--;
+    }
+
+    return value;
+}
+
+//version améliorée d'Ackermann.
+int Ackermann5 (int m) {
+  int n = 0;
+    Liste pile = NULL;
+    int cpt = 0;// le compteur permet de ne pas empiler des 0 pour rien dans la pile. Car cela pren beaucoup d'espace mémoire.
+
+    empile2(m, &pile, &cpt);
+
+    while (pile != NULL || cpt != 0) {
+        if (pile != NULL) {
+            m = depile2(&pile, &cpt);
+        }
+
+        if (m == 0) {
+            n++;
+        } else if(m==1){//cas particulié pour évité un grand nombre d'itérations.
+          n+=2;
+        }else{
+            // Utilise cpt pour éviter d'empiler des zéros inutiles
+            if (cpt >= 0) {
+                empile2(m - 1, &pile, &cpt);
+            }
+
+            if (n == 0) {
+                n = 1;
+            } else {
+                empile2(m, &pile, &cpt);
+                n--;
+            }
+        }
+    }
+
+    VideListe(&pile);
+    return n;
 }
 
 /*************************************************/
@@ -546,6 +611,7 @@ int ln2_aux(int n, int acc){
     return acc;
   return ln2_aux(n/2,acc+1);
 }
+//vresion récusive
 int ln2(int n){
   if(n==0)
     return 1;
@@ -806,8 +872,7 @@ if (false) {
                 
 if (true) { 
  
-       // for(i=1 ; i<=5 ; i++)  // numéro de version
-        int i=5;
+        for(i=1 ; i<=5 ; i++)  // numéro de version
         for(j=0 ; j<=5 ; j++)  // test de A(j,0) pour j de 0 à 5
         
         printf("Ack%d(%d) = %d \n", i, j, Ackermann(j,i)) ;
@@ -816,7 +881,6 @@ if (true) {
 
 /*********************************************************/
 
-X1(30);
 
     return 0;
 }
